@@ -74,13 +74,13 @@
 const char* CFamiTrackerDoc::NEW_INST_NAME = "Instrument";
 
 // Make 1 channel default since 8 sounds bad
-const int	CFamiTrackerDoc::DEFAULT_NAMCO_CHANS = 4;
+const int	CFamiTrackerDoc::DEFAULT_NAMCO_CHANS = 1;
 
 const bool	CFamiTrackerDoc::DEFAULT_LINEAR_PITCH = false;
 
 // File I/O constants
 static const char *FILE_HEADER				= "FamiTracker Module";
-static const char *FILE_HEADER_DN			= "Dn-FamiTracker Module"; // No i'm not changing it
+static const char *FILE_HEADER_DN			= "H-FamiTracker Module";
 static const char *FILE_BLOCK_PARAMS		= "PARAMS";
 static const char *FILE_BLOCK_TUNING		= "TUNING";
 static const char *FILE_BLOCK_INFO			= "INFO";
@@ -188,7 +188,7 @@ const char* VRC7_OFFSET = "vrc7-offset";
 const char* FDS_OFFSET = "fds-offset";
 const char* MMC5_OFFSET = "mmc5-offset";
 const char* N163_OFFSET = "n163-offset";
-const char* S5B_OFFSET = "s5b-offset";
+const char* S5B_OFFSET = "sy-offset";
 const char* USE_SURVEY_MIX = "use-survey-mix";
 
 void from_json(const json& j, stJSONOptionalData& d) {

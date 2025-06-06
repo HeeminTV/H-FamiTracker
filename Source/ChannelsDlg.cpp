@@ -59,7 +59,7 @@ const int CHILD_ITEMS_ID[ROOT_ITEM_COUNT][9] = {
 
 const TCHAR *CHILD_ITEMS[ROOT_ITEM_COUNT][9] = {
 	// 2A03
-	{_T("FWG 1"), _T("FWG 2"), _T("2-bit Wavetable"), _T("Noise"), _T("DPCM")},
+	{_T("FWG 1"), _T("FWG 2"), _T("2-bit Waveform"), _T("Noise"), _T("DPCM")},
 	// VRC 6
 	{_T("Pulse 1"), _T("Pulse 2"), _T("Sawtooth")},
 	// VRC 7

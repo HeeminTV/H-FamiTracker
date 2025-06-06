@@ -1314,10 +1314,10 @@ const CString& CTextExport::ExportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 
 	CString s;
 
-	s.Format(_T("# " APP_NAME " text export %i.%i.%i.%i\n"), VERSION);		// // //
+	s.Format(_T("# " APP_NAME " text export %s\n"), VERSION_STR);		// // //
 	f.WriteString(s);
-	s.Format(_T("# Module version %04X\n\n"), CDocumentFile::FILE_VER);		// // //
-	f.WriteString(s);
+	// s.Format(_T("# Module version %04X\n\n"), CDocumentFile::FILE_VER);		// // //
+	// f.WriteString(s);
 
 	f.WriteString(_T("# INFO block\n"));
 

@@ -231,7 +231,7 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("FWG 1"), _T("FW1"), SNDCHIP_NONE, CHANID_SQUARE1));
 	AssignChannel(new CTrackerChannel(_T("FWG 2"), _T("FW2"), SNDCHIP_NONE, CHANID_SQUARE2));
 #endif
-	AssignChannel(new CTrackerChannel(_T("2-bit Wavetable"), _T("WAV"), SNDCHIP_NONE, CHANID_TRIANGLE));
+	AssignChannel(new CTrackerChannel(_T("2-bit Waveform"), _T("WAV"), SNDCHIP_NONE, CHANID_TRIANGLE));
 	AssignChannel(new CTrackerChannel(_T("Noise"), _T("NOI"), SNDCHIP_NONE, CHANID_NOISE));
 	AssignChannel(new CTrackerChannel(_T("DPCM"), _T("PCM"), SNDCHIP_NONE, CHANID_DPCM));
 
