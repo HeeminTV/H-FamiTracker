@@ -140,9 +140,9 @@ void CChannelHandlerN163::HandleNote(int Note, int Octave)
 bool CChannelHandlerN163::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
-	case INST_2A03: case INST_VRC6: case INST_S5B: case INST_FDS:
+	case INST_7E02: case INST_VRC6: case INST_S5B: case INST_FDS:
 		switch (m_iInstTypeCurrent) {
-		case INST_2A03: case INST_VRC6: case INST_S5B: case INST_FDS: break;
+		case INST_7E02: case INST_VRC6: case INST_S5B: case INST_FDS: break;
 		default:
 			m_pInstHandler.reset(new CSeqInstHandler(this, 0x0F, Type == INST_S5B ? 0x40 : 0));
 			return true;
@@ -236,7 +236,7 @@ int CChannelHandlerN163::getDutyMax() const {
 int CChannelHandlerN163::ConvertDuty(int Duty) const		// // //
 {
 	switch (m_iInstTypeCurrent) {
-	case INST_2A03: case INST_VRC6: case INST_S5B:
+	case INST_7E02: case INST_VRC6: case INST_S5B:
 		return -1;
 	default:
 		return Duty;

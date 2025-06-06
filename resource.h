@@ -118,7 +118,7 @@
 #define IDS_SEL_NONTERMINAL_SKIP        177
 #define ID_DECREASEVALUES               178
 #define IDS_SEL_TERMINAL_SKIP           178
-#define IDI_INST_2A03                   179
+#define IDI_INST_7E02                   179
 #define IDS_PASTE_REPEATED_ROW          179
 #define ID_INCREASEVALUESCOARSE         179
 #define ID_DECREASEVALUESCOARSE         180

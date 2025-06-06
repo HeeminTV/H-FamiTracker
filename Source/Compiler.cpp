@@ -2008,7 +2008,7 @@ void CCompiler::ScanSong()
 	memset(m_bSequencesUsedVRC6, false, sizeof(bool) * MAX_SEQUENCES * SEQ_COUNT);
 	memset(m_bSequencesUsedN163, false, sizeof(bool) * MAX_SEQUENCES * SEQ_COUNT);
 	memset(m_bSequencesUsedS5B, false, sizeof(bool) * MAX_SEQUENCES * SEQ_COUNT);		// // //
-	static const inst_type_t inst[] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };		// // //
+	static const inst_type_t inst[] = { INST_7E02, INST_VRC6, INST_N163, INST_S5B };		// // //
 	bool *used[] = { *m_bSequencesUsed2A03, *m_bSequencesUsedVRC6, *m_bSequencesUsedN163, *m_bSequencesUsedS5B };
 
 	for (int i = 0; i < MAX_INSTRUMENTS; ++i) {
@@ -2149,7 +2149,7 @@ void CCompiler::CreateSequenceList()
 	//
 
 	unsigned int Size = 0, StoredCount = 0;
-	static const inst_type_t inst[] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };
+	static const inst_type_t inst[] = { INST_7E02, INST_VRC6, INST_N163, INST_S5B };
 	const bool *used[] = { *m_bSequencesUsed2A03, *m_bSequencesUsedVRC6, *m_bSequencesUsedN163, *m_bSequencesUsedS5B };
 	static const char *format[] = {
 		CChunkRenderText::LABEL_SEQ_2A03, CChunkRenderText::LABEL_SEQ_VRC6,
@@ -2338,7 +2338,7 @@ void CCompiler::CreateSampleList()
 	// Store sample instruments
 	unsigned int Item = 0;
 	for (int i = 0; i < MAX_INSTRUMENTS; ++i) {
-		if (m_pDocument->IsInstrumentUsed(i) && m_pDocument->GetInstrumentType(i) == INST_2A03) {
+		if (m_pDocument->IsInstrumentUsed(i) && m_pDocument->GetInstrumentType(i) == INST_7E02) {
 			auto pInstrument = std::static_pointer_cast<CInstrument2A03>(m_pDocument->GetInstrument(i));
 
 			for (int j = 0; j < OCTAVE_RANGE; ++j) {

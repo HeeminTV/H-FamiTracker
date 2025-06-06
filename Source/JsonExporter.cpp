@@ -119,7 +119,7 @@ namespace {
 
 	constexpr std::string_view GetInstrumentChipName(inst_type_t inst_type) noexcept {
 		switch (inst_type) {
-			case inst_type_t::INST_2A03: return "7E02"sv;
+			case inst_type_t::INST_7E02: return "7E02"sv;
 			case inst_type_t::INST_VRC6: return "VRC6"sv;
 			case inst_type_t::INST_VRC7: return "VRC7"sv;
 			case inst_type_t::INST_FDS:  return "FDS"sv;
@@ -575,7 +575,7 @@ void to_json(json& j, const CFamiTrackerDoc& modfile) {
 				}
 	};
 
-	InsertSequences(INST_2A03);
+	InsertSequences(INST_7E02);
 	InsertSequences(INST_VRC6);
 //	InsertSequences(INST_FDS);
 	InsertSequences(INST_N163);

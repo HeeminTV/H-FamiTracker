@@ -26,7 +26,7 @@
 // Instrument types
 enum inst_type_t {
 	INST_NONE = 0,
-	INST_2A03 = 1,
+	INST_7E02 = 1,
 	INST_VRC6,
 	INST_VRC7,
 	INST_FDS,

@@ -109,9 +109,9 @@ void CChannelHandler2A03::HandleRelease()
 bool CChannelHandler2A03::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
-	case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS:
+	case INST_7E02: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS:
 		switch (m_iInstTypeCurrent) {
-		case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS: break;
+		case INST_7E02: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS: break;
 		default:
 			m_pInstHandler.reset(new CSeqInstHandler(this, 0x0F, Type == INST_S5B ? 0x40 : 0));
 			return true;
@@ -644,9 +644,9 @@ void CDPCMChan::HandleNote(int Note, int Octave)
 bool CDPCMChan::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
-	case INST_2A03:
+	case INST_7E02:
 		switch (m_iInstTypeCurrent) {
-		case INST_2A03: break;
+		case INST_7E02: break;
 		default:
 			m_pInstHandler.reset(new CInstHandlerDPCM(this));
 			return true;

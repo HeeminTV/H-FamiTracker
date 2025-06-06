@@ -142,7 +142,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 
 	inst_type_t InstType = INST_NONE; // optimize this
 	switch (Chip) {
-	case SNDCHIP_NONE: case SNDCHIP_MMC5: InstType = INST_2A03; break;
+	case SNDCHIP_NONE: case SNDCHIP_MMC5: InstType = INST_7E02; break;
 	case SNDCHIP_VRC6: InstType = INST_VRC6; break;
 	// case SNDCHIP_VRC7: Type = INST_VRC7; break;
 	case SNDCHIP_FDS:  InstType = INST_FDS; break;
@@ -151,7 +151,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 	}
 
 	switch (InstType) {
-	case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B:
+	case INST_7E02: case INST_VRC6: case INST_N163: case INST_S5B:
 		for (int i = 0; i < SEQ_COUNT; i++) {
 			sequence_t s = static_cast<sequence_t>(i);
 			switch (s) {
@@ -316,7 +316,7 @@ void CInstrumentRecorder::InitRecordInstrument()
 	}
 	inst_type_t Type = INST_NONE; // optimize this
 	switch (pChan->GetChip()) {
-	case SNDCHIP_NONE: case SNDCHIP_MMC5: Type = INST_2A03; break;
+	case SNDCHIP_NONE: case SNDCHIP_MMC5: Type = INST_7E02; break;
 	case SNDCHIP_VRC6: Type = INST_VRC6; break;
 	// case SNDCHIP_VRC7: Type = INST_VRC7; break;
 	case SNDCHIP_FDS:  Type = INST_FDS; break;
@@ -335,7 +335,7 @@ void CInstrumentRecorder::InitRecordInstrument()
 		return;
 	}
 	switch (Type) {
-	case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B:
+	case INST_7E02: case INST_VRC6: case INST_N163: case INST_S5B:
 		CSeqInstrument *Inst = dynamic_cast<CSeqInstrument*>(*m_pDumpInstrument);
 		ASSERT(Inst != NULL);
 		for (int i = 0; i < SEQ_COUNT; i++) {

@@ -185,12 +185,12 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 		ClearPanels();
 
 		switch (InstType) {
-			case INST_2A03: {
+			case INST_7E02: {
 					int Channel = CFamiTrackerView::GetView()->GetSelectedChannel();
 					int Type = pDoc->GetChannelType(Channel);
 					bool bShowDPCM = (Type == CHANID_DPCM) || (std::static_pointer_cast<CInstrument2A03>(pInstrument)->AssignedSamples());
-					InsertPane(new CInstrumentEditorSeq(NULL, _T("FWG settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
-					// InsertPane(new CInstrumentEditorSeq(NULL, _T("2-bit waveform settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // maybe later
+					InsertPane(new CInstrumentEditorSeq(NULL, _T("FWG settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_7E02), !bShowDPCM); // // //
+					//InsertPane(new CInstrumentEditorSeq(NULL, _T("2-bit waveform settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_7E02), !bShowDPCM); // maybe later
 					InsertPane(new CInstrumentEditorDPCM(), bShowDPCM);
 				}
 				break;
@@ -360,7 +360,7 @@ void CInstrumentEditDlg::SwitchOnNote(int x, int y)
 	stChanNote NoteData { };
 
 	// // // Send to respective channels whenever cursor is outside instrument chip
-	if (m_iSelectedInstType == INST_2A03) {
+	if (m_iSelectedInstType == INST_7E02) {
 		if (m_pPanels[0]->IsWindowVisible() && Channel > CHANID_NOISE)
 			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_SQUARE1));
 		if (m_pPanels[1]->IsWindowVisible())

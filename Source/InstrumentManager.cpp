@@ -168,7 +168,7 @@ CSequenceManager *const CInstrumentManager::GetSequenceManager(int InstType) con
 {
 	int Index = -1;
 	switch (InstType) {
-	case INST_2A03: Index = 0; break;
+	case INST_7E02: Index = 0; break;
 	case INST_VRC6: Index = 1; break;
 	case INST_FDS:  Index = 2; break;
 	case INST_N163: Index = 3; break;

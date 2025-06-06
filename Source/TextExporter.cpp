@@ -804,7 +804,7 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 			case CT_MACRON163:
 			case CT_MACROS5B:
 				{
-					static const inst_type_t CHIP_MACRO[4] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };		// // //
+					static const inst_type_t CHIP_MACRO[4] = { INST_7E02, INST_VRC6, INST_N163, INST_S5B };		// // //
 					int chip = c - CT_MACRO;
 
 					int mt, loop, release;
@@ -916,7 +916,7 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 				{
 					inst_type_t Type = INST_NONE;
 					switch (c) {
-					case CT_INST2A03: Type = INST_2A03; break;
+					case CT_INST2A03: Type = INST_7E02; break;
 					case CT_INSTVRC6: Type = INST_VRC6; break;
 					case CT_INSTN163: Type = INST_N163; break;
 					case CT_INSTS5B:  Type = INST_S5B; break;
@@ -979,7 +979,7 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 			case CT_KEYDPCM:
 				{
 					CHECK(t.ReadInt(i,0,MAX_INSTRUMENTS-1,&sResult));
-					if (pDoc->GetInstrumentType(i) != INST_2A03)
+					if (pDoc->GetInstrumentType(i) != INST_7E02)
 					{
 						sResult.Format(_T("Line %d column %d: instrument %d is not defined as a 2A03 instrument."), t.line, t.GetColumn(), i);
 						return sResult;
@@ -1390,7 +1390,7 @@ const CString& CTextExport::ExportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 	f.WriteString(_T("# SEQUENCES block\n"));
 	for (int c=0; c<4; ++c)
 	{
-		const inst_type_t CHIP_MACRO[4] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };
+		const inst_type_t CHIP_MACRO[4] = { INST_7E02, INST_VRC6, INST_N163, INST_S5B };
 
 		for (int st=0; st < SEQ_COUNT; ++st)
 		for (int seq=0; seq < MAX_SEQUENCES; ++seq)
@@ -1493,7 +1493,7 @@ const CString& CTextExport::ExportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 
 		const TCHAR *CTstr = nullptr;		// // //
 		switch (pInst->GetType()) {
-		case INST_2A03:	CTstr = CT[CT_INST2A03]; break;
+		case INST_7E02:	CTstr = CT[CT_INST2A03]; break;
 		case INST_VRC6:	CTstr = CT[CT_INSTVRC6]; break;
 		case INST_VRC7:	CTstr = CT[CT_INSTVRC7]; break;
 		case INST_FDS:	CTstr = CT[CT_INSTFDS];  break;
@@ -1552,7 +1552,7 @@ const CString& CTextExport::ExportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 
 		switch (pInst->GetType())
 		{
-		case INST_2A03:
+		case INST_7E02:
 			{
 				auto pDI = std::static_pointer_cast<CInstrument2A03>(pInst);
 				for (int oct = 0; oct < OCTAVE_RANGE; ++oct)

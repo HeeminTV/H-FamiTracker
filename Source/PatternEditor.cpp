@@ -1539,7 +1539,7 @@ void CPatternEditor::DrawCell(CDC *pDC, int PosX, cursor_column_t Column, int Ch
 								if (pDPCMInst->GetDSample(pNoteData->Octave, pNoteData->Note - 1) == nullptr)
 									noteCol = WarningColor;
 							}
-							else if (m_pDocument->GetInstrument(pNoteData->Instrument) == nullptr || m_pDocument->GetInstrument(pNoteData->Instrument)->GetType() != INST_2A03)
+							else if (m_pDocument->GetInstrument(pNoteData->Instrument) == nullptr || m_pDocument->GetInstrument(pNoteData->Instrument)->GetType() != INST_7E02)
 								noteCol = WarningColor;
 						} else if (pNoteData->Instrument == HOLD_INSTRUMENT && pTrackerChannel->GetID() == CHANID_DPCM)
 							noteCol = WarningColor;

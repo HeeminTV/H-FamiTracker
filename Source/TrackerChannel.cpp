@@ -154,7 +154,7 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 		case SNDCHIP_VRC6:
 		case SNDCHIP_FDS:
 			switch (Type) {
-			case INST_2A03:
+			case INST_7E02:
 			case INST_VRC6:
 			case INST_N163:
 			case INST_S5B:

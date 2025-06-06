@@ -273,17 +273,11 @@ namespace xgm
       static UINT32 tritbl[1][32];
       UINT16 fullWave = ((UINT16)twaveH << 8) | twaveL;  // .
       std::array<UINT32, 8> bits2;
-      /*for (int i = 0; i < 8; ++i) {
-          bits2[i] = (fullWave >> (14 - i * 2)) & 0b11;  // .
-          tritbl[0][i] = bits2[i];  // .
-          //tritbl[0][(i * 2) - 1] = bits2[i];  // .
-      }*/
+
       int index = 0;
       for (int i = 0; i < 8; ++i) {
           int shift = (7 - i) * 2;
           uint32_t value = (fullWave >> shift) & 0x3;
-
-          // .
           for (int j = 0; j < 4; ++j) {
               tritbl[0][index++] = value;
           }
@@ -303,7 +297,6 @@ namespace xgm
     return ret;
   }
 
-  // sasiandot
   UINT32 NES_DMC::calc_noise(UINT32 clocks)
   {
     UINT32 env = envelope_disable ? noise_volume : envelope_counter;
@@ -585,15 +578,17 @@ namespace xgm
     // because of the lack of a good DAC model, currently.
 
     { // Linear Mixer
+          tnd_table[1][0][0][0] = 0;
       for(int t=0; t<16 ; t++) {
         for(int n=0; n<16; n++) {
           for(int d=0; d<128; d++) {
               tnd_table[0][t][n][d] = (UINT32)(MASTER*(3.0*t+2.0*n+d)/208.0);
+              tnd_table[1][t][n][d] = (UINT32)(MASTER * (3.0 * t + 2.0 * n + d) / 208.0);
           }
         }
       }
     }
-    { // Non-Linear Mixer (not)
+    /* { // Non-Linear Mixer (not)
       tnd_table[1][0][0][0] = 0;
       for (int t = 0; t < 16; t++) {
           for (int n = 0; n < 16; n++) {
@@ -602,7 +597,7 @@ namespace xgm
               }
           }
       }
-    }
+    }*/
 
   }
 

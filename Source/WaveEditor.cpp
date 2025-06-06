@@ -110,7 +110,7 @@ void CWaveEditor::OnPaint()
 {
 	const COLORREF GRAY1 = 0x0F0F0F;
 	const COLORREF GRAY2 = 0x1F1F1F;
-	const COLORREF LINE_COL = 0x30B030;
+	const COLORREF LINE_COL = 0x30E030;
 
 	// Draw the sample
 	CPaintDC dc(this);
@@ -263,7 +263,7 @@ void CWaveEditor::EditWave(CPoint point)
 		if (pDC != NULL) {
 			// Erase old sample
 			int s = (m_iLY - 1) - GetSample(index);
-			pDC->FillSolidRect(index * m_iSX, s * m_iSY, m_iSX, m_iSY, (s & 1) ? 0xA0A0A0 : 0xB0B0B0);
+			pDC->FillSolidRect(index * m_iSX, s * m_iSY, m_iSX, m_iSY, (s & 1) ? 0x0F0F0F : 0x1F1F1F);
 		
 			SetSample(index, sample);
 		
@@ -354,7 +354,7 @@ int CWaveEditorFDS::GetMaxSamples() const
 
 void CWaveEditorFDS::DrawRect(CDC *pDC, int x, int y, int sx, int sy) const
 {
-	pDC->FillSolidRect(x, y, sx, sy, 0x000000);
+	pDC->FillSolidRect(x, y, sx, sy, 0x30E030);
 }
 
 // N163 wave
@@ -391,7 +391,7 @@ int CWaveEditorN163::GetMaxSamples() const
 void CWaveEditorN163::DrawRect(CDC *pDC, int x, int y, int sx, int sy) const
 {
 	const COLORREF BOX_COLOR = 0x008000;
-	const COLORREF BOX_COLOR_HI = 0x30B030;
+	const COLORREF BOX_COLOR_HI = 0x30E030;
 	const COLORREF BOX_COLOR_LO = 0x004000;
 
 	pDC->FillSolidRect(x, y, sx, sy, BOX_COLOR);

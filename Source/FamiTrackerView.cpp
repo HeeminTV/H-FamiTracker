@@ -3798,7 +3798,7 @@ void CFamiTrackerView::OnTrackerRecordToInst()		// // //
 	if (Chip != SNDCHIP_FDS) {
 		inst_type_t Type = INST_NONE;
 		switch (Chip) {
-		case SNDCHIP_NONE: case SNDCHIP_MMC5: Type = INST_2A03; break;
+		case SNDCHIP_NONE: case SNDCHIP_MMC5: Type = INST_7E02; break;
 		case SNDCHIP_VRC6: Type = INST_VRC6; break;
 		case SNDCHIP_N163: Type = INST_N163; break;
 		case SNDCHIP_S5B:  Type = INST_S5B; break;

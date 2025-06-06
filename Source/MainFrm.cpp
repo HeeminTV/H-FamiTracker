@@ -620,7 +620,7 @@ bool CMainFrame::CreateDialogPanels()
 
 	m_pImageList = new CImageList();
 	m_pImageList->Create(16, 16, ILC_COLOR32, 1, 1);
-	m_pImageList->Add(theApp.LoadIcon(IDI_INST_2A03));
+	m_pImageList->Add(theApp.LoadIcon(IDI_INST_7E02));
 	m_pImageList->Add(theApp.LoadIcon(IDI_INST_VRC6));
 	m_pImageList->Add(theApp.LoadIcon(IDI_INST_VRC7));
 	m_pImageList->Add(theApp.LoadIcon(IDI_INST_FDS));
