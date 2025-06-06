@@ -108,7 +108,7 @@ struct EmulatorConfig {
 
 	// User-defined hardware patch names for external OPLL
 	std::vector<std::string> UseOPLLPatchNames = {
-		"(Custom)",		// patch 0 must always be named "(custom instrument)"
+		"(custom patch)",		// patch 0 must always be named "(custom instrument)"
 		"",
 		"",
 		"",

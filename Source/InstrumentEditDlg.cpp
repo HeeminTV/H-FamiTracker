@@ -190,6 +190,7 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 					int Type = pDoc->GetChannelType(Channel);
 					bool bShowDPCM = (Type == CHANID_DPCM) || (std::static_pointer_cast<CInstrument2A03>(pInstrument)->AssignedSamples());
 					InsertPane(new CInstrumentEditorSeq(NULL, _T("FWG settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
+					// InsertPane(new CInstrumentEditorSeq(NULL, _T("2-bit waveform settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // maybe later
 					InsertPane(new CInstrumentEditorDPCM(), bShowDPCM);
 				}
 				break;

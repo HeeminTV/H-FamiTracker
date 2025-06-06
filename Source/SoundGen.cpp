@@ -188,7 +188,7 @@ CSoundGen::CSoundGen() :
 
 	OPLLHardwarePatchNames.resize(19);
 	std::fill(OPLLHardwarePatchNames.begin(), OPLLHardwarePatchNames.end(), "");
-	OPLLHardwarePatchNames.at(0) = "(Custom)";		// patch 0 must always be named "(custom instrument)"
+	OPLLHardwarePatchNames.at(0) = "(custom patch)";		// patch 0 must always be named "(custom instrument)"
 }
 
 CSoundGen::~CSoundGen()
