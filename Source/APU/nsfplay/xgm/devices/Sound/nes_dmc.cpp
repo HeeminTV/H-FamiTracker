@@ -299,7 +299,7 @@ namespace xgm
       }
     }
 
-    UINT32 ret = ((tritbl[0][tphase] + 1) * 4) - 1;
+    UINT32 ret = ((tritbl[0][tphase] + 1) * 3) - 1;
     return ret;
   }
 
@@ -593,15 +593,14 @@ namespace xgm
         }
       }
     }
-    { // Non-Linear Mixer
+    { // Non-Linear Mixer (not)
       tnd_table[1][0][0][0] = 0;
-      for(int t=0; t<16 ; t++) {
-        for(int n=0; n<16; n++) {
-          for(int d=0; d<128; d++) {
-            if(t!=0||n!=0||d!=0)
-              tnd_table[1][t][n][d] = (UINT32)((MASTER*159.79)/(100.0+1.0/((double)t/wt+(double)n/wn+(double)d/wd)));
+      for (int t = 0; t < 16; t++) {
+          for (int n = 0; n < 16; n++) {
+              for (int d = 0; d < 128; d++) {
+                  tnd_table[1][t][n][d] = (UINT32)(MASTER * (3.0 * t + 2.0 * n + d) / 208.0);
+              }
           }
-        }
       }
     }
 

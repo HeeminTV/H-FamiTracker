@@ -1,5 +1,9 @@
 ![asd](docs/H-FamiTrackerAboutBanner.bmp)
 
+# H-FamiTracker 
+
+(banner right above was quick-made so please don't use it on your video or for any usages)
+
 H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**eemin"
 
 Presents two fantasy chips based on RP2A03 and Sunsoft 5B, called **7E02**, **SY1202**
