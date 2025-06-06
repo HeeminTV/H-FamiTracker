@@ -41,8 +41,8 @@
 		// STR(VERSION_API) "." \
 		// STR(VERSION_MAJ) "." \
 		// STR(VERSION_MIN) "." \
-		// STR(VERSION_REV)
-#define VERSION_STR "0.0.1a3"
+		// STR(VERSION_REV) what's a shit??
+#define VERSION_STR "0.0.1a4"
 
 
 #define APP_NAME_VERSION	APP_NAME " " VERSION_STR

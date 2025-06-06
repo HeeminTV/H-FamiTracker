@@ -28,7 +28,7 @@
 LPCTSTR LINK_WEB2 = _T("http://hertzdevil.info/programs/");
 LPCTSTR LINK_WEB = _T("https://web.archive.org/web/20230415052051/http://famitracker.com/");						// // !!
 LPCTSTR LINK_WEB3 = _T("https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker");						// // !!
-LPCTSTR LINK_BUG  = _T("https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker/issues");		// // !!
+LPCTSTR LINK_WEB4  = _T("https://github.com/HeeminTV/H-FamiTracker");		// // !!
 
 // CLinkLabel
 
@@ -227,7 +227,7 @@ BOOL CAboutDlg::OnInitDialog()
 	m_pWeb->SetFont(m_pLinkFont);
 	m_wndToolTip.AddTool(m_pWeb, IDS_ABOUT_TOOLTIP_WEB3);
 
-	m_pBug = new CLinkLabel(LINK_BUG);		// // //
+	m_pBug = new CLinkLabel(LINK_WEB4);		// // //
 	m_pBug->SubclassDlgItem(IDC_BUG, this);
 	m_pBug->SetFont(m_pLinkFont);
 	m_wndToolTip.AddTool(m_pBug, IDS_ABOUT_TOOLTIP_BUG);

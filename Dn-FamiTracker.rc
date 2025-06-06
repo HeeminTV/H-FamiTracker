@@ -109,7 +109,7 @@ BEGIN
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
-        MENUITEM "Create Primitive NS&F...\tCtrl+E",      ID_FILE_CREATE_NSF
+        // MENUITEM "Create Primitive NS&F...\tCtrl+E",      ID_FILE_CREATE_NSF
         MENUITEM "Create WA&V...\tCtrl+Shift+E", ID_FILE_CREATEWAV
         MENUITEM SEPARATOR
         MENUITEM "&Import Text...",             ID_FILE_IMPORTTEXT
@@ -322,19 +322,19 @@ BEGIN
             MENUITEM "&Popup",                      ID_CONTROLPANEL_POPUP, INACTIVE
         END
     END
-    /*
+    
     POPUP "&Help"
     BEGIN
         MENUITEM "&Help Topics\tF1",            ID_HELP_FINDER
         MENUITEM "&Effect Table",               ID_HELP_EFFECTTABLE
-        MENUITEM "&FAQ",                        ID_HELP_FAQ
+        // MENUITEM "&FAQ",                        ID_HELP_FAQ
         MENUITEM SEPARATOR
         MENUITEM "&Performance",                ID_HELP_PERFORMANCE
         MENUITEM SEPARATOR
-        MENUITEM "&About Dn-FamiTracker...",    ID_APP_ABOUT
-        MENUITEM "Check for updates...",        ID_HELP_VERSION_CHECK
+        MENUITEM "&About H-FamiTracker...",    ID_APP_ABOUT
+        // MENUITEM "Check for updates...",        ID_HELP_VERSION_CHECK
     END
-    */
+    
 END
 
 IDR_PATTERN_POPUP MENU
@@ -555,12 +555,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Dn Programming Core Management"
             VALUE "FileDescription", "H-FamiTracker, Personal test shit from Heemin"
-            VALUE "FileVersion", "0.0.1a3"
+            VALUE "FileVersion", "0.0.1a4"
             VALUE "InternalName", "H-FamiTracker.exe"
-            VALUE "LegalCopyright", "(c) jsr 2005-2020, HertzDevil 2014-2018, Dn Programming Core Management 2020-2025 All rights reserved."
+            VALUE "LegalCopyright", "(c) jsr 2005-2020, HertzDevil 2014-2018, Dn Programming Core Management 2020-2025, Heemin 2025 All rights reserved."
             VALUE "OriginalFilename", "H-FamiTracker.exe"
             VALUE "ProductName", "H-FamiTracker"
-            VALUE "ProductVersion", "0.0.1a3"
+            VALUE "ProductVersion", "0.0.1a4"
         END
     END
     BLOCK "VarFileInfo"
@@ -1099,27 +1099,29 @@ END
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 285, 358
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About Dn-FamiTracker"
+CAPTION "About H-FamiTracker"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         "",IDC_HEAD,"Static",SS_OWNERDRAW,0,0,287,49
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,0,49,287,1
     ICON            IDR_MAINFRAME,IDC_ICON_STATIC,11,58,20,20,SS_REALSIZEIMAGE
     LTEXT           "H-FamiTracker",IDC_ABOUT1,54,58,219,11,SS_NOPREFIX
-    LTEXT           "Heemin's personal project from Dn-FamiTracker",IDC_ABOUT2,54,72,167,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2005 - 2020 jsr, 2014 - 2018 HertzDevil,\n2020 - 2025 Dn Programming Core Management.",IDC_ABOUT3,54,84,215,16
+    LTEXT           "Heemin's personal mod of Dn-FamiTracker",IDC_ABOUT2,54,72,167,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2005 - 2020 jsr, 2014 - 2018 HertzDevil,\n2020 - 2025 Dn Programming Core Management,\n2025 Heemin",IDC_ABOUT3,54,84,215,24
     LTEXT           "Web:",IDC_STATIC,54,107,24,9
-    LTEXT           "Dn-FamiTracker issue tracker",IDC_BUG,84,134,194,9,SS_NOTIFY
     LTEXT           "All comments and feedback are welcome\nGreets to everyone who has helped spread information about this mod or contributed with bug reports and suggestions!",IDC_STATIC,54,150,224,26
-    LTEXT           "This software is licensed under the GNU General Public License v3.0.\n0CC / Dn sources are available on Github.\nVanilla source is available on the webpage.",IDC_STATIC,54,181,224,24
+    LTEXT           "This software is licensed under the GNU General Public License v3.0.\n0CC-FT / Dn-FT / H-FT sources are available on Github.\nVanilla source is available on the official webpage.",IDC_STATIC,54,181,224,24
     LTEXT           "Contributions:",IDC_STATIC,54,210,224,9
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,54,221,215,1
     LTEXT           "Libraries:",IDC_STATIC,54,283,224,8
-    DEFPUSHBUTTON   "OK",IDOK,7,105,39,16,WS_GROUP
+
+    DEFPUSHBUTTON   "Close",IDOK,7,105,39,16,WS_GROUP
+
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,54,294,215,1
     LTEXT           "http://hertzdevil.info/programs/",IDC_WEBPAGE,84,116,137,9,SS_NOTIFY
     LTEXT           "http://famitracker.com",IDC_WEBPAGE2,84,107,137,9,SS_NOTIFY
     LTEXT           "Dn-FamiTracker source code repository",IDC_WEBPAGE3,84,125,194,9,SS_NOTIFY
+    LTEXT           "H-FamiTracker source code repository", IDC_BUG, 84, 134, 194, 9, SS_NOTIFY
     EDITTEXT        IDC_ABOUT_CONTRIB,54,223,224,57,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
     EDITTEXT        IDC_ABOUT_LIB,54,296,224,57,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
 END
