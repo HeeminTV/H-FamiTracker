@@ -113,9 +113,9 @@ CS5B::CS5B(CMixer *pMixer) : CSoundChip(pMixer),
 {
 	m_pRegisterLogger->AddRegisterRange(0x00, 0x0F);		// // //
 
-	m_pChannel[0] = new CS5BChannel(pMixer, CHANID_S5B_CH1);
-	m_pChannel[1] = new CS5BChannel(pMixer, CHANID_S5B_CH2);
-	m_pChannel[2] = new CS5BChannel(pMixer, CHANID_S5B_CH3);
+	m_pChannel[0] = new CS5BChannel(pMixer, CHANID_SY1202_CH1);
+	m_pChannel[1] = new CS5BChannel(pMixer, CHANID_SY1202_CH2);
+	m_pChannel[2] = new CS5BChannel(pMixer, CHANID_SY1202_CH3);
 	Reset();
 }
 

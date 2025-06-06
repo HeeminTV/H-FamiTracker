@@ -394,7 +394,7 @@ void to_json(json& j, const CFamiTrackerDoc& modfile) {
 			case SNDCHIP_N163: subindex -= CHANID_N163_CH1; break;
 			case SNDCHIP_FDS: subindex -= CHANID_FDS; break;
 			case SNDCHIP_VRC7: subindex -= CHANID_VRC7_CH1; break;
-			case SNDCHIP_S5B: subindex -= CHANID_S5B_CH1; break;
+			case SNDCHIP_S5B: subindex -= CHANID_SY1202_CH1; break;
 			default: break;
 		}
 	};

@@ -362,7 +362,7 @@ void CInstrumentEditDlg::SwitchOnNote(int x, int y)
 	// // // Send to respective channels whenever cursor is outside instrument chip
 	if (m_iSelectedInstType == INST_7E02) {
 		if (m_pPanels[0]->IsWindowVisible() && Channel > CHANID_NOISE)
-			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_SQUARE1));
+			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_FWG1));
 		if (m_pPanels[1]->IsWindowVisible())
 			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_DPCM));
 	}
@@ -373,7 +373,7 @@ void CInstrumentEditDlg::SwitchOnNote(int x, int y)
 		case INST_N163: First = CHANID_N163_CH1; break;
 		case INST_FDS:  First = CHANID_FDS; break;
 		case INST_VRC7: First = CHANID_VRC7_CH1; break;
-		case INST_S5B:  First = CHANID_S5B_CH1; break;
+		case INST_S5B:  First = CHANID_SY1202_CH1; break;
 		}
 		int Index = pDoc->GetChannelIndex(First);
 		if (Index != -1 && pDoc->GetChipType(Index) != pDoc->GetChipType(Channel))

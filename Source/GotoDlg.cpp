@@ -81,8 +81,8 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->AddString(_T("SY1202"));
 		
 	int Channel = pDoc->GetChannelType(pEditor->GetChannel());
-	if (Channel >= CHANID_S5B_CH1) {
-		Channel -= CHANID_S5B_CH1;
+	if (Channel >= CHANID_SY1202_CH1) {
+		Channel -= CHANID_SY1202_CH1;
 		m_cChipEdit->SelectString(-1, _T("SY1202"));
 	}
 	else if (Channel >= CHANID_VRC7_CH1) {
@@ -170,7 +170,7 @@ int CGotoDlg::GetFinalChannel() const
 	case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
 	case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
 	case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
-	case SNDCHIP_S5B:  Channel += CHANID_S5B_CH1; break;
+	case SNDCHIP_S5B:  Channel += CHANID_SY1202_CH1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);

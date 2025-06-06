@@ -192,7 +192,7 @@ void C2A03Square::RefreshChannel()
 void C2A03Square::SetChannelID(int ID)		// // //
 {
 	CChannelHandler::SetChannelID(ID);
-	m_iChannel = ID - CHANID_SQUARE1;
+	m_iChannel = ID - CHANID_FWG1;
 }
 
 int C2A03Square::ConvertDuty(int Duty) const		// // //

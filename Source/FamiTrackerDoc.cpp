@@ -4417,8 +4417,8 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 	if (pos == CHANID_MMC5_VOICE) return -1;
 
 	if (!(Chip & SNDCHIP_S5B)) {
-		if (pos > CHANID_S5B_CH3) pos -= 3;
-		else if (pos >= CHANID_S5B_CH1) return -1;
+		if (pos > CHANID_SY1202_CH3) pos -= 3;
+		else if (pos >= CHANID_SY1202_CH1) return -1;
 	}
 	if (!(Chip & SNDCHIP_VRC7)) {
 		if (pos > CHANID_VRC7_CH6) pos -= 6;
@@ -5298,12 +5298,12 @@ stFullState *CFamiTrackerDoc::RetrieveSoundState(unsigned int Track, unsigned in
 					else if (State->Effect[fx] == -1 && xy <= 0x1F) {
 						State->Effect[fx] = xy;
 						if (State->Effect_LengthCounter == -1)
-							State->Effect_LengthCounter = ch->GetID() == CHANID_TRIANGLE ? 0xE1 : 0xE2;
+							State->Effect_LengthCounter = ch->GetID() == CHANID_WAVEFORM ? 0xE1 : 0xE2;
 					}
 					continue;
 				case EF_NOTE_CUT:
 					if (!ch->IsEffectCompatible(fx, xy)) continue;
-					if (ch->GetID() != CHANID_TRIANGLE) continue;
+					if (ch->GetID() != CHANID_WAVEFORM) continue;
 					if (State->Effect[fx] == -1) {
 						if (xy <= 0x7F) {
 							if (State->Effect_LengthCounter == -1)

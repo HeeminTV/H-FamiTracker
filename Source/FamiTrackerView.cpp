@@ -2470,7 +2470,7 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 				m_pNoteQueue->AddMap({ID});
 		}
 	else {
-		m_pNoteQueue->AddMap({CHANID_TRIANGLE});
+		m_pNoteQueue->AddMap({CHANID_WAVEFORM});
 		m_pNoteQueue->AddMap({CHANID_NOISE});
 		m_pNoteQueue->AddMap({CHANID_DPCM});
 
@@ -2484,9 +2484,9 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 		if (pDoc->ExpansionEnabled(SNDCHIP_FDS))
 			m_pNoteQueue->AddMap({CHANID_FDS});
 		if (pDoc->ExpansionEnabled(SNDCHIP_MMC5))
-			m_pNoteQueue->AddMap({CHANID_SQUARE1, CHANID_SQUARE2, CHANID_MMC5_SQUARE1, CHANID_MMC5_SQUARE2});
+			m_pNoteQueue->AddMap({CHANID_FWG1, CHANID_FWG2, CHANID_MMC5_SQUARE1, CHANID_MMC5_SQUARE2});
 		else
-			m_pNoteQueue->AddMap({CHANID_SQUARE1, CHANID_SQUARE2});
+			m_pNoteQueue->AddMap({CHANID_FWG1, CHANID_FWG2});
 		if (pDoc->ExpansionEnabled(SNDCHIP_N163)) {
 			std::vector<unsigned> n;
 			int Channels = pDoc->GetNamcoChannels();
@@ -2495,7 +2495,7 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 			m_pNoteQueue->AddMap(n);
 		}
 		if (pDoc->ExpansionEnabled(SNDCHIP_S5B))
-			m_pNoteQueue->AddMap({CHANID_S5B_CH1, CHANID_S5B_CH2, CHANID_S5B_CH3});
+			m_pNoteQueue->AddMap({CHANID_SY1202_CH1, CHANID_SY1202_CH2, CHANID_SY1202_CH3});
 	}
 
 //	for (int i = 0; i < Channels; ++i)
@@ -4181,7 +4181,7 @@ CString	CFamiTrackerView::GetEffectHint(const stChanNote &Note, int Column) cons
 	if (Index > EF_SUNSOFT_ENV_TYPE || (Index == EF_SUNSOFT_ENV_TYPE && Param >= 0x10)) ++Index;
 	if (Index > EF_FDS_MOD_SPEED_HI || (Index == EF_FDS_MOD_SPEED_HI && Param >= 0x10)) ++Index;
 	if (Index > EF_FDS_MOD_DEPTH || (Index == EF_FDS_MOD_DEPTH && Param >= 0x80)) ++Index;
-	if (Index > EF_NOTE_CUT || (Index == EF_NOTE_CUT && Param >= 0x80 && Channel == CHANID_TRIANGLE)) ++Index;
+	if (Index > EF_NOTE_CUT || (Index == EF_NOTE_CUT && Param >= 0x80 && Channel == CHANID_WAVEFORM)) ++Index;
 	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && (Chip == SNDCHIP_VRC7 || Chip == SNDCHIP_N163))) ++Index;
 	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && Chip == SNDCHIP_N163)) ++Index;
 	if (Index > EF_VOLUME || (Index == EF_VOLUME && Param >= 0xE0)) ++Index;

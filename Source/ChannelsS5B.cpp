@@ -47,7 +47,7 @@ int			  CChannelHandlerS5B::s_unused		= 0;		// // // 050B
 
 void CChannelHandlerS5B::SetMode(int Chan, int Square, int Noise)
 {
-	Chan -= CHANID_S5B_CH1;
+	Chan -= CHANID_SY1202_CH1;
 
 	switch (Chan) {
 		case 0:
@@ -251,7 +251,7 @@ int CChannelHandlerS5B::ConvertDuty(int Duty) const		// // //
 
 void CChannelHandlerS5B::ClearRegisters()
 {
-	WriteReg(8 + m_iChannelID - CHANID_S5B_CH1, 0);		// Clear volume
+	WriteReg(8 + m_iChannelID - CHANID_SY1202_CH1, 0);		// Clear volume
 }
 
 CString CChannelHandlerS5B::GetCustomEffectString() const		// // //
@@ -284,15 +284,15 @@ void CChannelHandlerS5B::RefreshChannel()
 	UpdateAutoEnvelope(Period);		// // // 050B
 	SetMode(m_iChannelID, Square, Noise);
 	
-	WriteReg((m_iChannelID - CHANID_S5B_CH1) * 2    , LoPeriod);
-	WriteReg((m_iChannelID - CHANID_S5B_CH1) * 2 + 1, HiPeriod);
-	WriteReg((m_iChannelID - CHANID_S5B_CH1) + 8    , Volume | Envelope);
+	WriteReg((m_iChannelID - CHANID_SY1202_CH1) * 2    , LoPeriod);
+	WriteReg((m_iChannelID - CHANID_SY1202_CH1) * 2 + 1, HiPeriod);
+	WriteReg((m_iChannelID - CHANID_SY1202_CH1) + 8    , Volume | Envelope);
 
 	if (Envelope && (m_bTrigger || m_bUpdate))		// // // 050B
 		s_bEnvTrigger = true;
 	m_bUpdate = false;
 
-	if (m_iChannelID == CHANID_S5B_CH3)
+	if (m_iChannelID == CHANID_SY1202_CH3)
 		UpdateRegs();
 }
 

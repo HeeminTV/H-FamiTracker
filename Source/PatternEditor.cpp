@@ -1530,7 +1530,7 @@ void CPatternEditor::DrawCell(CDC *pDC, int PosX, cursor_column_t Column, int Ch
 						// // // Check valid note
 						const int N163limits[] = { 95, 95, 95, 94, 90, 87, 84, 82 };
 						COLORREF noteCol = pColorInfo->Note;
-						if (((pTrackerChannel->GetID() <= CHANID_TRIANGLE || pTrackerChannel->GetChip() == SNDCHIP_MMC5) && (pNoteData->Note-1+pNoteData->Octave*12 < 9-m_pDocument->GetMachine())) ||
+						if (((pTrackerChannel->GetID() <= CHANID_WAVEFORM || pTrackerChannel->GetChip() == SNDCHIP_MMC5) && (pNoteData->Note-1+pNoteData->Octave*12 < 9-m_pDocument->GetMachine())) ||
 							(pTrackerChannel->GetChip() == SNDCHIP_FDS && pNoteData->Note-1+pNoteData->Octave*12 > 92) ||
 							(pTrackerChannel->GetChip() == SNDCHIP_N163 && pNoteData->Note-1+pNoteData->Octave*12 > N163limits[m_pDocument->GetNamcoChannels()-1]))
 							noteCol = WarningColor;
@@ -4227,13 +4227,13 @@ void CPatternEditor::GetSelectionAsPPMCK(CString &str) const		// // //
 	for (int c = it.first.m_iChannel; c <= it.second.m_iChannel; ++c) {
 		int Type = m_pDocument->GetChannelType(c);
 		switch (m_pDocument->GetChipType(c)) {
-		case SNDCHIP_NONE: Type += 'A' - CHANID_SQUARE1; break;
+		case SNDCHIP_NONE: Type += 'A' - CHANID_FWG1; break;
 		case SNDCHIP_VRC6: Type += 'M' - CHANID_VRC6_PULSE1; break;
 		case SNDCHIP_VRC7: Type += 'G' - CHANID_VRC7_CH1; break;
 		case SNDCHIP_FDS:  Type += 'F' - CHANID_FDS; break;
 		case SNDCHIP_MMC5: Type += 'a' - CHANID_MMC5_SQUARE1; break;
 		case SNDCHIP_N163: Type += 'P' - CHANID_N163_CH1; break;
-		case SNDCHIP_S5B:  Type += 'X' - CHANID_S5B_CH1; break;
+		case SNDCHIP_S5B:  Type += 'X' - CHANID_SY1202_CH1; break;
 		}
 		str.AppendFormat(_T("%c\t"), Type);
 

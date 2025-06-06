@@ -351,7 +351,7 @@ void CMixer::FinishBuffer(int t)
 
 	auto& chip2A03 = *m_APU->m_p2A03;
 	for (int i = 0; i < 5; i++)
-		StoreChannelLevel(CHANID_SQUARE1 + i, get_channel_level(chip2A03, i));
+		StoreChannelLevel(CHANID_FWG1 + i, get_channel_level(chip2A03, i));
 
 	auto& chipFDS = *m_APU->m_pFDS;
 	StoreChannelLevel(CHANID_FDS, get_channel_level(chipFDS, 0));
@@ -430,7 +430,7 @@ void CMixer::StoreChannelLevel(int Channel, int Value)
 	if (Channel == CHANID_VRC6_SAWTOOTH)
 		AbsVol = (AbsVol * 3) / 4;
 
-	if (Channel >= CHANID_S5B_CH1 && Channel <= CHANID_S5B_CH3) {
+	if (Channel >= CHANID_SY1202_CH1 && Channel <= CHANID_SY1202_CH3) {
 		AbsVol = (int)(logf((float)AbsVol) * 2.8f);
 	}
 

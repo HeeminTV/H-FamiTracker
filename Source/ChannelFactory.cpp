@@ -38,9 +38,9 @@ CChannelFactory::CChannelFactory() : CFactory()
 	FuncType Func;
 
 	Func = MakeCtor<C2A03Square>();
-	m_pMakeFunc[CHANID_SQUARE1] = Func;
-	m_pMakeFunc[CHANID_SQUARE2] = Func;
-	AddProduct<CTriangleChan>(CHANID_TRIANGLE);
+	m_pMakeFunc[CHANID_FWG1] = Func;
+	m_pMakeFunc[CHANID_FWG2] = Func;
+	AddProduct<CTriangleChan>(CHANID_WAVEFORM);
 	AddProduct<CNoiseChan>(CHANID_NOISE);
 	AddProduct<CDPCMChan>(CHANID_DPCM);
 	
@@ -74,7 +74,7 @@ CChannelFactory::CChannelFactory() : CFactory()
 	m_pMakeFunc[CHANID_N163_CH8] = Func;
 	
 	Func = MakeCtor<CChannelHandlerS5B>();
-	m_pMakeFunc[CHANID_S5B_CH1] = Func;
-	m_pMakeFunc[CHANID_S5B_CH2] = Func;
-	m_pMakeFunc[CHANID_S5B_CH3] = Func;
+	m_pMakeFunc[CHANID_SY1202_CH1] = Func;
+	m_pMakeFunc[CHANID_SY1202_CH2] = Func;
+	m_pMakeFunc[CHANID_SY1202_CH3] = Func;
 }

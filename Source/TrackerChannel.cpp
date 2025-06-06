@@ -177,7 +177,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 		case EF_DELAY:
 			return true;
 		case EF_NOTE_CUT: case EF_NOTE_RELEASE:
-			return EffParam <= 0x7F || m_iChannelID == CHANID_TRIANGLE;
+			return EffParam <= 0x7F || m_iChannelID == CHANID_WAVEFORM;
 		case EF_GROOVE:
 			return EffParam < MAX_GROOVE;
 		case EF_VOLUME:
@@ -190,7 +190,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 		case EF_PORTAOFF:
 			return false;
 		case EF_SWEEPUP: case EF_SWEEPDOWN:
-			return m_iChannelID == CHANID_SQUARE1 || m_iChannelID == CHANID_SQUARE2;
+			return m_iChannelID == CHANID_FWG1 || m_iChannelID == CHANID_FWG2;
 		case EF_DAC: case EF_SAMPLE_OFFSET: case EF_RETRIGGER: case EF_DPCM_PITCH: {
 			// TODO move to virtual method of Effect subclasses.
 			if (m_iChannelID != CHANID_DPCM) return false;
@@ -237,7 +237,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_VRC7;
 		case EF_PHASE_RESET:
 			// Triangle and noise can't reset phase during runtime.
-			if (m_iChannelID == CHANID_TRIANGLE) return false;
+			if (m_iChannelID == CHANID_WAVEFORM) return false;
 			if (m_iChannelID == CHANID_NOISE) return false;
 			if (m_iChannelID == CHANID_MMC5_VOICE) return false;
 			// VRC7 and S5B is not supported yet.

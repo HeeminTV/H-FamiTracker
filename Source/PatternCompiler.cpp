@@ -385,7 +385,7 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					break;
 				case EF_VOLUME:		// // //
 					switch (ChanID) {
-					case CHANID_SQUARE1: case CHANID_SQUARE2: case CHANID_TRIANGLE: case CHANID_NOISE:
+					case CHANID_FWG1: case CHANID_FWG2: case CHANID_WAVEFORM: case CHANID_NOISE:
 					case CHANID_MMC5_SQUARE1: case CHANID_MMC5_SQUARE2:
 						WriteData(Command(CMD_EFF_VOLUME));
 						if ((EffParam <= 0x1F) || (EffParam >= 0xE0 && EffParam <= 0xE3))
@@ -448,13 +448,13 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;*/
 				case EF_SWEEPUP:
-					if (ChanID < CHANID_TRIANGLE) {
+					if (ChanID < CHANID_WAVEFORM) {
 						WriteData(Command(CMD_EFF_SWEEP));
 						WriteData(0x88 | (EffParam & 0x77));	// Calculate sweep
 					}
 					break;
 				case EF_SWEEPDOWN:
-					if (ChanID < CHANID_TRIANGLE) {
+					if (ChanID < CHANID_WAVEFORM) {
 						WriteData(Command(CMD_EFF_SWEEP));
 						WriteData(0x80 | (EffParam & 0x77));	// Calculate sweep
 					}
@@ -517,7 +517,7 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 						WriteData(Command(CMD_EFF_DUTY));
 						WriteData((EffParam << 6) | ((EffParam & 0x04) << 3));
 					}
-					else if (ChanID != CHANID_TRIANGLE && ChanID != CHANID_DPCM) {	// Not triangle and dpcm
+					else if (ChanID != CHANID_WAVEFORM && ChanID != CHANID_DPCM) {	// Not triangle and dpcm
 						WriteData(Command(CMD_EFF_DUTY));
 						WriteData(EffParam);
 					}
@@ -547,7 +547,7 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_NOTE_CUT:
-					if (EffParam >= 0x80 && ChanID == CHANID_TRIANGLE) {		// // //
+					if (EffParam >= 0x80 && ChanID == CHANID_WAVEFORM) {		// // //
 						WriteData(Command(CMD_EFF_LINEAR_COUNTER));
 						WriteData(EffParam - 0x80);
 					}
@@ -598,7 +598,7 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_PHASE_RESET:	// // !!
-					if (ChanID != CHANID_TRIANGLE ||
+					if (ChanID != CHANID_WAVEFORM ||
 					ChanID != CHANID_NOISE ||
 					ChipID != SNDCHIP_VRC7 ||
 					ChipID != SNDCHIP_S5B) {

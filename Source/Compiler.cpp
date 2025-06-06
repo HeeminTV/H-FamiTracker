@@ -1821,7 +1821,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 	const int Chip = m_pDocument->GetExpansionChip(); // 0CC: use m_iActualChip once cc65 is embedded
 	int Channel = 0;
 	for (int i = 0; i < 4; i++) {
-		int Channel = m_pDocument->GetChannelIndex(CHANID_SQUARE1 + i);
+		int Channel = m_pDocument->GetChannelIndex(CHANID_FWG1 + i);
 		m_vChanOrder.push_back(Channel);
 	}
 	if (Chip & SNDCHIP_MMC5) for (int i = 0; i < 2; i++) {
@@ -1845,7 +1845,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 		m_vChanOrder.push_back(Channel);
 	}
 	if (Chip & SNDCHIP_S5B) for (int i = 0; i < 3; i++) {
-		int Channel = m_pDocument->GetChannelIndex(CHANID_S5B_CH1 + i);
+		int Channel = m_pDocument->GetChannelIndex(CHANID_SY1202_CH1 + i);
 		m_vChanOrder.push_back(Channel);
 	}
 	if (Chip & SNDCHIP_VRC7) for (int i = 0; i < 6; i++) {
@@ -2945,9 +2945,9 @@ void CCompiler::WriteChannelMap()
 {
 	CChunk *pChunk = CreateChunk(CHUNK_CHANNEL_MAP, "");
 
-	pChunk->StoreByte(CHANID_SQUARE1 + 1);
-	pChunk->StoreByte(CHANID_SQUARE2 + 1);
-	pChunk->StoreByte(CHANID_TRIANGLE + 1);
+	pChunk->StoreByte(CHANID_FWG1 + 1);
+	pChunk->StoreByte(CHANID_FWG2 + 1);
+	pChunk->StoreByte(CHANID_WAVEFORM + 1);
 	pChunk->StoreByte(CHANID_NOISE + 1);
 
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_VRC6)) {

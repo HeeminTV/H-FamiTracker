@@ -225,13 +225,13 @@ void CSoundGen::CreateChannels()
 	// // // Short header names
 #ifdef _DUAL_CH		// // //
 	CSquare1Chan *PU1 = new C2A03Square();
-	AssignChannel(new CTrackerChannel(_T("FWG 1"), _T("FW1"), SNDCHIP_NONE, CHANID_SQUARE1));
-	AssignChannel(new CTrackerChannel(_T("FWG 1 SFX"), _T("FW1*"), SNDCHIP_NONE, CHANID_SQUARE1));
+	AssignChannel(new CTrackerChannel(_T("FWG 1"), _T("FW1"), SNDCHIP_NONE, CHANID_FWG1));
+	AssignChannel(new CTrackerChannel(_T("FWG 1 SFX"), _T("FW1*"), SNDCHIP_NONE, CHANID_FWG1));
 #else
-	AssignChannel(new CTrackerChannel(_T("FWG 1"), _T("FW1"), SNDCHIP_NONE, CHANID_SQUARE1));
-	AssignChannel(new CTrackerChannel(_T("FWG 2"), _T("FW2"), SNDCHIP_NONE, CHANID_SQUARE2));
+	AssignChannel(new CTrackerChannel(_T("FWG 1"), _T("FW1"), SNDCHIP_NONE, CHANID_FWG1));
+	AssignChannel(new CTrackerChannel(_T("FWG 2"), _T("FW2"), SNDCHIP_NONE, CHANID_FWG2));
 #endif
-	AssignChannel(new CTrackerChannel(_T("2-bit Waveform"), _T("WAV"), SNDCHIP_NONE, CHANID_TRIANGLE));
+	AssignChannel(new CTrackerChannel(_T("2-bit Waveform"), _T("WAV"), SNDCHIP_NONE, CHANID_WAVEFORM));
 	AssignChannel(new CTrackerChannel(_T("Noise"), _T("NOI"), SNDCHIP_NONE, CHANID_NOISE));
 	AssignChannel(new CTrackerChannel(_T("DPCM"), _T("PCM"), SNDCHIP_NONE, CHANID_DPCM));
 
@@ -267,9 +267,9 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("FM Channel 6"), _T("FM6"), SNDCHIP_VRC7, CHANID_VRC7_CH6));
 
 	// // // Sunsoft 5B
-	AssignChannel(new CTrackerChannel(_T("SY Square 1"), _T("SY1"), SNDCHIP_S5B, CHANID_S5B_CH1));
-	AssignChannel(new CTrackerChannel(_T("SY Square 2"), _T("SY2"), SNDCHIP_S5B, CHANID_S5B_CH2));
-	AssignChannel(new CTrackerChannel(_T("SY Square 3"), _T("SY3"), SNDCHIP_S5B, CHANID_S5B_CH3));
+	AssignChannel(new CTrackerChannel(_T("SY Square 1"), _T("SY1"), SNDCHIP_S5B, CHANID_SY1202_CH1));
+	AssignChannel(new CTrackerChannel(_T("SY Square 2"), _T("SY2"), SNDCHIP_S5B, CHANID_SY1202_CH2));
+	AssignChannel(new CTrackerChannel(_T("SY Square 3"), _T("SY3"), SNDCHIP_S5B, CHANID_SY1202_CH3));
 }
 
 void CSoundGen::AssignChannel(CTrackerChannel *pTrackerChannel)		// // //
@@ -557,7 +557,7 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		if (!m_pChannels[i]) continue;
 		const unsigned int *Table = nullptr;
 		switch (m_pTrackerChannels[i]->GetID()) {
-		case CHANID_SQUARE1: case CHANID_SQUARE2: case CHANID_TRIANGLE:
+		case CHANID_FWG1: case CHANID_FWG2: case CHANID_WAVEFORM:
 			Table = Machine == PAL ? m_iNoteLookupTablePAL : m_iNoteLookupTableNTSC; break;
 		case CHANID_VRC6_PULSE1: case CHANID_VRC6_PULSE2:
 		case CHANID_MMC5_SQUARE1: case CHANID_MMC5_SQUARE2:
@@ -572,7 +572,7 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		case CHANID_N163_CH1: case CHANID_N163_CH2: case CHANID_N163_CH3: case CHANID_N163_CH4:
 		case CHANID_N163_CH5: case CHANID_N163_CH6: case CHANID_N163_CH7: case CHANID_N163_CH8:
 			Table = m_iNoteLookupTableN163; break;
-		case CHANID_S5B_CH1: case CHANID_S5B_CH2: case CHANID_S5B_CH3:
+		case CHANID_SY1202_CH1: case CHANID_SY1202_CH2: case CHANID_SY1202_CH3:
 			Table = m_iNoteLookupTableS5B; break;
 		default: continue;
 		}
@@ -1466,7 +1466,7 @@ static CString GetStateString(const stChannelState &State)
 		effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 	}
 
-	if ((State.ChannelIndex >= CHANID_SQUARE1 && State.ChannelIndex <= CHANID_SQUARE2) ||
+	if ((State.ChannelIndex >= CHANID_FWG1 && State.ChannelIndex <= CHANID_FWG2) ||
 			State.ChannelIndex == CHANID_NOISE ||
 		(State.ChannelIndex >= CHANID_MMC5_SQUARE1 && State.ChannelIndex <= CHANID_MMC5_SQUARE2))
 		for (const auto &x : {EF_VOLUME}) {
@@ -1474,7 +1474,7 @@ static CString GetStateString(const stChannelState &State)
 			if (p < 0) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex == CHANID_TRIANGLE)
+	else if (State.ChannelIndex == CHANID_WAVEFORM)
 		for (const auto &x : {EF_VOLUME, EF_NOTE_CUT}) {
 			int p = State.Effect[x];
 			if (p < 0) continue;
@@ -1501,7 +1501,7 @@ static CString GetStateString(const stChannelState &State)
 			if (p == effects[x].initial) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex >= CHANID_S5B_CH1 && State.ChannelIndex <= CHANID_S5B_CH3)
+	else if (State.ChannelIndex >= CHANID_SY1202_CH1 && State.ChannelIndex <= CHANID_SY1202_CH3)
 		for (const auto &x : S5B_EFFECTS) {
 			int p = State.Effect[x];
 			if (p < 0) continue;

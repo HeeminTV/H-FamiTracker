@@ -96,7 +96,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 
 	switch (Chip) {
 	case SNDCHIP_NONE:
-		ID -= CHANID_SQUARE1;
+		ID -= CHANID_FWG1;
 		PitchReg = m_iRecordChannel == CHANID_NOISE ? (0x0F & REG(0x400E)) :
 					(REG(0x4002 | (ID << 2)) | (0x07 & REG(0x4003 | (ID << 2))) << 8); break;
 	case SNDCHIP_VRC6:
@@ -115,7 +115,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 					| (0x03 & REG(0x7C - (ID << 3))) << 16) >> 2; // N163_PITCH_SLIDE_SHIFT;
 		break;
 	case SNDCHIP_S5B:
-		ID -= CHANID_S5B_CH1;
+		ID -= CHANID_SY1202_CH1;
 		PitchReg = (REG(ID << 1) | (0x0F & REG(1 + (ID << 1))) << 8); break;
 	}
 
@@ -158,7 +158,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 			case SEQ_VOLUME:
 				switch (Chip) {
 				case SNDCHIP_NONE:
-					Val = m_iRecordChannel == CHANID_TRIANGLE ? ((0x7F & REG(0x4008)) ? 15 : 0) : (0x0F & REG(0x4000 | (ID << 2))); break;
+					Val = m_iRecordChannel == CHANID_WAVEFORM ? ((0x7F & REG(0x4008)) ? 15 : 0) : (0x0F & REG(0x4000 | (ID << 2))); break;
 				case SNDCHIP_VRC6:
 					Val = m_iRecordChannel == CHANID_VRC6_SAWTOOTH ? (0x0F & REG(0xB000) >> 1) : (0x0F & REG(0x9000 | (ID << 12))); break;
 				case SNDCHIP_MMC5:
@@ -175,7 +175,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 			case SEQ_DUTYCYCLE:
 				switch (Chip) {
 				case SNDCHIP_NONE:
-					Val = m_iRecordChannel == CHANID_TRIANGLE ? 0 :
+					Val = m_iRecordChannel == CHANID_WAVEFORM ? 0 :
 						m_iRecordChannel == CHANID_NOISE ? (0x01 & REG(0x400E) >> 7) : (0x03 & REG(0x4000 | (ID << 2)) >> 6); break;
 				case SNDCHIP_VRC6:
 					Val = m_iRecordChannel == CHANID_VRC6_SAWTOOTH ? (0x01 & REG(0xB000) >> 5) : (0x07 & REG(0x9000 | (ID << 12)) >> 4); break;
@@ -346,7 +346,7 @@ void CInstrumentRecorder::InitRecordInstrument()
 		// m_pSequenceCache[SEQ_PITCH]->SetSetting(SETTING_PITCH_ABSOLUTE);
 		// m_pSequenceCache[SEQ_HIPITCH]->SetSetting(SETTING_PITCH_ABSOLUTE);
 		// VRC6 sawtooth 64-step volume
-		if (m_iRecordChannel == CHANID_TRIANGLE)
+		if (m_iRecordChannel == CHANID_WAVEFORM)
 			Inst->SetSeqEnable(SEQ_DUTYCYCLE, 0);
 		break;
 	}
