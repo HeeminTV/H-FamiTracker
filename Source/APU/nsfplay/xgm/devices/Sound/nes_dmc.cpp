@@ -3,6 +3,8 @@
 #include "utils/variadic_minmax.h"
 #include "nsfplay_math.h"
 #include <cstdlib>
+#include <bitset>
+#include <array>
 
 namespace xgm
 {
@@ -40,6 +42,38 @@ namespace xgm
     0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
     0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF,
   };
+
+  /*
+  std::vector<int> convertDecimalTo2BitChunks(unsigned int hexStr) {
+      // unsigned int decimalValue = std::stoul(hexStr, nullptr, 16);
+
+      std::bitset<8> bits(hexStr);
+
+      std::vector<int> result(8, 0);
+
+      for (int i = 0; i < 4; ++i) {
+          int bit1 = bits[2 * i];       // first  bit
+          int bit2 = bits[2 * i + 1];   // second bit
+
+          // 2bit -> decimal
+          result[i] = (bit2 << 1) | bit1;
+      }
+
+      return result;
+  }
+  */
+  std::vector<int> splitInto2BitChunks(unsigned char value) {
+      std::bitset<8> bits(value);
+      std::vector<int> result;
+
+      for (int i = 6; i >= 0; i -= 2) {
+          int twoBits = (bits[i + 1] << 1) | bits[i];
+          result.push_back(twoBits);
+      }
+
+      return result;
+  }
+
 
   NES_DMC::NES_DMC () : GETA_BITS (20)
   {
@@ -94,7 +128,7 @@ namespace xgm
         trkinfo[0].freq = clock/32/(trkinfo[0]._freq + 1);
       else
         trkinfo[0].freq = 0;
-      trkinfo[0].tone = -1;
+      //trkinfo[0].tone = tduty;
       trkinfo[0].output = out[0];
       break;
     case 1:
@@ -234,17 +268,26 @@ namespace xgm
 
   }
 
-  // 三角波チャンネルの計算 戻り値は0-15
-  UINT32 NES_DMC::calc_tri (UINT32 clocks)
-  {
-    static UINT32 tritbl[32] =
-    {
-     15,14,13,12,11,10, 9, 8,
-      7, 6, 5, 4, 3, 2, 1, 0,
-      0, 1, 2, 3, 4, 5, 6, 7,
-      8, 9,10,11,12,13,14,15,
-    };
+  // s
+  UINT32 NES_DMC::calc_tri (UINT32 clocks) {
+      static UINT32 tritbl[1][32];
+      UINT16 fullWave = ((UINT16)twaveH << 8) | twaveL;  // .
+      std::array<UINT32, 8> bits2;
+      /*for (int i = 0; i < 8; ++i) {
+          bits2[i] = (fullWave >> (14 - i * 2)) & 0b11;  // .
+          tritbl[0][i] = bits2[i];  // .
+          //tritbl[0][(i * 2) - 1] = bits2[i];  // .
+      }*/
+      int index = 0;
+      for (int i = 0; i < 8; ++i) {
+          int shift = (7 - i) * 2;
+          uint32_t value = (fullWave >> shift) & 0x3;
 
+          // .
+          for (int j = 0; j < 4; ++j) {
+              tritbl[0][index++] = value;
+          }
+      }
     if (linear_counter > 0 && length_counter[0] > 0
         && (!option[OPT_TRI_MUTE] || tri_freq > 0))
     {
@@ -256,14 +299,11 @@ namespace xgm
       }
     }
 
-    UINT32 ret = tritbl[tphase];
+    UINT32 ret = ((tritbl[0][tphase] + 1) * 4) - 1;
     return ret;
   }
 
-  // ノイズチャンネルの計算 戻り値は0-127
-  // 低サンプリングレートで合成するとエイリアスノイズが激しいので
-  // ノイズだけはこの関数内で高クロック合成し、簡易なサンプリングレート
-  // 変換を行っている。
+  // sasiandot
   UINT32 NES_DMC::calc_noise(UINT32 clocks)
   {
     UINT32 env = envelope_disable ? noise_volume : envelope_counter;
@@ -578,6 +618,8 @@ namespace xgm
     counter[1] = 0;
     counter[2] = 0;
     tphase = 0;
+    twaveH = 0; // EFT
+    twaveL = 0;
     nfreq = wavlen_table[0][0];
     dfreq = freq_table[0][0];
     tri_freq = 0;
@@ -751,7 +793,11 @@ namespace xgm
       break;
 
     case 0x4009:
+        twaveH = val; // High bytes of wave
       break;
+    case 0x400D:
+        twaveL = val; // Low bytes of wave
+        break;
 
     case 0x400a:
       tri_freq = val | (tri_freq & 0x700) ;
@@ -775,8 +821,8 @@ namespace xgm
       envelope_loop = (val >> 5) & 1;
       break;
 
-    case 0x400d:
-      break;
+    //case 0x400d: nah now you're used >:)
+     // break;
 
     case 0x400e:
       if (option[OPT_ENABLE_PNOISE])
@@ -817,12 +863,12 @@ namespace xgm
 
     case 0x4012:
       adr_reg = val&0xff;
-      // ここでdaddressは更新されない
+      // A
       break;
 
     case 0x4013:
       len_reg = val&0xff;
-      // ここでlengthは更新されない
+      // A
       break;
 
     default:
@@ -831,6 +877,9 @@ namespace xgm
 
     return true;
   }
+
+ 
+
 
   bool NES_DMC::Read (UINT32 adr, UINT32 & val, UINT32 id)
   {

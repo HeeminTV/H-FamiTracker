@@ -119,25 +119,25 @@ namespace {
 
 	constexpr std::string_view GetInstrumentChipName(inst_type_t inst_type) noexcept {
 		switch (inst_type) {
-			case inst_type_t::INST_2A03: return "2A03"sv;
+			case inst_type_t::INST_2A03: return "7E02"sv;
 			case inst_type_t::INST_VRC6: return "VRC6"sv;
 			case inst_type_t::INST_VRC7: return "VRC7"sv;
 			case inst_type_t::INST_FDS:  return "FDS"sv;
 			case inst_type_t::INST_N163: return "N163"sv;
-			case inst_type_t::INST_S5B:  return "5B"sv;
+			case inst_type_t::INST_S5B:  return "SY1202"sv;
 			default: return ""sv;
 		}
 	}
 
 	constexpr std::string_view GetChannelChipName(uint8_t sndchip) noexcept {
 		switch (sndchip) {
-			case SNDCHIP_NONE: return "2A03"sv;
+			case SNDCHIP_NONE: return "7E02"sv;
 			case SNDCHIP_VRC6: return "VRC6"sv;
 			case SNDCHIP_VRC7: return "VRC7"sv;
 			case SNDCHIP_FDS:  return "FDS"sv;
 			case SNDCHIP_MMC5: return "MMC5"sv;
 			case SNDCHIP_N163: return "N163"sv;
-			case SNDCHIP_S5B:  return "S5B"sv;
+			case SNDCHIP_S5B:  return "SY1202"sv;
 			default: return ""sv;
 		}
 	}

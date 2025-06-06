@@ -131,7 +131,7 @@ CPatternCompiler::~CPatternCompiler()
 {
 }
 
-void CPatternCompiler::CompileData(int Track, int Pattern, int Channel, bool bUseAllExp)
+void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 {
 	int EffColumns = m_pDocument->GetEffColumns(Track, Channel) + 1;
 
@@ -142,8 +142,6 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel, bool bUs
 	m_iHash = 0;
 	m_iDuration = 0;
 	m_iCurrentDefaultDuration = 0xFF;
-
-	m_bUseAllChips = bUseAllExp;
 
 	m_vData.clear();
 	m_vCompressedData.clear();
@@ -737,7 +735,7 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel, bool bUs
 unsigned char CPatternCompiler::Command(int cmd) const
 {
 	int Chip = m_pDocument->GetExpansionChip();		// // //
-	bool bMultichip = (Chip & (Chip - 1)) != 0 && m_bUseAllChips;
+	bool bMultichip = (Chip & (Chip - 1)) != 0;
 
 	if (!bMultichip) {		// // // truncate values if some chips do not exist
 		if (!m_pDocument->ExpansionEnabled(SNDCHIP_N163) && cmd > CMD_EFF_N163_WAVE_BUFFER) cmd -= sizeof(N163_EFFECTS);

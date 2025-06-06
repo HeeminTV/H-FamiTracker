@@ -167,6 +167,7 @@ LRESULT CSequenceEditor::OnCursorChange(WPARAM wParam, LPARAM lParam)
 LRESULT CSequenceEditor::OnSequenceChanged(WPARAM wParam, LPARAM lParam)
 {
 	if (this == NULL)	// TODO: is this needed?
+		// idk
 		return FALSE;
 	
 	SequenceChangedMessage(wParam == 1);

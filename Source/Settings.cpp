@@ -248,7 +248,7 @@ void CSettings::SetupSettings()
 
 	// Emulation
 		// VRC7
-	SETTING_INT("Emulation", "VRC7 hardware patch", PATCH_NUKE, &Emulation.iVRC7Patch);
+	SETTING_INT("Emulation", "VRC7 hardware patch", 9, &Emulation.iVRC7Patch);
 		// FDS
 	SETTING_INT("Emulation", "FDS lowpass filter cutoff", 2000, &Emulation.iFDSLowpass);
 		// N163

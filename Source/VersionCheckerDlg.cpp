@@ -34,7 +34,7 @@
 IMPLEMENT_DYNAMIC(CVersionCheckerDlg, CDialog)
 
 CVersionCheckerDlg::CVersionCheckerDlg(CWnd* pParent /*=nullptr*/)
-	: CDialog(IDD_VERSION_CHECKER, pParent)
+	// : CDialog(IDD_VERSION_CHECKER, pParent)
 {
 }
 

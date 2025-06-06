@@ -34,7 +34,7 @@ const unsigned int CDocumentFile::COMPATIBLE_FORWARD_VER = 0x450;	// Forwards co
 const unsigned int CDocumentFile::COMPATIBLE_VER = 0x0100;			// Backwards compatible file version (1.0)
 
 const char *CDocumentFile::FILE_HEADER_ID = "FamiTracker Module";
-const char *CDocumentFile::FILE_HEADER_ID_DN = "Dn-FamiTracker Module";
+const char *CDocumentFile::FILE_HEADER_ID_DN = "Dn-FamiTracker Module"; // Nah i'm not changing it for now
 const char *CDocumentFile::FILE_END_ID	  = "END";
 
 const unsigned int CDocumentFile::MAX_BLOCK_SIZE = 0x80000;
@@ -218,7 +218,7 @@ void CDocumentFile::ValidateFile()
 		Read(Buffer, int(strlen(FILE_HEADER_ID_DN)));
 
 		if (memcmp(Buffer, FILE_HEADER_ID_DN, strlen(FILE_HEADER_ID_DN)) != 0)
-			RaiseModuleException("File is not a recognized Dn-FamiTracker module");
+			RaiseModuleException("File is not recognized a H-FamiTracker module neither Dn-FamiTracker module");
 		else
 			m_bFileDnModule = true;
 	}

@@ -36,9 +36,9 @@ IDB_KEY_WHITE           BITMAP                  "res/key_white_unpressed.bmp"
 
 IDB_KEY_WHITE_MARK      BITMAP                  "res/key_white_pressed.bmp"
 
-IDB_TOOLBAR_256         BITMAP                  "res/MainToolbar-256.bmp"
+IDB_TOOLBAR_256         BITMAP                  "res/MainToolbar-16.bmp"
 
-IDB_TOOLBAR_INST_256    BITMAP                  "res/InstrumentToolbar-256.bmp"
+IDB_TOOLBAR_INST_256    BITMAP                  "res/InstrumentToolbar-16.bmp"
 
 IDB_ABOUT               BITMAP                  "res/About.bmp"
 
@@ -109,13 +109,13 @@ BEGIN
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
-        MENUITEM "Create NS&F...\tCtrl+E",      ID_FILE_CREATE_NSF
+        MENUITEM "Create Primitive NS&F...\tCtrl+E",      ID_FILE_CREATE_NSF
         MENUITEM "Create WA&V...\tCtrl+Shift+E", ID_FILE_CREATEWAV
         MENUITEM SEPARATOR
         MENUITEM "&Import Text...",             ID_FILE_IMPORTTEXT
         MENUITEM "&Export Text...",             ID_FILE_EXPORTTEXT
-        MENUITEM "&Export JSON...",             ID_FILE_EXPORTJSON
-        MENUITEM "Export Ro&ws...",             ID_FILE_EXPORTROWS
+        // MENUITEM "&Export JSON...",             ID_FILE_EXPORTJSON
+        // MENUITEM "Export Ro&ws...",             ID_FILE_EXPORTROWS
         MENUITEM SEPARATOR
         MENUITEM "&Configuration...",           ID_FILE_GENERALSETTINGS
         MENUITEM SEPARATOR
@@ -322,6 +322,7 @@ BEGIN
             MENUITEM "&Popup",                      ID_CONTROLPANEL_POPUP, INACTIVE
         END
     END
+    /*
     POPUP "&Help"
     BEGIN
         MENUITEM "&Help Topics\tF1",            ID_HELP_FINDER
@@ -333,6 +334,7 @@ BEGIN
         MENUITEM "&About Dn-FamiTracker...",    ID_APP_ABOUT
         MENUITEM "Check for updates...",        ID_HELP_VERSION_CHECK
     END
+    */
 END
 
 IDR_PATTERN_POPUP MENU
@@ -535,8 +537,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,5,1,1
- PRODUCTVERSION 0,5,1,1
+ FILEVERSION 0,0,1
+ PRODUCTVERSION 0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -552,13 +554,13 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "Dn Programming Core Management"
-            VALUE "FileDescription", "Dn-FamiTracker, Extension of FamiTracker"
-            VALUE "FileVersion", "0.5.1.1"
-            VALUE "InternalName", "Dn-FamiTracker.exe"
-            VALUE "LegalCopyright", "(c) jsr 2005-2020, HertzDevil 2014-2018, Dn Programming Core Management 2020-2025. All rights reserved."
-            VALUE "OriginalFilename", "Dn-FamiTracker.exe"
-            VALUE "ProductName", "Dn-FamiTracker"
-            VALUE "ProductVersion", "0.5.1.1"
+            VALUE "FileDescription", "H-FamiTracker, Personal test shit from Heemin"
+            VALUE "FileVersion", "0.0.1a3"
+            VALUE "InternalName", "H-FamiTracker.exe"
+            VALUE "LegalCopyright", "(c) jsr 2005-2020, HertzDevil 2014-2018, Dn Programming Core Management 2020-2025 All rights reserved."
+            VALUE "OriginalFilename", "H-FamiTracker.exe"
+            VALUE "ProductName", "H-FamiTracker"
+            VALUE "ProductVersion", "0.0.1a3"
         END
     END
     BLOCK "VarFileInfo"
@@ -1103,8 +1105,8 @@ BEGIN
     CONTROL         "",IDC_HEAD,"Static",SS_OWNERDRAW,0,0,287,49
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,0,49,287,1
     ICON            IDR_MAINFRAME,IDC_ICON_STATIC,11,58,20,20,SS_REALSIZEIMAGE
-    LTEXT           "Dn-FamiTracker",IDC_ABOUT1,54,58,219,11,SS_NOPREFIX
-    LTEXT           "Extension of 0CC-FamiTracker",IDC_ABOUT2,54,72,167,8,SS_NOPREFIX
+    LTEXT           "H-FamiTracker",IDC_ABOUT1,54,58,219,11,SS_NOPREFIX
+    LTEXT           "Heemin's personal project from Dn-FamiTracker",IDC_ABOUT2,54,72,167,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2005 - 2020 jsr, 2014 - 2018 HertzDevil,\n2020 - 2025 Dn Programming Core Management.",IDC_ABOUT3,54,84,215,16
     LTEXT           "Web:",IDC_STATIC,54,107,24,9
     LTEXT           "Dn-FamiTracker issue tracker",IDC_BUG,84,134,194,9,SS_NOTIFY
@@ -1185,11 +1187,11 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_INSTSETTINGS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,12,18,96,107,WS_EX_TRANSPARENT
     PUSHBUTTON      "Select next empty slot",IDC_FREE_SEQ,12,129,96,15
-    CONTROL         "Sequence #",IDC_STATIC,"Static",SS_LEFTNOWORDWRAP | SS_CENTERIMAGE | WS_GROUP,12,148,53,10,WS_EX_TRANSPARENT
+    CONTROL         "Macro #",IDC_STATIC,"Static",SS_LEFTNOWORDWRAP | SS_CENTERIMAGE | WS_GROUP,12,148,53,10,WS_EX_TRANSPARENT
     EDITTEXT        IDC_SEQ_INDEX,69,147,39,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_SEQUENCE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,66,153,11,9
     EDITTEXT        IDC_SEQUENCE_STRING,126,147,232,12,ES_AUTOHSCROLL
-    GROUPBOX        "Sequence editor",IDC_STATIC,120,7,245,158
+    GROUPBOX        "Macro editor",IDC_STATIC,120,7,245,158
     GROUPBOX        "Instrument settings",IDC_STATIC,7,7,107,158,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_INST_SEQUENCE_GRAPH,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,126,18,232,124
 END
@@ -1564,7 +1566,7 @@ BEGIN
     CONTROL         "",IDC_SLIDER_N163,"msctls_trackbar32",TBS_AUTOTICKS | TBS_VERT | TBS_BOTH | WS_TABSTOP,211,34,26,110
     CTEXT           "N163",IDC_STATIC,211,26,26,8
     CONTROL         "",IDC_SLIDER_S5B,"msctls_trackbar32",TBS_AUTOTICKS | TBS_VERT | TBS_BOTH | WS_TABSTOP,245,34,26,110
-    CTEXT           "S5B",IDC_STATIC,245,26,26,8
+    CTEXT           "SY1202",IDC_STATIC,245,26,26,8
     CTEXT           "0.0dB",IDC_LEVEL_APU1,7,149,30,8
     CTEXT           "0.0dB",IDC_LEVEL_APU2,40,149,30,8
     CTEXT           "0.0dB",IDC_LEVEL_VRC6,73,149,30,8
@@ -1663,7 +1665,7 @@ BEGIN
     CONTROL         "N163",IDC_EXPANSION_N163,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,168,33,10
     CONTROL         "FDS",IDC_EXPANSION_FDS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,182,29,10
     CONTROL         "VRC7",IDC_EXPANSION_VRC7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,59,182,33,10
-    CONTROL         "S5B",IDC_EXPANSION_S5B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,182,24,10
+    CONTROL         "SY1202",IDC_EXPANSION_S5B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,106,182,40,10
     LTEXT           "Channels: 1",IDC_CHANNELS_NR,150,168,51,8,WS_DISABLED
     CONTROL         "",IDC_CHANNELS,"msctls_trackbar32",TBS_AUTOTICKS | WS_DISABLED | WS_TABSTOP,145,180,51,13
     GROUPBOX        "Vibrato",IDC_STATIC,7,202,200,31
@@ -1702,7 +1704,7 @@ BEGIN
     CONTROL         "",IDC_MMC5_OFFSET_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_VERT | TBS_BOTH | WS_DISABLED | 0x400,250,146,26,75
     EDITTEXT        IDC_MMC5_OFFSET_EDIT,250,221,26,14,ES_AUTOHSCROLL | WS_DISABLED
     RTEXT           "dB",IDC_MMC5_OFFSET_DB,259,235,8,8,WS_DISABLED
-    LTEXT           "S5B",IDC_STATIC_S5B,313,138,13,8,WS_DISABLED
+    LTEXT           "SY1202",IDC_STATIC_S5B,307,138,27,8,WS_DISABLED
     CONTROL         "",IDC_S5B_OFFSET_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | TBS_VERT | TBS_BOTH | WS_DISABLED | 0x400,306,146,26,75
     EDITTEXT        IDC_S5B_OFFSET_EDIT,306,221,26,14,ES_AUTOHSCROLL | WS_DISABLED
     RTEXT           "dB",IDC_S5B_OFFSET_DB,315,235,8,8,WS_DISABLED
@@ -2125,9 +2127,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Dn-FamiTracker Update"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Update",IDOK,115,175,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,170,175,50,14
-    LTEXT           "A new version of Dn-FamiTracker is now available.",IDC_STATIC,7,7,162,8
+    // DEFPUSHBUTTON   "Update",IDOK,115,175,50,14
+    PUSHBUTTON      "Sorry no update button",IDCANCEL,170,175,50,14
+    LTEXT           "A new version of Dn-FamiTracker is now available. (so what? how can i disable this)",IDC_STATIC,7,7,162,8
     LTEXT           "Version  (released on  )",IDC_VERSIONDATE_MSG,7,21,213,8
     LTEXT           "Release notes:",IDC_STATIC,7,36,49,8
     EDITTEXT        IDC_RELEASE_MSG,7,52,213,80,ES_MULTILINE | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP,WS_EX_TRANSPARENT
@@ -2165,7 +2167,7 @@ IDR_MAINFRAME           ICON                    "res/Application.ico"
 
 IDR_FamiTrackerTYPE     ICON                    "res/Document.ico"
 
-IDI_INST_2A03           ICON                    "res/Inst_2A03.ico"
+IDI_INST_2A03           ICON                    "res/Inst_7E02.ico"
 
 IDI_INST_VRC6           ICON                    "res/Inst_VRC6.ico"
 
@@ -2551,7 +2553,7 @@ IDR_HTML1               HTML                    "res/export_report.htm"
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "Dn-FamiTracker\n\nDn-FamiTracker\nDn-FamiTracker modules (*.dnm;*.0cc;*.ftm)\n.dnm\nDnFamiTracker.Document\nDn-FamiTracker Document"
+    IDR_MAINFRAME           "H-FamiTracker\n\nH-FamiTracker\nH-FamiTracker modules (*.hnm;*.0cc;*.ftm)\n.hnm\nHFamiTracker.Document\nH-FamiTracker Document"
     IDS_FRAME_DROP_MOVE     "Drop selection to move frames"
     IDS_DPCM_IMPORT_QUALITY_FORMAT "Quality: %1"
     IDS_CLIPBOARD_ERROR     "Could not register clipboard format"
@@ -2592,7 +2594,7 @@ END
 
 STRINGTABLE
 BEGIN
-    AFX_IDS_APP_TITLE       "Dn-FamiTracker"
+    AFX_IDS_APP_TITLE       "H-FamiTracker"
     AFX_IDS_IDLEMESSAGE     "For Help, press F1"
     AFX_IDS_HELPMODEMESSAGE "Select an object on which to get Help"
 END
@@ -2756,7 +2758,7 @@ BEGIN
     IDS_FIND_EDIT_DISABLED  "Replace will not work unless Edit Mode is enabled."
     IDS_ABOUT_TOOLTIP_WEB3  "Go to https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker"
     IDS_FILE_LOAD_ERROR     "Couldn't load file properly. Make sure you have the latest version of Dn-FamiTracker."
-    IDS_CONFIG_WINDOW       "Dn-FamiTracker configuration"
+    IDS_CONFIG_WINDOW       "H-FamiTracker configuration"
 END
 
 STRINGTABLE
@@ -2908,16 +2910,16 @@ BEGIN
     IDS_SONG_DELETE         "Do you want to delete the selected songs? There is no undo for this command."
     IDS_SOUND_FAIL          "It appears the current sound settings aren't working, change settings and try again."
     IDS_UNDERRUN_MESSAGE    "Warning: Audio buffer underrun, increase the audio buffer size!"
-    IDS_WELCOME_VER_FORMAT  "Welcome to Dn-FamiTracker %1, press F1 for help"
+    IDS_WELCOME_VER_FORMAT  "Welcome to H-FamiTracker %1, press F1 for help"
     IDS_DPCM_IMPORT_INVALID_WAVEFILE 
                             "Cannot load this sample, file is invalid or incompatible. (Only uncompressed PCM is supported.)"
     IDS_INST_FILE_ERROR     "Could not load instrument file! Check that you have the most recent version of Dn-FamiTracker."
-    IDS_NEW_2A03_INSTRUMENT "New 2A03 instrument"
+    IDS_NEW_2A03_INSTRUMENT "New 7E02 instrument"
     IDS_NEW_VRC6_INSTRUMENT "New VRC6 instrument"
     IDS_NEW_VRC7_INSTRUMENT "New VRC7 instrument"
     IDS_NEW_FDS_INSTRUMENT  "New FDS instrument"
     IDS_NEW_N163_INSTRUMENT "New Namco instrument"
-    IDS_NEW_S5B_INSTRUMENT  "New Sunsoft instrument"
+    IDS_NEW_S5B_INSTRUMENT  "New SY1202 instrument"
     IDS_FRAME_DROP_COPY_NEW "Drop selection to copy frames to new pattern numbers"
     IDS_FRAME_DROP_COPY     "Drop selection to copy frames"
 END
@@ -2987,7 +2989,7 @@ BEGIN
     IDS_WAVE_EXPORT_DONE    "Done"
     IDS_WAVE_EXPORT_FINISHED "finished"
     IDS_ABOUT_TOOLTIP_WEB   "Go to http://hertzdevil.info/programs/"
-    IDS_ABOUT_VERSION_FORMAT "Dn-FamiTracker version %1"
+    IDS_ABOUT_VERSION_FORMAT "H-FamiTracker version %1"
     IDS_PROPERTIES_CHANNELS "Channels:"
     IDS_LOADING_DONE        "File loaded"
     IDS_DPCM_IMPORT_SIZE_FORMAT "Converted size: %1 bytes"

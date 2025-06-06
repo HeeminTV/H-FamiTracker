@@ -117,9 +117,9 @@ const int CCompiler::FLAG_LINEARPITCH	= 1 << 2;		// // //
 
 // Enable this to simulate NSF driver export multichip for assembly, which enables all chips internally
 #ifdef _DEBUG
-constexpr bool CCompiler::UseAllChips = true;
+constexpr bool UseAllChips = true;
 #else
-constexpr bool CCompiler::UseAllChips = false;
+constexpr bool UseAllChips = false;
 #endif
 
 CCompiler *CCompiler::pCompiler = NULL;
@@ -1704,10 +1704,10 @@ bool CCompiler::CollectLabelsBankswitched(CMap<CStringA, LPCSTR, int, int> &labe
 	int FixedBankMaxSize = PAGE_BANKED - PAGE_START;
 	int FixedBankPages = PATTERN_SWITCH_BANK + 1;
 
-	if (Offset + DriverSizeAndNSFDRV > 0x3000) {
+	if (Offset + DriverSizeAndNSFDRV > 0xFFFF) {
 		// Instrument data did not fit within the limit, display an error and abort?
 		Print("Error: Instrument, frame & pattern data can't fit within bank allocation, can't export file!\n");
-		Print(" * $%02X bytes used out of $3000 allowed\n", Offset + DriverSizeAndNSFDRV);
+		Print(" * $%02X bytes used out of $FFFF allowed\n", Offset + DriverSizeAndNSFDRV);
 		return false;
 	}
 
@@ -1872,7 +1872,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 	CreateSampleList();
 	StoreSamples();
 	StoreGrooves();		// // //
-	StoreSongs(bUseAllExp);
+	StoreSongs();
 
 	// Determine if bankswitching is needed
 	m_bBankSwitched = false;
@@ -2476,7 +2476,7 @@ void CCompiler::StoreGrooves()
 
 // Songs
 
-void CCompiler::StoreSongs(bool bUseAllExp)
+void CCompiler::StoreSongs()
 {
 	/*
 	 * Store patterns and frames for each song
@@ -2533,7 +2533,7 @@ void CCompiler::StoreSongs(bool bUseAllExp)
 		// Store frames
 		CreateFrameList(i);
 		// Store pattern data
-		StorePatterns(i, bUseAllExp);
+		StorePatterns(i);
 	}
 
 	if (m_iDuplicatePatterns > 0)
@@ -2602,7 +2602,7 @@ void CCompiler::CreateFrameList(unsigned int Track)
 
 // Patterns
 
-void CCompiler::StorePatterns(unsigned int Track, bool bUseAllExp)
+void CCompiler::StorePatterns(unsigned int Track)
 {
 	/*
 	 * Store patterns and save references to them for the frame list
@@ -2623,7 +2623,7 @@ void CCompiler::StorePatterns(unsigned int Track, bool bUseAllExp)
 			if (IsPatternAddressed(Track, i, j)) {
 
 				// Compile pattern data
-				PatternCompiler.CompileData(Track, i, j, bUseAllExp);
+				PatternCompiler.CompileData(Track, i, j);
 
 				CStringA label;
 				label.Format(CChunkRenderText::LABEL_PATTERN, Track, i, j);

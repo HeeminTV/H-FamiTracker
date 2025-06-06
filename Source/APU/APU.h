@@ -116,6 +116,7 @@ public:
 	static const std::string	OPLL_PATCHNAME_VRC7[19];
 	static const std::string	OPLL_PATCHNAME_YM2413[19];
 	static const std::string	OPLL_PATCHNAME_YMF281B[19];
+	static const std::string	OPLL_PATCHNAME_HM[19];
 
 private:
 	static const int SEQUENCER_FREQUENCY;		// // //

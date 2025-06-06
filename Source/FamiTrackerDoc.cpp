@@ -71,16 +71,16 @@
 #include "APU/APU.h"
 #include "str_conv/str_conv.hpp"
 
-const char* CFamiTrackerDoc::NEW_INST_NAME = "";
+const char* CFamiTrackerDoc::NEW_INST_NAME = "Instrument";
 
 // Make 1 channel default since 8 sounds bad
-const int	CFamiTrackerDoc::DEFAULT_NAMCO_CHANS = 1;
+const int	CFamiTrackerDoc::DEFAULT_NAMCO_CHANS = 4;
 
 const bool	CFamiTrackerDoc::DEFAULT_LINEAR_PITCH = false;
 
 // File I/O constants
 static const char *FILE_HEADER				= "FamiTracker Module";
-static const char *FILE_HEADER_DN			= "Dn-FamiTracker Module";
+static const char *FILE_HEADER_DN			= "Dn-FamiTracker Module"; // No i'm not changing it
 static const char *FILE_BLOCK_PARAMS		= "PARAMS";
 static const char *FILE_BLOCK_TUNING		= "TUNING";
 static const char *FILE_BLOCK_INFO			= "INFO";
@@ -4573,6 +4573,9 @@ void CFamiTrackerDoc::SetOPLLPatchSet(int patchset)
 		case 8:
 			m_strOPLLPatchNames[i] = CAPU::OPLL_PATCHNAME_YMF281B[i];
 			break;
+		case 9:
+			m_strOPLLPatchNames[i] = CAPU::OPLL_PATCHNAME_HM[i];
+			break;
 		default:
 			m_strOPLLPatchNames[i] = CAPU::OPLL_PATCHNAME_VRC7[i];
 			break;
@@ -4650,7 +4653,7 @@ CString CFamiTrackerDoc::GetFileTitle() const
 	// Return file name without extension
 	CString FileName = GetTitle();
 
-	static const LPCSTR EXT[] = {_T(".ftm"), _T(".0cc"), _T(".dnm"), _T(".ftm.bak"), _T(".0cc.bak"), _T(".dnm.bak")};		// // //
+	static const LPCSTR EXT[] = {_T(".ftm"), _T(".0cc"), _T(".hnm"), _T(".ftm.bak"), _T(".0cc.bak"), _T(".hnm.bak")};		// // //
 	// Remove extension
 
 	for (size_t i = 0; i < sizeof(EXT) / sizeof(LPCSTR); ++i) {

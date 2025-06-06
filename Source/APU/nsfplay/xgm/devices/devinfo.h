@@ -1,7 +1,7 @@
 #ifndef _DEVINFO_H_
 #define _DEVINFO_H_
 #include <math.h>
-// デバイス情報
+// s
 namespace xgm
 {
   class IDeviceInfo
@@ -15,22 +15,21 @@ namespace xgm
   {
   public:
     virtual IDeviceInfo *Clone()=0;
-    // 現在の出力値をそのまま返す
+
     virtual INT32 GetOutput()=0;
-    // 周波数をHzで返す
+
     virtual double GetFreqHz()=0;
-    // 周波数をデバイス依存値で返す．
+ 
     virtual UINT32 GetFreq()=0;
-    // 音量を返す
+
     virtual INT32 GetVolume()=0;
-    // 音量の最大値を返す
+ 
     virtual INT32 GetMaxVolume()=0;
-    // 発音中ならtrue OFFならfalse
+  
     virtual bool GetKeyStatus()=0;
-    // トーン番号
+
     virtual INT32 GetTone()=0;
 
-    // 周波数をノート番号に変換．0x60がo4c 0は無効
     static int GetNote(double freq)
     {
       const double LOG2_440 = 8.7813597135246596040696824762152;
@@ -44,7 +43,7 @@ namespace xgm
     }
   };
 
-  /* TrackInfo を バッファリング */
+  /* TrackInfo sdgsd */
   class InfoBuffer
   {
     int bufmax;

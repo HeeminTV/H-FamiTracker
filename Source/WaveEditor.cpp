@@ -108,9 +108,9 @@ void CWaveEditor::Invert(int x)		// // //
 
 void CWaveEditor::OnPaint()
 {
-	const COLORREF GRAY1 = 0xA0A0A0;
-	const COLORREF GRAY2 = 0xB0B0B0;
-	const COLORREF LINE_COL = 0x404040;
+	const COLORREF GRAY1 = 0x0F0F0F;
+	const COLORREF GRAY2 = 0x1F1F1F;
+	const COLORREF LINE_COL = 0x30B030;
 
 	// Draw the sample
 	CPaintDC dc(this);
@@ -390,9 +390,9 @@ int CWaveEditorN163::GetMaxSamples() const
 
 void CWaveEditorN163::DrawRect(CDC *pDC, int x, int y, int sx, int sy) const
 {
-	const COLORREF BOX_COLOR = 0x808000;
-	const COLORREF BOX_COLOR_HI = 0xB0B030;
-	const COLORREF BOX_COLOR_LO = 0x404000;
+	const COLORREF BOX_COLOR = 0x008000;
+	const COLORREF BOX_COLOR_HI = 0x30B030;
+	const COLORREF BOX_COLOR_LO = 0x004000;
 
 	pDC->FillSolidRect(x, y, sx, sy, BOX_COLOR);
 	pDC->Draw3dRect(x, y, sx, sy, BOX_COLOR_HI, BOX_COLOR_LO);

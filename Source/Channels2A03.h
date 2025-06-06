@@ -80,7 +80,10 @@ public:
 	void	RefreshChannel() override;
 	void	ResetChannel() override;		// // //
 	int		GetChannelVolume() const override;		// // //
+	int   getDutyMax() const override; // EFT
 protected:
+	static const char MAX_DUTY; // EFT
+
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	ClearRegisters() override;
 	CString	GetCustomEffectString() const override;		// // //

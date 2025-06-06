@@ -24,8 +24,8 @@
 #include <algorithm>		// // // std::swap
 
 // Defaults when creating new modules
-const unsigned CPatternData::DEFAULT_ROW_COUNT	= 64;
-const CString CPatternData::DEFAULT_TITLE = _T("New song");		// // //
+const unsigned CPatternData::DEFAULT_ROW_COUNT	= 128;
+const CString CPatternData::DEFAULT_TITLE = _T("New track");		// // //
 const stHighlight CPatternData::DEFAULT_HIGHLIGHT = {4, 16, 0};		// // //
 
 // This class contains pattern data

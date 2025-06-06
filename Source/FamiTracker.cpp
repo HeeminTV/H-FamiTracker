@@ -208,7 +208,7 @@ BOOL CFamiTrackerApp::InitInstance()
 	// Add shell options
 	RegisterShellFileTypes();		// // //
 	static const LPCTSTR FILE_ASSOC_NAME = _T(APP_NAME " Module");
-	AfxRegSetValue(HKEY_CLASSES_ROOT, "DnFamiTracker.Document", REG_SZ, FILE_ASSOC_NAME, lstrlen(FILE_ASSOC_NAME) * sizeof(TCHAR));
+	AfxRegSetValue(HKEY_CLASSES_ROOT, "HFamiTracker.Document", REG_SZ, FILE_ASSOC_NAME, lstrlen(FILE_ASSOC_NAME) * sizeof(TCHAR));
 	// Add an option to play files
 	CString strPathName, strTemp, strFileTypeId;
 	AfxGetModuleShortFileName(AfxGetInstanceHandle(), strPathName);
@@ -992,8 +992,8 @@ void CFTCommandLineInfo::ParseParam(const TCHAR* pszParam, BOOL bFlag, BOOL bLas
 			AttachConsole(ATTACH_PARENT_PROCESS);
 			errno_t err = freopen_s(&cout, "CON", "w", stdout);
 			// TODO: format this better
-			std::string helpmessage = "Dn-FamiTracker commandline help";
-;			helpmessage += "\nusage: Dn-FamiTracker [module file] [-play | -export | -nodump | -log]\n";
+			std::string helpmessage = "H-FamiTracker commandline help";
+;			helpmessage += "\nusage: H-FamiTracker [module file] [-play | -export | -nodump | -log]\n";
 			helpmessage += "options:\n";
 			helpmessage += "play\t: automatically plays when the program starts\n";
 			helpmessage += "export\t: exports the module to a specified format. the format is determined by the filetype of the output.\n";
@@ -1103,7 +1103,7 @@ BOOL CDocManager0CC::DoPromptFileName(CString &fileName, UINT nIDSTitle, DWORD l
 	CString path = theApp.GetSettings()->GetPath(PATH_FTM) + _T("\\");
 
 	CFileDialog OpenFileDlg(bOpenFileDialog, _T("0cc"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-							_T(APP_NAME " modules (*.dnm;*.0cc;*.ftm)|*.dnm; *.0cc; *.ftm|All files (*.*)|*.*||"),
+							_T(APP_NAME " modules (*.hnm;*.0cc;*.ftm)|*.hnm; *.0cc; *.ftm|All files (*.*)|*.*||"),
 							AfxGetMainWnd(), 0);
 	OpenFileDlg.m_ofn.Flags |= lFlags;
 	OpenFileDlg.m_ofn.lpstrFile = fileName.GetBuffer(_MAX_PATH);

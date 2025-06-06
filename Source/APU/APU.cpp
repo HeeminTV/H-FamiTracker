@@ -146,6 +146,28 @@ const std::string CAPU::OPLL_PATCHNAME_YMF281B[19] = {
 	"Tom / Top Cymbal"
 };
 
+const std::string CAPU::OPLL_PATCHNAME_HM[19] = {
+	"(custom patch)",
+	"Bell",
+	"Guitar",
+	"Pizzicato string",
+	"Harpsichord",
+	"Recorder",
+	"Square",
+	"Trumpet",
+	"Reed Organ",
+	"Accordion",
+	"Strings",
+	"Vibraphone",
+	"Brass",
+	"Bass Guitar",
+	"Slap Bass",
+	"Chorus",
+	"Bass Drum",
+	"Snare Drum / Hi-Hat",
+	"Tom / Top Cymbal"
+};
+
 const uint8_t CAPU::LENGTH_TABLE[] = {
 	0x0A, 0xFE, 0x14, 0x02, 0x28, 0x04, 0x50, 0x06,
 	0xA0, 0x08, 0x3C, 0x0A, 0x0E, 0x0C, 0x1A, 0x0E,

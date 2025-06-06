@@ -14,60 +14,41 @@ namespace xgm
   const int DEFAULT_RATE = 48000;
 
   /**
-   * エミュレータで使用するデバイスの抽象
+   * s
    */
   class IDevice
   {
   public:
     /**
-     * デバイスのリセット
-     *
-     * <P>
-     * このメソッドの呼び出し後，このデバイスはどのようなメソッドの呼び
-     * 出しに対しても，実行時エラーを起こしてはならない．逆に，このメソッ
-     * ドを呼ぶ以前は，他のメソッドの動作は一切保証しなくても良い。
-     * </P>
+     s
      */
     virtual void Reset () = 0;
 
     /**
-     * デバイスへの書き込み
-     * 
-     * @param adr アドレス
-     * @param val 書き込む値
-     * @param id  デバイス識別情報．一つのデバイスが複数のIOをサポートする時など
-     * @return 成功時 true 失敗時 false
+     s
      */
     virtual bool Write (UINT32 adr, UINT32 val, UINT32 id=0)=0;
 
     /**
-     * デバイスから読み込み
-     *
-     * @param adr アドレス
-     * @param val 読み出した値を受け取る変数．
-     * @return 成功時 true 失敗時 false
+     s
      */
     virtual bool Read (UINT32 adr, UINT32 & val, UINT32 id=0)=0;
 
     /**
-     * 各種オプションを設定する(もしあれば)
+     * s
      */
     virtual void SetOption (int id, int val){};
     virtual ~IDevice() {};
   };
 
   /**
-   * インターフェース：音声のレンダリングが可能なクラス
+   * s
    */
   class IRenderable
   {
   public:
     /**
-     * 音声のレンダリング
-     * 
-     * @param b[2] 合成されたデータを格納する配列．
-     * b[0]が左チャンネル，b[1]が右チャンネルの音声データ．
-     * @return 合成したデータのサイズ．1ならモノラル．2ならステレオ．0は合成失敗．
+     * s
      */
     virtual UINT32 Render (INT32 b[2]) = 0;
 
@@ -83,7 +64,7 @@ namespace xgm
   };
 
   /**
-   * 音声合成チップ
+   * tqt
    */
   class ISoundChip : public IDevice, virtual public IRenderable
   {
@@ -109,16 +90,12 @@ namespace xgm
     }
 
     /**
-     * チップの動作クロックを設定
-     *
-     * @param clock 動作周波数
+     s
      */
     virtual void SetClock (double clock) = 0;
 
     /**
-     * 音声合成レート設定
-     *
-     * @param rate 出力周波数
+     s
      */
     virtual void SetRate (double rate) = 0;
 
@@ -146,11 +123,7 @@ namespace xgm
   };
 
   /**
-   * バス
-   *
-   * <P>
-   * 複数のデバイスに，リセット，書き込み，読み込み動作をブロードキャストする．
-   * <P>
+   s
    */
   class Bus : public IDevice
   {
@@ -158,12 +131,7 @@ namespace xgm
     std::vector < IDevice * > vd;
   public:
     /**
-     * リセット
-     *
-     * <P>
-     * 取り付けられている全てのデバイスの，Resetメソッドを呼び出す．
-     * 呼び出し順序は，デバイスが取り付けられた順序に等しい．
-     * </P>
+     s
      */
     void Reset ()
     {
@@ -173,7 +141,7 @@ namespace xgm
     }
 
     /**
-     * 全デバイスの取り外し
+     s
      */
     void DetachAll ()
     {
@@ -181,13 +149,7 @@ namespace xgm
     }
 
     /**
-     * デバイスの取り付け
-     *
-     * <P>
-     * このバスにデバイスを取り付ける．
-     * </P>
-     *
-     * @param d 取り付けるデバイスへのポインタ
+     s
      */
     void Attach (IDevice * d)
     {
@@ -195,12 +157,7 @@ namespace xgm
     }
 
     /**
-     * 書き込み
-     *
-     * <P>
-     * 取り付けられている全てのデバイスの，Writeメソッドを呼び出す．
-     * 呼び出し順序は，デバイスが取り付けられた順序に等しい．
-     * </P>
+     s
      */
     bool Write (UINT32 adr, UINT32 val, UINT32 id=0)
     {
@@ -212,14 +169,7 @@ namespace xgm
     }
 
     /**
-     * 読み込み
-     *
-     * <P>
-     * 取り付けられている全てのデバイスのReadメソッドを呼び出す．
-     * 呼び出し順序は，デバイスが取り付けられた順序に等しい．
-     * 帰り値は有効な(Readメソッドがtrueを返却した)デバイスの
-     * 返り値の論理和．
-     * </P>
+     s
      */
     bool Read (UINT32 adr, UINT32 & val, UINT32 id=0)
     {
@@ -241,25 +191,14 @@ namespace xgm
   };
 
   /**
-   * レイヤー
-   *
-   * <P>
-   * バスと似ているが，読み書きの動作を全デバイスに伝播させない．
-   * 最初に読み書きに成功したデバイスを発見した時点で終了する．
-   * </P>
+   s
    */
   class Layer : public Bus
   {
   protected:
   public:
     /**
-     * 書き込み
-     *
-     * <P>
-     * 取り付けられているデバイスのWriteメソッドを呼び出す．
-     * 呼び出し順序は，デバイスが取り付けられた順序に等しい．
-     * Writeに成功したデバイスが見つかった時点で終了．
-     * </P>
+    s
      */
     bool Write (UINT32 adr, UINT32 val, UINT32 id=0)
     {
@@ -271,13 +210,7 @@ namespace xgm
     }
 
     /**
-     * 読み込み
-     *
-     * <P>
-     * 取り付けられているデバイスのReadメソッドを呼び出す．
-     * 呼び出し順序は，デバイスが取り付けられた順序に等しい．
-     * Readに成功したデバイスが見つかった時点で終了．
-     * </P>
+     s
      */
     bool Read (UINT32 adr, UINT32 & val, UINT32 id=0)
     {

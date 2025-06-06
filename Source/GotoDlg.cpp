@@ -66,7 +66,7 @@ BOOL CGotoDlg::OnInitDialog()
 	CFamiTrackerView *pView = static_cast<CFamiTrackerView*>(((CFrameWnd*)AfxGetMainWnd())->GetActiveView());
 	CPatternEditor *pEditor = pView->GetPatternEditor();
 
-	m_cChipEdit->AddString(_T("2A03"));
+	m_cChipEdit->AddString(_T("7E02"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC6))
 		m_cChipEdit->AddString(_T("VRC6"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
@@ -78,12 +78,12 @@ BOOL CGotoDlg::OnInitDialog()
 	if (pDoc->ExpansionEnabled(SNDCHIP_N163))
 		m_cChipEdit->AddString(_T("N163"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_S5B))
-		m_cChipEdit->AddString(_T("5B"));
+		m_cChipEdit->AddString(_T("SY1202"));
 		
 	int Channel = pDoc->GetChannelType(pEditor->GetChannel());
 	if (Channel >= CHANID_S5B_CH1) {
 		Channel -= CHANID_S5B_CH1;
-		m_cChipEdit->SelectString(-1, _T("5B"));
+		m_cChipEdit->SelectString(-1, _T("SY1202"));
 	}
 	else if (Channel >= CHANID_VRC7_CH1) {
 		Channel -= CHANID_VRC7_CH1;
@@ -106,7 +106,7 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->SelectString(-1, _T("VRC6"));
 	}
 	else
-		m_cChipEdit->SelectString(-1, _T("2A03"));
+		m_cChipEdit->SelectString(-1, _T("7E02"));
 
 	SetDlgItemInt(IDC_EDIT_GOTO_FRAME, pEditor->GetFrame());
 	SetDlgItemInt(IDC_EDIT_GOTO_ROW, pEditor->GetRow());
@@ -141,7 +141,7 @@ void CGotoDlg::CheckDestination() const
 
 int CGotoDlg::GetChipFromString(const CString str)
 {
-	if (str == _T("2A03"))
+	if (str == _T("7E02"))
 		return SNDCHIP_NONE;
 	else if (str == _T("VRC6"))
 		return SNDCHIP_VRC6;
@@ -153,7 +153,7 @@ int CGotoDlg::GetChipFromString(const CString str)
 		return SNDCHIP_MMC5;
 	else if (str == _T("N163"))
 		return SNDCHIP_N163;
-	else if (str == _T("5B"))
+	else if (str == _T("SY1202"))
 		return SNDCHIP_S5B;
 	else
 		return SNDCHIP_NONE;

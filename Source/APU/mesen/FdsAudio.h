@@ -151,7 +151,7 @@ private:
 		uint32_t level = std::min((int)_carrier.GetGain(), 32) * WaveVolumeTable[_masterVolume];
 
 		// `_waveTable[_wavePosition]` is bounded within [0..63].
-		// `level` is bounded within [0..1152] because `_carrier.GetGain()` is clamped to ≤32
+		// `level` is bounded within [0..1152] because `_carrier.GetGain()` is clamped to c32
 		// and `WaveVolumeTable[_masterVolume]` ≤ 36.
 		// As a result, `_waveTable[_wavePosition] * level` is bounded within [0 .. 63 * 1152].
 		auto outputLevel = _waveTable[_wavePosition] * level;

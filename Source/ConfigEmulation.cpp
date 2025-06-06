@@ -93,6 +93,7 @@ BOOL CConfigEmulation::OnInitDialog()
 	pVRC7Patch->AddString("Patch set 1 by kevtris (11/14/1999)");
 	pVRC7Patch->AddString("2413 Tone");
 	pVRC7Patch->AddString("281B Tone");
+	pVRC7Patch->AddString("Patch set by Heemin (5/31/2025)");
 	pVRC7Patch->SetCurSel(pSettings->Emulation.iVRC7Patch);
 
 	CPropertyPage::OnInitDialog();

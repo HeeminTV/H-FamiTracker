@@ -51,12 +51,12 @@ const int CInstrumentEditDlg::KEYBOARD_HEIGHT = 58;
 
 const TCHAR *CInstrumentEditDlg::CHIP_NAMES[] = {
 	_T(""), 
-	_T("2A03"), 
+	_T("7E02"), 
 	_T("VRC6"), 
 	_T("VRC7"), 
-	_T("FDS"), 
-	_T("Namco"), 
-	_T("Sunsoft")
+	_T("2C33"), 
+	_T("N163"), 
+	_T("SY1202")
 };
 
 // CInstrumentEditDlg dialog
@@ -189,7 +189,7 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 					int Channel = CFamiTrackerView::GetView()->GetSelectedChannel();
 					int Type = pDoc->GetChannelType(Channel);
 					bool bShowDPCM = (Type == CHANID_DPCM) || (std::static_pointer_cast<CInstrument2A03>(pInstrument)->AssignedSamples());
-					InsertPane(new CInstrumentEditorSeq(NULL, _T("2A03 settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
+					InsertPane(new CInstrumentEditorSeq(NULL, _T("FWG settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
 					InsertPane(new CInstrumentEditorDPCM(), bShowDPCM);
 				}
 				break;
@@ -210,7 +210,7 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 				InsertPane(new CInstrumentEditorN163Wave(), false);
 				break;
 			case INST_S5B:
-				InsertPane(new CInstrumentEditorSeq(NULL, _T("Sunsoft 5B"), CInstrumentS5B::SEQUENCE_NAME, 15, 255, INST_S5B), true);
+				InsertPane(new CInstrumentEditorSeq(NULL, _T("SY1202"), CInstrumentS5B::SEQUENCE_NAME, 15, 255, INST_S5B), true);
 				break;
 		}
 

@@ -161,8 +161,8 @@ private:
 	int		StoreSequence(const CSequence *pSeq, CStringA &label);
 	void	StoreSamples();
 	void	StoreGrooves();		// // //
-	void	StoreSongs(bool bUseAllExp = true);
-	void	StorePatterns(unsigned int Track, bool bUseAllExp = true);
+	void	StoreSongs();
+	void	StorePatterns(unsigned int Track);
 
 	// Bankswitching functions
 	void	UpdateSamplePointers(unsigned int Origin);
@@ -236,7 +236,6 @@ public:
 	static const int FLAG_BANKSWITCHED;
 	static const int FLAG_VIBRATO;
 	static const int FLAG_LINEARPITCH;		// // //
-	static const bool UseAllChips;		// !! !!
 
 protected:
 	static CCompiler *pCompiler;			// Points to an active CCompiler object

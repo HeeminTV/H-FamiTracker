@@ -13,19 +13,19 @@
 
 namespace xgm
 {
-/** 8bit符号なしの整数型 */
+/** s */
 typedef unsigned char UINT8;
-/** 16bit符号なしの整数型 */
+/** s */
 typedef unsigned short UINT16;
-/** 32bit符号なしの整数型 */
+/** 32bit */
 typedef unsigned int UINT32;
 /** 64bit unsigned */
 typedef unsigned long long UINT64;
-/** 8bit符号付き整数型 */
+/** f */
 typedef signed char INT8;
-/** 16bit符号付き整数型 */
+/** f */
 typedef signed short INT16;
-/** 32bit符号付き整数型 */
+/** f */
 typedef signed int INT32;
 /** 64bit signed */
 typedef signed long long INT64;
