@@ -1,4 +1,4 @@
-/*
+﻿/*
 ** Dn-FamiTracker - NES/Famicom sound tracker
 ** Copyright (C) 2020-2025 D.P.C.M.
 ** FamiTracker Copyright (C) 2005-2020 Jonathan Liss
@@ -2047,7 +2047,23 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	DrawHeaderFunc(_T("7E02"));		// // //
 
 	for (int i = 0; i < 6; ++i) {
-		GetRegsFunc(SNDCHIP_NONE, [&] (int x) { return 0x4000 + i * 4 + x; }, 4);
+		switch (i) {
+			case 2:
+				GetRegsFunc(SNDCHIP_NONE, [&](int x) { return 0x4000 + i * 4 + x; }, 8);
+				break;
+			default:
+				GetRegsFunc(SNDCHIP_NONE, [&](int x) { return 0x4000 + i * 4 + x; }, 4);
+				break;
+		}
+
+		// Get wave channel's register
+		auto pState = pSoundGen->GetRegState(SNDCHIP_NONE, 0x4016);
+		reg[7] = pState->GetValue();
+		update[7] = pState->GetLastUpdatedTime() | (pState->GetNewValueTime() << 4);
+
+		// End
+
+
 		text.Format(_T("$%04X:"), 0x4000 + i * 4);		// // //
 		DrawRegFunc(text, 4);
 
@@ -2055,37 +2071,50 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_NONE, i);		// // //
 //		pDC->FillSolidRect(x + 200, y, x + 400, y + 18, m_colEmptyBg);
 
-		LPCTSTR FWGwave[4] = { _T("50% square"),_T("25% square"),_T("triangle"),_T("sawtooth") };
+		LPCTSTR FWGwave[4] = { _T("square"),_T("pulse"),_T("triangle"),_T("sawtooth") };
+		// LPCTSTR WaveMode[2] = { _T("custom"),_T("muffled-square") };
+		LPCTSTR WaveShape[4] = { _T("_"),_T("-"),_T("="),_T("^") };
+		LPCTSTR visshape[8];
 
 		switch (i) {
-		case 0: case 1:
-			period = reg[2] | ((reg[3] & 7) << 8);
-			vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
-			text.Format(_T("%s, vol = %02i, wave = %i (%s)"	), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6, FWGwave[reg[0] >> 6]); break;
-		case 2:
-			period = reg[2] | ((reg[3] & 7) << 8);
-			vol = reg[0] ? 15 : 0;
-			text.Format(_T("%s"), GetPitchTextFunc(3, period, freq)); break;
-		case 3:
-			period = reg[2] & 0x0F;
-			vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
-			text.Format(_T("%s, vol = %02i, mode = %i"), GetPitchTextFuncLong(1, period, freq, !(reg[2] >> 7)), vol, reg[2] >> 7);
-			break;
-		case 4:
-			period = reg[0] & 0x0F;
-			vol = 15 *!pSoundGen->PreviewDone();
-			text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
-				(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
-			text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);
-			break;
-		case 5:
-			text.Format(_T(""), 0, 0); // Just clear everything here
-			break;
+			case 0: case 1:
+				period = reg[2] | ((reg[3] & 7) << 8);
+				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+				text.Format(_T("%s, vol = %02i, wave = %i (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6, FWGwave[reg[0] >> 6]); break;
+			case 2:
+				period = reg[2] | ((reg[3] & 7) << 8);
+				if (!(reg[7] >> 4)) {
+					for (int i = 0; i < 8; ++i) {
+						int shift = (7 - i) * 2;
+						uint32_t value = (((reg[5] << 8) + reg[1]) >> shift) & 0x3;
+						visshape[i] = WaveShape[value];
+					}
+
+					text.Format(_T("%s, vol = %02i, mode = 0 (%s%s%s%s%s%s%s%s)"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
+						visshape[0], visshape[1], visshape[2], visshape[3],
+						visshape[4], visshape[5], visshape[6], visshape[7]
+					);
+				} else {
+					text.Format(_T("%s, vol = %02i, mode = 1 (muffled-square)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
+				}
+				break;
+			case 3:
+				period = reg[2] & 0x0F;
+				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+				text.Format(_T("%s, vol = %02i, mode = %i"), GetPitchTextFuncLong(1, period, freq, !(reg[2] >> 7)), vol, reg[2] >> 7);
+				break;
+			case 4:
+				period = reg[0] & 0x0F;
+				vol = 15 * !pSoundGen->PreviewDone();
+				text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
+					(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
+				text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);
+				break;
+			case 5:
+				text.Format(_T(""), 0, 0); // Clear
+				break;	
 		}
-/*
-		pDC->FillSolidRect(250 + i * 30, 0, 20, m_iWinHeight - HEADER_CHAN_HEIGHT, 0);
-		pDC->FillSolidRect(250 + i * 30, (pitch >> 1), 20, 5, RGB(vol << 4, vol << 4, vol << 4));
-*/
+
 		DrawTextFunc(180, text);
 		switch (i) {
 		case 0: case 1: case 2:
