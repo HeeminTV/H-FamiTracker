@@ -300,7 +300,7 @@ namespace xgm
       }
     }
 
-    UINT32 ret = twaveT ? muffledsquaretbl[3][tphase] : tritbl[0][tphase] * 5;
+    UINT32 ret = twaveT ? muffledsquaretbl[3][tphase] : tritbl[0][tphase] << 2 ; //0011, 0110, 1100
     return (ret * tvol) / 15;
   }
 
