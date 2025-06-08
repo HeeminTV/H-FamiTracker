@@ -301,15 +301,22 @@ void CTriangleChan::RefreshChannel()
 
 	char WaveHighBytes = (m_iTremoloSpeed * 16) + (m_iTremoloDepth / 16); // EFT 
 	char WaveLowBytes = m_iDutyPeriod;
-	// char Volume = 3 - (m_iVolume / 32); // EFT 
+
+	// char WaveType = m_iInstrument & 1;
+	char Volume = ((m_iVolume >> 3) * m_iInstVolume) >> 4; // EFT 
+
 	unsigned char HiFreq = (Freq & 0xFF);
 	unsigned char LoFreq = (Freq >> 8);
+
+	int WaveType = (m_iInstrument < 1) ? 0 : 1; // Wave mode of the wave channel
 	
 	if (m_iInstVolume > 0 && m_iVolume > 0 && m_bGate) {
 		WriteRegister(0x4008, (m_bEnvelopeLoop << 7) | (m_iLinearCounter & 0x7F));		// // //
 
 		WriteRegister(0x4009, WaveHighBytes);		// EFT
 		WriteRegister(0x400D, WaveLowBytes);		// EFT
+		// WriteRegister(0x400C, WaveType);
+		WriteRegister(0x4016, Volume + (WaveType << 4)); // $4016, (x,y). y = 4-bit volume, x = wave mode (0 = wave, 1 = triangle) 
 
 		WriteRegister(0x400A, HiFreq);
 		if (m_bEnvelopeLoop || m_bResetEnvelope)		// // //
@@ -467,13 +474,15 @@ void CNoiseChan::RefreshChannel()
 	int Volume = CalculateVolume();
 	char NoiseMode = (m_iDutyPeriod & MAX_DUTY) << 7;
 
+	// int WaveType = (m_iInstrument < 1) ? 0 : 128; // Wave mode of the wave channel
+
 	Period = Period & 0x0F;
 	Period ^= 0x0F;
 	
 	if (m_bGate)		// // //
 		WriteRegister(0x400C, (m_bEnvelopeLoop << 5) | (!m_bHardwareEnvelope << 4) | Volume);		// // //
 	else {
-		WriteRegister(0x400C, 0x30);
+		WriteRegister(0x400C, 48);
 		return;
 	}
 	WriteRegister(0x400E, NoiseMode | Period);

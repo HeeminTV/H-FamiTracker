@@ -1,4 +1,4 @@
-![asd](docs/H-FamiTrackerAboutBanner.bmp)
+![asd](docs/H-FamiTrackerBannerImage.png)
 
 # H-FamiTracker 
 

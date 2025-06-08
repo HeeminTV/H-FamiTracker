@@ -40,7 +40,7 @@ IDB_TOOLBAR_256         BITMAP                  "res/MainToolbar-16.bmp"
 
 IDB_TOOLBAR_INST_256    BITMAP                  "res/InstrumentToolbar-16.bmp"
 
-IDB_ABOUT               BITMAP                  "res/About.bmp"
+IDB_ABOUT               BITMAP                  "res/NewBanner.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////

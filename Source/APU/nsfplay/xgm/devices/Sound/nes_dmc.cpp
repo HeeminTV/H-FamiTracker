@@ -8,268 +8,275 @@
 
 namespace xgm
 {
-  const UINT32 NES_DMC::wavlen_table[2][16] = {
-  { // NTSC
-    4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068
-  },
-  { // PAL
-    4, 8, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778
-  }};
+    const UINT32 NES_DMC::wavlen_table[2][16] = {
+    { // NTSC
+      4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068
+    },
+    { // PAL
+      4, 8, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778
+    } };
 
-  const UINT32 NES_DMC::freq_table[2][16] = {
-  { // NTSC
-    428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54
-  },
-  { // PAL
-    398, 354, 316, 298, 276, 236, 210, 198, 176, 148, 132, 118,  98, 78, 66, 50
-  }};
+    const UINT32 NES_DMC::freq_table[2][16] = {
+    { // NTSC
+      428, 380, 340, 320, 286, 254, 226, 214, 190, 160, 142, 128, 106, 84, 72, 54
+    },
+    { // PAL
+      398, 354, 316, 298, 276, 236, 210, 198, 176, 148, 132, 118,  98, 78, 66, 50
+    } };
 
-  const UINT32 BITREVERSE[256] = {
-    0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0, 0x30, 0xB0, 0x70, 0xF0,
-    0x08, 0x88, 0x48, 0xC8, 0x28, 0xA8, 0x68, 0xE8, 0x18, 0x98, 0x58, 0xD8, 0x38, 0xB8, 0x78, 0xF8,
-    0x04, 0x84, 0x44, 0xC4, 0x24, 0xA4, 0x64, 0xE4, 0x14, 0x94, 0x54, 0xD4, 0x34, 0xB4, 0x74, 0xF4,
-    0x0C, 0x8C, 0x4C, 0xCC, 0x2C, 0xAC, 0x6C, 0xEC, 0x1C, 0x9C, 0x5C, 0xDC, 0x3C, 0xBC, 0x7C, 0xFC,
-    0x02, 0x82, 0x42, 0xC2, 0x22, 0xA2, 0x62, 0xE2, 0x12, 0x92, 0x52, 0xD2, 0x32, 0xB2, 0x72, 0xF2,
-    0x0A, 0x8A, 0x4A, 0xCA, 0x2A, 0xAA, 0x6A, 0xEA, 0x1A, 0x9A, 0x5A, 0xDA, 0x3A, 0xBA, 0x7A, 0xFA,
-    0x06, 0x86, 0x46, 0xC6, 0x26, 0xA6, 0x66, 0xE6, 0x16, 0x96, 0x56, 0xD6, 0x36, 0xB6, 0x76, 0xF6,
-    0x0E, 0x8E, 0x4E, 0xCE, 0x2E, 0xAE, 0x6E, 0xEE, 0x1E, 0x9E, 0x5E, 0xDE, 0x3E, 0xBE, 0x7E, 0xFE,
-    0x01, 0x81, 0x41, 0xC1, 0x21, 0xA1, 0x61, 0xE1, 0x11, 0x91, 0x51, 0xD1, 0x31, 0xB1, 0x71, 0xF1,
-    0x09, 0x89, 0x49, 0xC9, 0x29, 0xA9, 0x69, 0xE9, 0x19, 0x99, 0x59, 0xD9, 0x39, 0xB9, 0x79, 0xF9,
-    0x05, 0x85, 0x45, 0xC5, 0x25, 0xA5, 0x65, 0xE5, 0x15, 0x95, 0x55, 0xD5, 0x35, 0xB5, 0x75, 0xF5,
-    0x0D, 0x8D, 0x4D, 0xCD, 0x2D, 0xAD, 0x6D, 0xED, 0x1D, 0x9D, 0x5D, 0xDD, 0x3D, 0xBD, 0x7D, 0xFD,
-    0x03, 0x83, 0x43, 0xC3, 0x23, 0xA3, 0x63, 0xE3, 0x13, 0x93, 0x53, 0xD3, 0x33, 0xB3, 0x73, 0xF3,
-    0x0B, 0x8B, 0x4B, 0xCB, 0x2B, 0xAB, 0x6B, 0xEB, 0x1B, 0x9B, 0x5B, 0xDB, 0x3B, 0xBB, 0x7B, 0xFB,
-    0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
-    0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF,
-  };
+    const UINT32 BITREVERSE[256] = {
+      0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0, 0x30, 0xB0, 0x70, 0xF0,
+      0x08, 0x88, 0x48, 0xC8, 0x28, 0xA8, 0x68, 0xE8, 0x18, 0x98, 0x58, 0xD8, 0x38, 0xB8, 0x78, 0xF8,
+      0x04, 0x84, 0x44, 0xC4, 0x24, 0xA4, 0x64, 0xE4, 0x14, 0x94, 0x54, 0xD4, 0x34, 0xB4, 0x74, 0xF4,
+      0x0C, 0x8C, 0x4C, 0xCC, 0x2C, 0xAC, 0x6C, 0xEC, 0x1C, 0x9C, 0x5C, 0xDC, 0x3C, 0xBC, 0x7C, 0xFC,
+      0x02, 0x82, 0x42, 0xC2, 0x22, 0xA2, 0x62, 0xE2, 0x12, 0x92, 0x52, 0xD2, 0x32, 0xB2, 0x72, 0xF2,
+      0x0A, 0x8A, 0x4A, 0xCA, 0x2A, 0xAA, 0x6A, 0xEA, 0x1A, 0x9A, 0x5A, 0xDA, 0x3A, 0xBA, 0x7A, 0xFA,
+      0x06, 0x86, 0x46, 0xC6, 0x26, 0xA6, 0x66, 0xE6, 0x16, 0x96, 0x56, 0xD6, 0x36, 0xB6, 0x76, 0xF6,
+      0x0E, 0x8E, 0x4E, 0xCE, 0x2E, 0xAE, 0x6E, 0xEE, 0x1E, 0x9E, 0x5E, 0xDE, 0x3E, 0xBE, 0x7E, 0xFE,
+      0x01, 0x81, 0x41, 0xC1, 0x21, 0xA1, 0x61, 0xE1, 0x11, 0x91, 0x51, 0xD1, 0x31, 0xB1, 0x71, 0xF1,
+      0x09, 0x89, 0x49, 0xC9, 0x29, 0xA9, 0x69, 0xE9, 0x19, 0x99, 0x59, 0xD9, 0x39, 0xB9, 0x79, 0xF9,
+      0x05, 0x85, 0x45, 0xC5, 0x25, 0xA5, 0x65, 0xE5, 0x15, 0x95, 0x55, 0xD5, 0x35, 0xB5, 0x75, 0xF5,
+      0x0D, 0x8D, 0x4D, 0xCD, 0x2D, 0xAD, 0x6D, 0xED, 0x1D, 0x9D, 0x5D, 0xDD, 0x3D, 0xBD, 0x7D, 0xFD,
+      0x03, 0x83, 0x43, 0xC3, 0x23, 0xA3, 0x63, 0xE3, 0x13, 0x93, 0x53, 0xD3, 0x33, 0xB3, 0x73, 0xF3,
+      0x0B, 0x8B, 0x4B, 0xCB, 0x2B, 0xAB, 0x6B, 0xEB, 0x1B, 0x9B, 0x5B, 0xDB, 0x3B, 0xBB, 0x7B, 0xFB,
+      0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
+      0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF,
+    };
 
-  /*
-  std::vector<int> convertDecimalTo2BitChunks(unsigned int hexStr) {
-      // unsigned int decimalValue = std::stoul(hexStr, nullptr, 16);
+    /*
+    std::vector<int> convertDecimalTo2BitChunks(unsigned int hexStr) {
+        // unsigned int decimalValue = std::stoul(hexStr, nullptr, 16);
 
-      std::bitset<8> bits(hexStr);
+        std::bitset<8> bits(hexStr);
 
-      std::vector<int> result(8, 0);
+        std::vector<int> result(8, 0);
 
-      for (int i = 0; i < 4; ++i) {
-          int bit1 = bits[2 * i];       // first  bit
-          int bit2 = bits[2 * i + 1];   // second bit
+        for (int i = 0; i < 4; ++i) {
+            int bit1 = bits[2 * i];       // first  bit
+            int bit2 = bits[2 * i + 1];   // second bit
 
-          // 2bit -> decimal
-          result[i] = (bit2 << 1) | bit1;
-      }
+            // 2bit -> decimal
+            result[i] = (bit2 << 1) | bit1;
+        }
 
-      return result;
-  }
-  */
-  std::vector<int> splitInto2BitChunks(unsigned char value) {
-      std::bitset<8> bits(value);
-      std::vector<int> result;
-
-      for (int i = 6; i >= 0; i -= 2) {
-          int twoBits = (bits[i + 1] << 1) | bits[i];
-          result.push_back(twoBits);
-      }
-
-      return result;
-  }
-
-
-  NES_DMC::NES_DMC () : GETA_BITS (20)
-  {
-    SetClock (DEFAULT_CLOCK);
-    SetRate (DEFAULT_RATE);
-    SetPal (false);
-    option[OPT_ENABLE_4011] = 1;
-    option[OPT_ENABLE_PNOISE] = 1;
-    option[OPT_UNMUTE_ON_RESET] = 1;
-    option[OPT_DPCM_ANTI_CLICK] = 0;
-    option[OPT_NONLINEAR_MIXER] = 1;
-    option[OPT_RANDOMIZE_NOISE] = 1;
-	option[OPT_RANDOMIZE_TRI] = 1;
-    option[OPT_TRI_MUTE] = 1;
-    option[OPT_DPCM_REVERSE] = 0;
-    tnd_table[0][0][0][0] = 0;
-    tnd_table[1][0][0][0] = 0;
-
-    apu = NULL;
-    frame_sequence_count = 0;
-    frame_sequence_length = 7458;
-    frame_sequence_steps = 4;
-
-    for(int c=0;c<2;++c)
-        for(int t=0;t<3;++t)
-            sm[c][t] = 128;
-  }
-
-
-  NES_DMC::~NES_DMC ()
-  {
-  }
-
-  void NES_DMC::SetStereoMix(int trk, xgm::INT16 mixl, xgm::INT16 mixr)
-  {
-      if (trk < 0) return;
-      if (trk > 2) return;
-      sm[0][trk] = mixl;
-      sm[1][trk] = mixr;
-  }
-
-  ITrackInfo *NES_DMC::GetTrackInfo(int trk)
-  {
-    switch(trk)
-    {
-    case 0:
-      trkinfo[trk].max_volume = 255;
-      trkinfo[0].key = (linear_counter>0 && length_counter[0]>0 && enable[0]);
-      trkinfo[0].volume = 0;
-      trkinfo[0]._freq = tri_freq;
-      if(trkinfo[0]._freq)
-        trkinfo[0].freq = clock/32/(trkinfo[0]._freq + 1);
-      else
-        trkinfo[0].freq = 0;
-      //trkinfo[0].tone = tduty;
-      trkinfo[0].output = out[0];
-      break;
-    case 1:
-      trkinfo[1].max_volume = 15;
-      trkinfo[1].volume = noise_volume+(envelope_disable?0:0x10)+(envelope_loop?0x20:0);
-      trkinfo[1].key = length_counter[1]>0 && enable[1] &&
-                       (envelope_disable ? (noise_volume>0) : (envelope_counter>0));
-      trkinfo[1]._freq = reg[0x400e - 0x4008]&0xF;
-      trkinfo[1].freq = clock/double(wavlen_table[pal][trkinfo[1]._freq] * ((noise_tap&(1<<6)) ? 93 : 1));
-      trkinfo[1].tone = noise_tap & (1<<6);
-      trkinfo[1].output = out[1];
-      break;
-    case 2:
-      trkinfo[2].max_volume = 127;
-      trkinfo[2].volume = reg[0x4011 - 0x4008]&0x7F;
-      trkinfo[2].key = dlength > 0;
-      trkinfo[2]._freq = reg[0x4010 - 0x4008]&0xF;
-      trkinfo[2].freq = clock/double(freq_table[pal][trkinfo[2]._freq]);
-      trkinfo[2].tone = (0xc000|(adr_reg<<6));
-      trkinfo[2].output = (damp<<1)|dac_lsb;
-      break;
-    default:
-      return NULL;
+        return result;
     }
-    return &trkinfo[trk];
-  }
+    */
+    std::vector<int> splitInto2BitChunks(unsigned char value) {
+        std::bitset<8> bits(value);
+        std::vector<int> result;
 
-  double NES_DMC::GetFrequencyTriangle() const  // // !!
-  {
-      if (!(linear_counter > 0 && length_counter[0] > 0
-          && (!option[OPT_TRI_MUTE] || tri_freq > 0)))
-        return 0.0;
-      return clock / 32 / (tri_freq + 1);
-  }
+        for (int i = 6; i >= 0; i -= 2) {
+            int twoBits = (bits[i + 1] << 1) | bits[i];
+            result.push_back(twoBits);
+        }
 
-  double NES_DMC::GetFrequencyNoise() const     // // !!
-  {
-      if (!(length_counter[1] > 0 && enable[1] &&
-          (envelope_disable ? (noise_volume > 0) : (envelope_counter > 0))))
-          return 0.0;
-      return clock / double(wavlen_table[pal][reg[0x400e - 0x4008] & 0xF] * ((noise_tap & (1 << 6)) ? 93 : 1));
-  }
-
-  double NES_DMC::GetFrequencyDPCM() const      // // !!
-  {
-      if ((data > 0x100) && !dlength)
-        return 0.0;
-      return clock / double(freq_table[pal][reg[0x4010 - 0x4008] & 0xF]);
-  }
-
-
-  UINT8 NES_DMC::GetSamplePos() const
-  {
-      return (daddress - ((adr_reg<<6)|0xC000)) >> 6;
-  }
-
-  UINT8 NES_DMC::GetDeltaCounter() const
-  {
-      return (damp << 1) | dac_lsb;
-  }
-
-  bool NES_DMC::IsPlaying() const
-  {
-      return (dlength > 0);
-  }
-
-  void NES_DMC::FrameSequence(int s)
-  {
-    //DEBUG_OUT("FrameSequence: %d\n",s);
-
-    if (s > 3) return; // no operation in step 4
-
-    if (apu)
-    {
-        apu->FrameSequence(s);
+        return result;
     }
 
-    if (s == 0 && (frame_sequence_steps == 4))
+
+    NES_DMC::NES_DMC() : GETA_BITS(20)
     {
-        if (frame_irq_enable) frame_irq = true;
-        cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, frame_irq & frame_irq_enable);
+        SetClock(DEFAULT_CLOCK);
+        SetRate(DEFAULT_RATE);
+        SetPal(false);
+        option[OPT_ENABLE_4011] = 1;
+        option[OPT_ENABLE_PNOISE] = 1;
+        option[OPT_UNMUTE_ON_RESET] = 1;
+        option[OPT_DPCM_ANTI_CLICK] = 0;
+        option[OPT_NONLINEAR_MIXER] = 1;
+        option[OPT_RANDOMIZE_NOISE] = 1;
+        option[OPT_RANDOMIZE_TRI] = 1;
+        option[OPT_TRI_MUTE] = 1;
+        option[OPT_DPCM_REVERSE] = 0;
+        tnd_table[0][0][0][0] = 0;
+        tnd_table[1][0][0][0] = 0;
+
+        apu = NULL;
+        frame_sequence_count = 0;
+        frame_sequence_length = 7458;
+        frame_sequence_steps = 4;
+
+        for (int c = 0; c < 2; ++c)
+            for (int t = 0; t < 3; ++t)
+                sm[c][t] = 128;
     }
 
-    // 240hz clock
+
+    NES_DMC::~NES_DMC()
     {
-        // triangle linear counter
-        if (linear_counter_halt)
+    }
+
+    void NES_DMC::SetStereoMix(int trk, xgm::INT16 mixl, xgm::INT16 mixr)
+    {
+        if (trk < 0) return;
+        if (trk > 2) return;
+        sm[0][trk] = mixl;
+        sm[1][trk] = mixr;
+    }
+
+    ITrackInfo* NES_DMC::GetTrackInfo(int trk)
+    {
+        switch (trk)
         {
-            linear_counter = linear_counter_reload;
+        case 0:
+            trkinfo[trk].max_volume = 255;
+            trkinfo[0].key = (linear_counter > 0 && length_counter[0] > 0 && enable[0]);
+            trkinfo[0].volume = 0;
+            trkinfo[0]._freq = tri_freq;
+            if (trkinfo[0]._freq)
+                trkinfo[0].freq = clock / 32 / (trkinfo[0]._freq + 1);
+            else
+                trkinfo[0].freq = 0;
+            //trkinfo[0].tone = tduty;
+            trkinfo[0].output = out[0];
+            break;
+        case 1:
+            trkinfo[1].max_volume = 15;
+            trkinfo[1].volume = noise_volume + (envelope_disable ? 0 : 0x10) + (envelope_loop ? 0x20 : 0);
+            trkinfo[1].key = length_counter[1] > 0 && enable[1] &&
+                (envelope_disable ? (noise_volume > 0) : (envelope_counter > 0));
+            trkinfo[1]._freq = reg[0x400e - 0x4008] & 0xF;
+            trkinfo[1].freq = clock / double(wavlen_table[pal][trkinfo[1]._freq] * ((noise_tap & (1 << 6)) ? 93 : 1));
+            trkinfo[1].tone = noise_tap & (1 << 6);
+            trkinfo[1].output = out[1];
+            break;
+        case 2:
+            trkinfo[2].max_volume = 127;
+            trkinfo[2].volume = reg[0x4011 - 0x4008] & 0x7F;
+            trkinfo[2].key = dlength > 0;
+            trkinfo[2]._freq = reg[0x4010 - 0x4008] & 0xF;
+            trkinfo[2].freq = clock / double(freq_table[pal][trkinfo[2]._freq]);
+            trkinfo[2].tone = (0xc000 | (adr_reg << 6));
+            trkinfo[2].output = (damp << 1) | dac_lsb;
+            break;
+        default:
+            return NULL;
         }
-        else
+        return &trkinfo[trk];
+    }
+
+    double NES_DMC::GetFrequencyTriangle() const  // // !!
+    {
+        if (!(linear_counter > 0 && length_counter[0] > 0
+            && (!option[OPT_TRI_MUTE] || tri_freq > 0)))
+            return 0.0;
+        return clock / 32 / (tri_freq + 1);
+    }
+
+    double NES_DMC::GetFrequencyNoise() const     // // !!
+    {
+        if (!(length_counter[1] > 0 && enable[1] &&
+            (envelope_disable ? (noise_volume > 0) : (envelope_counter > 0))))
+            return 0.0;
+        return clock / double(wavlen_table[pal][reg[0x400e - 0x4008] & 0xF] * ((noise_tap & (1 << 6)) ? 93 : 1));
+    }
+
+    double NES_DMC::GetFrequencyDPCM() const      // // !!
+    {
+        if ((data > 0x100) && !dlength)
+            return 0.0;
+        return clock / double(freq_table[pal][reg[0x4010 - 0x4008] & 0xF]);
+    }
+
+
+    UINT8 NES_DMC::GetSamplePos() const
+    {
+        return (daddress - ((adr_reg << 6) | 0xC000)) >> 6;
+    }
+
+    UINT8 NES_DMC::GetDeltaCounter() const
+    {
+        return (damp << 1) | dac_lsb;
+    }
+
+    bool NES_DMC::IsPlaying() const
+    {
+        return (dlength > 0);
+    }
+
+    void NES_DMC::FrameSequence(int s)
+    {
+        //DEBUG_OUT("FrameSequence: %d\n",s);
+
+        if (s > 3) return; // no operation in step 4
+
+        if (apu)
         {
-            if (linear_counter > 0) --linear_counter;
-        }
-        if (!linear_counter_control)
-        {
-            linear_counter_halt = false;
+            apu->FrameSequence(s);
         }
 
-        // noise envelope
-        bool divider = false;
-        if (envelope_write)
+        if (s == 0 && (frame_sequence_steps == 4))
         {
-            envelope_write = false;
-            envelope_counter = 15;
-            envelope_div = 0;
+            if (frame_irq_enable) frame_irq = true;
+            cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, frame_irq & frame_irq_enable);
         }
-        else
+
+        // 240hz clock
         {
-            ++envelope_div;
-            if (envelope_div > envelope_div_period)
+            // triangle linear counter
+            if (linear_counter_halt)
             {
-                divider = true;
+                linear_counter = linear_counter_reload;
+            }
+            else
+            {
+                if (linear_counter > 0) --linear_counter;
+            }
+            if (!linear_counter_control)
+            {
+                linear_counter_halt = false;
+            }
+
+            // noise envelope
+            bool divider = false;
+            if (envelope_write)
+            {
+                envelope_write = false;
+                envelope_counter = 15;
                 envelope_div = 0;
             }
+            else
+            {
+                ++envelope_div;
+                if (envelope_div > envelope_div_period)
+                {
+                    divider = true;
+                    envelope_div = 0;
+                }
+            }
+            if (divider)
+            {
+                if (envelope_loop && envelope_counter == 0)
+                    envelope_counter = 15;
+                else if (envelope_counter > 0)
+                    --envelope_counter;
+            }
         }
-        if (divider)
+
+        // 120hz clock
+        if ((s & 1) == 0)
         {
-            if (envelope_loop && envelope_counter == 0)
-                envelope_counter = 15;
-            else if (envelope_counter > 0)
-                --envelope_counter;
+            // triangle length counter
+            if (!linear_counter_control && (length_counter[0] > 0))
+                --length_counter[0];
+
+            // noise length counter
+            if (!envelope_loop && (length_counter[1] > 0))
+                --length_counter[1];
         }
+
     }
 
-    // 120hz clock
-    if ((s&1) == 0)
-    {
-        // triangle length counter
-        if (!linear_counter_control && (length_counter[0] > 0))
-            --length_counter[0];
+    // s
+    UINT32 NES_DMC::calc_tri(UINT32 clocks) {
+      static UINT32 muffledsquaretbl[4][32] = {
+            { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 },
+            { 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 7 },
+            { 5, 4, 3, 3, 3, 3, 3, 4, 4, 3, 3, 3, 3, 3, 4, 5, 7, 9, 10, 10, 10, 10, 10, 9, 9, 10, 10, 10, 10, 10, 9, 7 },
+            { 5, 2, 1, 1, 0, 0, 1, 2, 2, 1, 0, 0, 1, 1, 2, 5, 9, 13, 14, 14, 15, 15, 14, 13, 13, 14, 15, 15, 14, 14, 13, 9 },
+      };
 
-        // noise length counter
-        if (!envelope_loop && (length_counter[1] > 0))
-            --length_counter[1];
-    }
-
-  }
-
-  // s
-  UINT32 NES_DMC::calc_tri (UINT32 clocks) {
       static UINT32 tritbl[1][32];
       UINT16 fullWave = ((UINT16)twaveH << 8) | twaveL;  // .
       std::array<UINT32, 8> bits2;
@@ -293,8 +300,8 @@ namespace xgm
       }
     }
 
-    UINT32 ret = ((tritbl[0][tphase] + 1) * 3) - 1;
-    return ret;
+    UINT32 ret = twaveT ? muffledsquaretbl[3][tphase] : tritbl[0][tphase] * 4;
+    return (ret * tvol) / 15;
   }
 
   UINT32 NES_DMC::calc_noise(UINT32 clocks)
@@ -612,8 +619,11 @@ namespace xgm
     counter[1] = 0;
     counter[2] = 0;
     tphase = 0;
-    twaveH = 0; // EFT
+
+    twaveH = 0;
     twaveL = 0;
+    twaveT = 0;
+
     nfreq = wavlen_table[0][0];
     dfreq = freq_table[0][0];
     tri_freq = 0;
@@ -747,6 +757,12 @@ namespace xgm
       return true;
     }
 
+    if (adr == 0x4016) {
+        twaveT = (val >> 4); // Wave mode of the 2-bit wave channel (False = Wave. True = Triangle)
+        tvol = val & 15;
+        // break;
+    }
+
     if (adr == 0x4017)
     {
       //DEBUG_OUT("4017 = %02X\n", val);
@@ -805,6 +821,11 @@ namespace xgm
         length_counter[0] = length_table[(val >> 3) & 0x1f];
       }
       break;
+    /*case 0x4016:
+        twaveT = val >> 5; // Wave mode of the 2-bit wave channel (False = Wave. True = Triangle)
+        tvol = (val & 15) + 1;
+        break;
+    */
 
     // noise
 

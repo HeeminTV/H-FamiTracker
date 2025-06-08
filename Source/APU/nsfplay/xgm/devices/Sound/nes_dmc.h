@@ -63,8 +63,9 @@ namespace xgm
 
     INT32 counter[3];  // frequency dividers
     int tphase;        // triangle phase
-    int twaveH; // EFT
+    int twaveH;
     int twaveL;
+    int tvol;
 
     UINT32 nfreq;      // noise frequency
     UINT32 dfreq;      // DPCM frequency
@@ -82,6 +83,9 @@ namespace xgm
     bool envelope_loop;
     bool envelope_disable;
     bool envelope_write;
+
+    bool twaveT; // 
+
     int envelope_div_period;
     int envelope_div;
     int envelope_counter;

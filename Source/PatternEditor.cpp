@@ -2046,7 +2046,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	// 2A03
 	DrawHeaderFunc(_T("7E02"));		// // //
 
-	for (int i = 0; i < 5; ++i) {
+	for (int i = 0; i < 6; ++i) {
 		GetRegsFunc(SNDCHIP_NONE, [&] (int x) { return 0x4000 + i * 4 + x; }, 4);
 		text.Format(_T("$%04X:"), 0x4000 + i * 4);		// // //
 		DrawRegFunc(text, 4);
@@ -2076,6 +2076,10 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			vol = 15 *!pSoundGen->PreviewDone();
 			text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
 				(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
+			text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);
+			break;
+		case 5:
+			text.Format(_T(""), 0, 0); // Just clear everything here
 			break;
 		}
 /*
@@ -2090,11 +2094,13 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			DrawVolFuncRate(period, vol << 4, 0x0F); break;
 		case 4:
 			DrawVolFuncRate(period, vol << 4, 0x0F, false); break;
+		case 5:
+			break;
 		}
 
 	}
 
-	text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);		// // //
+	// text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);	dawg	// // //
 	++line; y += LINE_HEIGHT;		// // //
 	DrawTextFunc(180, text);
 
