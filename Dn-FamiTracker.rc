@@ -78,8 +78,8 @@ BEGIN
     BUTTON      ID_NEXT_SONG
     SEPARATOR
     BUTTON      ID_FILE_GENERALSETTINGS
-    SEPARATOR
-    BUTTON      ID_FILE_CREATE_NSF
+    // SEPARATOR
+    // BUTTON      ID_FILE_CREATE_NSF
 END
 
 IDR_INSTRUMENT_TOOLBAR TOOLBAR 16, 15
@@ -555,12 +555,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Dn Programming Core Management"
             VALUE "FileDescription", "H-FamiTracker, Personal test shit from Heemin"
-            VALUE "FileVersion", "0.0.1a4"
+            VALUE "FileVersion", "0.0.1a5"
             VALUE "InternalName", "H-FamiTracker.exe"
             VALUE "LegalCopyright", "(c) jsr 2005-2020, HertzDevil 2014-2018, Dn Programming Core Management 2020-2025, Heemin 2025 All rights reserved."
             VALUE "OriginalFilename", "H-FamiTracker.exe"
             VALUE "ProductName", "H-FamiTracker"
-            VALUE "ProductVersion", "0.0.1a4"
+            VALUE "ProductVersion", "0.0.1a5"
         END
     END
     BLOCK "VarFileInfo"

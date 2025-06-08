@@ -430,6 +430,9 @@ void CMixer::StoreChannelLevel(int Channel, int Value)
 	if (Channel == CHANID_VRC6_SAWTOOTH)
 		AbsVol = (AbsVol * 3) / 4;
 
+	if (Channel == CHANID_MMC5_VOICE) // Taken from E-FamiTracker by Euly
+		AbsVol = (AbsVol * 2) / 36;
+
 	if (Channel >= CHANID_SY1202_CH1 && Channel <= CHANID_SY1202_CH3) {
 		AbsVol = (int)(logf((float)AbsVol) * 2.8f);
 	}

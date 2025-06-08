@@ -34,7 +34,7 @@
  * Class CSeqInstHandler
  */
 
-CSeqInstHandler::CSeqInstHandler(CChannelHandlerInterface *pInterface, int Vol, int Duty) :
+CSeqInstHandler::CSeqInstHandler(CChannelHandlerInterface* pInterface, int Vol, int Duty) :
 	CInstHandler(pInterface, Vol),
 	m_iDefaultDuty(Duty)
 {
@@ -48,7 +48,7 @@ void CSeqInstHandler::LoadInstrument(std::shared_ptr<CInstrument> pInst)
 	auto pSeqInst = std::dynamic_pointer_cast<CSeqInstrument>(pInst);
 	if (pSeqInst == nullptr) return;
 	for (std::size_t i = 0; i < sizeof(m_pSequence) / sizeof(CSequence*); i++) {
-		const CSequence *pSequence = pSeqInst->GetSequence(static_cast<int>(i));
+		const CSequence* pSequence = pSeqInst->GetSequence(static_cast<int>(i));
 		bool Enable = pSeqInst->GetSeqEnable(static_cast<int>(i)) == SEQ_STATE_RUNNING;
 		if (!Enable)
 			ClearSequence(static_cast<int>(i));
@@ -67,10 +67,10 @@ void CSeqInstHandler::TriggerInstrument()
 	m_iNoteOffset = 0;
 	m_iPitchOffset = 0;
 	m_iDutyParam = m_iDefaultDuty;
-	
+
 	if (m_pInterface->IsActive()) {
 		m_pInterface->SetVolume(m_iDefaultVolume);
-//		m_pInterface->SetDutyPeriod(m_iDefaultDuty); // not same
+		//		m_pInterface->SetDutyPeriod(m_iDefaultDuty); // not same
 	}
 }
 
@@ -99,7 +99,7 @@ void CSeqInstHandler::UpdateInstrument()
 			ProcessSequence(static_cast<int>(i), m_pSequence[i]->GetSetting(), Value);
 			++m_iSeqPointer[i];
 
-			{	
+			{
 				int Release = m_pSequence[i]->GetReleasePoint();
 				int Items = m_pSequence[i]->GetItemCount();
 				int Loop = m_pSequence[i]->GetLoopPoint();
@@ -145,11 +145,11 @@ void CSeqInstHandler::UpdateInstrument()
 bool CSeqInstHandler::ProcessSequence(int Index, unsigned Setting, int Value)
 {
 	switch (Index) {
-	// Volume modifier
+		// Volume modifier
 	case SEQ_VOLUME:
 		m_pInterface->SetVolume(Value);
 		return true;
-	// Arpeggiator
+		// Arpeggiator
 	case SEQ_ARPEGGIO:
 		switch (Setting) {
 		case SETTING_ARP_ABSOLUTE:
@@ -180,7 +180,7 @@ bool CSeqInstHandler::ProcessSequence(int Index, unsigned Setting, int Value)
 			return true;
 		}
 		return false;
-	// Pitch
+		// Pitch
 	case SEQ_PITCH:
 		switch (Setting) {		// // //
 		case SETTING_PITCH_RELATIVE:
@@ -191,11 +191,11 @@ bool CSeqInstHandler::ProcessSequence(int Index, unsigned Setting, int Value)
 			return true;
 		}
 		return false;
-	// Hi-pitch
+		// Hi-pitch
 	case SEQ_HIPITCH:
 		m_pInterface->SetPeriod(m_pInterface->GetPeriod() + (Value << 4));
 		return true;
-	// Duty cycling
+		// Duty cycling
 	case SEQ_DUTYCYCLE:
 		m_pInterface->SetDutyPeriod(Value);
 		return true;
@@ -203,16 +203,16 @@ bool CSeqInstHandler::ProcessSequence(int Index, unsigned Setting, int Value)
 	return false;
 }
 
-void CSeqInstHandler::SetupSequence(int Index, const CSequence *pSequence)
+void CSeqInstHandler::SetupSequence(int Index, const CSequence* pSequence)
 {
-	m_iSeqState[Index]	 = SEQ_STATE_RUNNING;
+	m_iSeqState[Index] = SEQ_STATE_RUNNING;
 	m_iSeqPointer[Index] = 0;
-	m_pSequence[Index]	 = pSequence;
+	m_pSequence[Index] = pSequence;
 }
 
 void CSeqInstHandler::ClearSequence(int Index)
 {
-	m_iSeqState[Index]	 = SEQ_STATE_DISABLED;
+	m_iSeqState[Index] = SEQ_STATE_DISABLED;
 	m_iSeqPointer[Index] = 0;
-	m_pSequence[Index]	 = nullptr;
+	m_pSequence[Index] = nullptr;
 }

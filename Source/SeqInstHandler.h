@@ -47,7 +47,7 @@ public:
 		\param pInterface Pointer to the channel interface.
 		\param Vol Default volume for instruments used by this handler.
 		\param Duty Default duty cycle for instruments used by this handler. */
-	CSeqInstHandler(CChannelHandlerInterface *pInterface, int Vol, int Duty);
+	CSeqInstHandler(CChannelHandlerInterface* pInterface, int Vol, int Duty);
 
 	void LoadInstrument(std::shared_ptr<CInstrument> pInst) override;
 	void TriggerInstrument() override;
@@ -70,7 +70,7 @@ protected:
 	/*!	\brief Prepares a sequence type for use by CSeqInstHandler::UpdateInstrument.
 		\param Index The sequence type.
 		\param pSequence Pointer to the sequence. */
-	virtual void SetupSequence(int Index, const CSequence *pSequence);
+	virtual void SetupSequence(int Index, const CSequence* pSequence);
 
 	/*!	\brief Clears a sequence type from use.
 		\param Index The sequence type. */
@@ -78,7 +78,7 @@ protected:
 
 protected:
 	/*!	\brief An array holding pointers to the sequences used by the current instrument. */
-	const CSequence	*m_pSequence[SEQ_COUNT];
+	const CSequence* m_pSequence[SEQ_COUNT];
 	/*!	\brief An array holding the states of each sequence type used in sequence instruments. */
 	seq_state_t		m_iSeqState[SEQ_COUNT];
 	/*!	\brief An array holding the tick index of each sequence type used in sequence instruments. */

@@ -503,10 +503,15 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_DAC:
-					if (ChanID == CHANID_DPCM) {
+					if (ChanID == CHANID_DPCM) { // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_DAC));
 						WriteData(EffParam & 0x7F);
 					}
+					else if (ChanID == CHANID_MMC5_VOICE) {
+						WriteData(Command(CMD_EFF_DAC));
+						WriteData(EffParam & 0xFF);
+					}
+					break;
 					break;
 				case EF_DUTY_CYCLE:
 					if (ChipID == SNDCHIP_VRC7) {		// // // 050B
