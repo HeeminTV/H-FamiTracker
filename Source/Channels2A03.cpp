@@ -316,7 +316,7 @@ void CTriangleChan::RefreshChannel()
 		WriteRegister(0x4009, WaveHighBytes);		// EFT
 		WriteRegister(0x400D, WaveLowBytes);		// EFT
 		// WriteRegister(0x400C, WaveType);
-		WriteRegister(0x4016, Volume + (WaveType << 4)); // $4016, (x,y). y = 4-bit volume, x = wave mode (0 = wave, 1 = triangle) 
+		WriteRegister(0x4016, (Volume) + (WaveType << 4)); // $4016, (x,y). y = 4-bit volume, x = wave mode (0 = wave, 1 = triangle) 
 
 		WriteRegister(0x400A, HiFreq);
 		if (m_bEnvelopeLoop || m_bResetEnvelope)		// // //
