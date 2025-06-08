@@ -9,7 +9,7 @@ Presents two fantasy chips based on RP2A03 and Sunsoft 5B, called **7E02**, **SY
 ### 7E02
 
 - Two FWG channels (FWG stands for **F**ixed-set **W**aveform **G**enerator)
-- One user-configuable 2-bit 8 samples long waveform channel
+- One user-configuable 2-bit 8 samples long waveform channel with 4-bit volume control
 - Noise and DPCM are the same ones as the RP2A03's
 
 ### SY1202
