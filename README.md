@@ -4,6 +4,8 @@
 
 H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**eemin"
 
+## New features
+
 Presents two fantasy chips based on RP2A03 and Sunsoft 5B, called **7E02**, **SY1202**
 
 ### 7E02
@@ -17,6 +19,14 @@ Presents two fantasy chips based on RP2A03 and Sunsoft 5B, called **7E02**, **SY
 - Three square generator
 - Noise generator
 - **Linear** envelope generator
+
+## E-FamiTracker modifications
+
+This fork also presents some features from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
+
+This fork ***DO NOT OWN*** the codes that are taken from E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
+
+- MMC5 PCM
 
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)
 
