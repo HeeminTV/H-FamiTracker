@@ -2086,11 +2086,11 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 				if (!(reg[7] >> 4)) {
 					for (int i = 0; i < 8; ++i) {
 						int shift = (7 - i) * 2;
-						uint32_t value = (((reg[5] << 8) + reg[1]) >> shift) & 0x3;
+						uint32_t value = (((reg[1] << 8) + reg[5]) >> shift) & 0x3;
 						visshape[i] = WaveShape[value];
 					}
 
-					text.Format(_T("%s, vol = %02i, mode = 0 (%s%s%s%s%s%s%s%s)"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
+					text.Format(_T("%s, vol = %02i, mode = 0 [ %s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
 						visshape[0], visshape[1], visshape[2], visshape[3],
 						visshape[4], visshape[5], visshape[6], visshape[7]
 					);
