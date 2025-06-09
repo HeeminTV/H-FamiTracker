@@ -5,6 +5,8 @@ changelog.txt
 /cmake_user_begin.cmake
 /cmake_user_end.cmake
 
+/Source/APU/mmc5pcmsamples/wav2raw.exe
+
 # Editors
 *.sublime-*
 /enc_temp_folder

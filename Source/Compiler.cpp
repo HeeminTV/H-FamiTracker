@@ -1824,7 +1824,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 		int Channel = m_pDocument->GetChannelIndex(CHANID_FWG1 + i);
 		m_vChanOrder.push_back(Channel);
 	}
-	if (Chip & SNDCHIP_MMC5) for (int i = 0; i < 2; i++) {
+	if (Chip & SNDCHIP_MMC5) for (int i = 0; i < 3; i++) {
 		int Channel = m_pDocument->GetChannelIndex(CHANID_MMC5_SQUARE1 + i);
 		m_vChanOrder.push_back(Channel);
 	}

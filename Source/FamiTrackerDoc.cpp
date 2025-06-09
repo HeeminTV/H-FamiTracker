@@ -4414,7 +4414,7 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 {
 	// TODO: use information from the current channel map instead
 	unsigned int pos = Channel;
-	if (pos == CHANID_MMC5_VOICE) return -1;
+	//if (pos == CHANID_MMC5_VOICE) return -1;
 
 	if (!(Chip & SNDCHIP_S5B)) {
 		if (pos > CHANID_SY1202_CH3) pos -= 3;
@@ -4428,11 +4428,11 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 		if (pos > CHANID_FDS) pos -= 1;
 		else if (pos >= CHANID_FDS) return -1;
 	}
-		if (pos > CHANID_N163_CH8) pos -= 8 - (!(Chip & SNDCHIP_N163) ? 0 : m_iNamcoChannels);
-		else if (pos > CHANID_MMC5_VOICE + (!(Chip & SNDCHIP_N163) ? 0 : m_iNamcoChannels)) return -1;
-	if (pos > CHANID_MMC5_VOICE) pos -= 1;
+	if (pos > CHANID_N163_CH8) pos -= 8 - (!(Chip & SNDCHIP_N163) ? 0 : m_iNamcoChannels);
+	else if (pos > CHANID_MMC5_VOICE + (!(Chip & SNDCHIP_N163) ? 0 : m_iNamcoChannels)) return -1;
+	//if (pos > CHANID_MMC5_VOICE) pos -= 1; // Taken form E-FamiTracker by Euly
 	if (!(Chip & SNDCHIP_MMC5)) {
-		if (pos > CHANID_MMC5_SQUARE2) pos -= 2;
+		if (pos > CHANID_MMC5_VOICE) pos -= 3;
 		else if (pos >= CHANID_MMC5_SQUARE1) return -1;
 	}
 	if (!(Chip & SNDCHIP_VRC6)) {
