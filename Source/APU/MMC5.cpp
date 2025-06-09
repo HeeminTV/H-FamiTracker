@@ -991,6 +991,7 @@ CMMC5::CMMC5(CMixer* pMixer) :
 {
 	m_pRegisterLogger->AddRegisterRange(0x5000, 0x5007);		// // //
 	m_pRegisterLogger->AddRegisterRange(0x5015, 0x5015);
+	m_pRegisterLogger->AddRegisterRange(0x5113, 0x5115);
 }
 
 CMMC5::~CMMC5()

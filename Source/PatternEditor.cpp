@@ -2158,18 +2158,34 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		DrawHeaderFunc(_T("MMC5"));		// // //
 
 		// MMC5
-		for (int i = 0; i < 2; ++i) {
-			GetRegsFunc(SNDCHIP_MMC5, [&] (int x) { return 0x5000 + i * 4 + x; }, 4);
-			text.Format(_T("$%04X:"), 0x5000 + i * 4);
-			DrawRegFunc(text, 4);
-			
-			int period = (reg[2] | ((reg[3] & 7) << 8));
-			int vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
-			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_MMC5, i);		// // //
+		for (int i = 0; i < 3; ++i) {
+			if (i == 2) { // PCM
+				GetRegsFunc(SNDCHIP_MMC5, [&](int x) { return 0x5113 + x; }, 3);
+				text.Format(_T("$5113:"), 0);
+				DrawRegFunc(text, 3);
 
-			text.Format(_T("%s, vol = %02i, duty = %i"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6);
-			DrawTextFunc(180, text);
-			DrawVolFunc(freq, vol << 4);
+				//int period = (reg[2] | ((reg[3] & 7) << 8));
+				int vol = reg[2];
+				//double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_MMC5, 2);		// // //
+
+				int freq = ((reg[1] << 8) + reg[0]) * 0.255234375;
+				text.Format(_T("%s,vol = %02i"), GetPitchTextFunc(4, 0, freq), vol);
+				DrawTextFunc(180, text);
+				DrawVolFunc(freq, vol << 4);
+
+			} else { // Pulses
+				GetRegsFunc(SNDCHIP_MMC5, [&](int x) { return 0x5000 + i * 4 + x; }, 4);
+				text.Format(_T("$%04X:"), 0x5000 + i * 4);
+				DrawRegFunc(text, 4);
+
+				int period = (reg[2] | ((reg[3] & 7) << 8));
+				int vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_MMC5, i);		// // //
+
+				text.Format(_T("%s, vol = %02i, duty = %i"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6);
+				DrawTextFunc(180, text);
+				DrawVolFunc(freq, vol << 4);
+			}
 		}
 	}
 
