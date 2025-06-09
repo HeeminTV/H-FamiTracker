@@ -237,7 +237,7 @@ void CMixer::RecomputeEmuMixState()
 		// VRC7 level does not decrease as you enable expansion chips
 		chipVRC7.UpdateMixLevel(m_MixerConfig.OverallVol * m_fLevelVRC7);
 		SynthVRC6.volume(Volume * 3.98333f * m_fLevelVRC6, 500);
-		SynthMMC5.volume(Volume * 1.18421f * m_fLevelMMC5, 130);
+		SynthMMC5.volume(Volume * 1.18421f * m_fLevelMMC5, 560);  // 130 (Taken from E-FamiTracker by Euly)
 		SynthS5B.volume(Volume * m_fLevelS5B, 1200);  // Not checked
 	}
 
@@ -432,6 +432,10 @@ void CMixer::StoreChannelLevel(int Channel, int Value)
 
 	if (Channel == CHANID_MMC5_VOICE) // Taken from E-FamiTracker by Euly
 		AbsVol = (AbsVol * 2) / 36;
+
+	if (Channel == CHANID_MMC5_SQUARE1 || Channel == CHANID_MMC5_SQUARE2) // I don't know what it does...
+		AbsVol = (AbsVol) / 6;
+
 
 	if (Channel >= CHANID_SY1202_CH1 && Channel <= CHANID_SY1202_CH3) {
 		AbsVol = (int)(logf((float)AbsVol) * 2.8f);

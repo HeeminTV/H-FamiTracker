@@ -473,6 +473,10 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		// // // Sunsoft 5B
 		Pitch = pDetuneS5B->FrequencyToPeriod(pDetuneS5B->NoteToFreq(i), 1, 0);
 		m_iNoteLookupTableS5B[i] = std::lround(Pitch - pDocument->GetDetuneOffset(0, i));
+
+		// // // MMC5 PCM
+		Pitch = ((440. * pow(2.0, double(i - A440_NOTE) / 12.)) / 523.25) * 0x0100; // Taken from E-FamiTracker by Euly. Modified a little bit (becasue they added detune settings. I guess this won't be affected by it?)
+		m_iNoteLookupTablePCM[i] = (unsigned int)(Pitch - pDocument->GetDetuneOffset(0, i));		// // //
 	}
 
 #ifdef WRITE_PERIOD_FILES
@@ -574,6 +578,10 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 			Table = m_iNoteLookupTableN163; break;
 		case CHANID_SY1202_CH1: case CHANID_SY1202_CH2: case CHANID_SY1202_CH3:
 			Table = m_iNoteLookupTableS5B; break;
+
+		case CHANID_MMC5_VOICE: // Taken from E-FamiTracker by Euly
+			Table = m_iNoteLookupTablePCM; break;
+
 		default: continue;
 		}
 		m_pChannels[i]->SetNoteTable(Table);

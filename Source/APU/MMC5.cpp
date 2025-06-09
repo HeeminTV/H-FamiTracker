@@ -1040,6 +1040,7 @@ uint8_t PCMData5[639] = {
 	0x4E, 0x34, 0x05
 };
 
+// woah, that's tons of HEX values!
 
 uint32_t PCMTime = 0;
 
@@ -1119,7 +1120,7 @@ void CMMC5::Write(uint16_t Address, uint8_t Value)
 	case 0x5007:
 		m_pSquare2->Write(3, Value);
 		break;
-		// Channel 3... (doesn't exist)
+		// Channel 3... (doesn't exist) [now it does]
 	case 0x5010:
 		m_bDACMode = (Value & 1);
 		break;

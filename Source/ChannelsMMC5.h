@@ -54,7 +54,7 @@ protected:
 	int	 m_iLastPeriod;			// // // moved to subclass
 };
 
-class CChannelHandlerMMC5Voice : public CChannelHandler {
+class CChannelHandlerMMC5Voice : public CChannelHandler { // Taken from E-FamiTracker by Euly
 public:
 	CChannelHandlerMMC5Voice();
 	void	ResetChannel() override;
