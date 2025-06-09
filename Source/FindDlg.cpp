@@ -302,9 +302,9 @@ void CFindResultsBox::SelectItem(int Index)
 	const auto ToChannelIndex = [] (const std::string &_x) {
 		CString x {_x.c_str()};
 		static const CString HEADER_STR[] = {
-			_T("FWG "), _T("2-bit Waveform"), _T("Noise"), _T("DPCM"),
-			_T("VRC6 FWG "), _T("Sawtooth"),
-			_T("MMC5 Pulse "), _T("Namco "), _T("FDS"), _T("FM Channel "), _T("SY Square ")
+			_T("7E02 FWG "), _T("7E02 2-bit Waveform"), _T("7E02 Noise"), _T("7E02 DPCM"),
+			_T("VRC6 Pulse "), _T("VRC6 Sawtooth"),
+			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("SY1202 PSG ")
 		};
 		static const int HEADER_ID[] = {
 			CHANID_FWG1, CHANID_WAVEFORM, CHANID_NOISE, CHANID_DPCM,
@@ -510,10 +510,10 @@ int CFindResultsBox::ChannelCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM l
 
 	const auto ToIndex = [] (const CString &x) {
 		static const CString HEADER_STR[] = {
-			_T("FWG "), _T("2-bit Waveform"), _T("Noise"), _T("DPCM"),
-			_T("VRC6 Pulse "), _T("Sawtooth"),
-			_T("MMC5 Pulse "), _T("Namco "), _T("FDS"), _T("FM Channel "), _T("SY Square ")
-		};
+			_T("7E02 FWG "), _T("7E02 2-bit Waveform"), _T("7E02 Noise"), _T("7E02 DPCM"),
+			_T("VRC6 Pulse "), _T("VRC6 Sawtooth"),
+			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("SY1202 PSG ")
+		}; // Why we should have two of this?? one should be enough!!
 		int Pos = 0;
 		for (const auto &n : HEADER_STR) {
 			int Size = n.GetLength();

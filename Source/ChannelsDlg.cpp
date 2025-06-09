@@ -59,19 +59,22 @@ const int CHILD_ITEMS_ID[ROOT_ITEM_COUNT][9] = {
 
 const TCHAR *CHILD_ITEMS[ROOT_ITEM_COUNT][9] = {
 	// 2A03
-	{_T("FWG 1"), _T("FWG 2"), _T("2-bit Waveform"), _T("Noise"), _T("DPCM")},
+	{_T("7E02 FWG 1"), _T("7E02 FWG 2"), _T("7E02 2-bit Waveform"), _T("7E02 Noise"), _T("7E02 DPCM")},
 	// VRC 6
-	{_T("Pulse 1"), _T("Pulse 2"), _T("Sawtooth")},
+	{_T("VRC6 Pulse 1"), _T("VRC6 Pulse 2"), _T("VRC6 Sawtooth")},
 	// VRC 7
-	{_T("Channel 1"), _T("Channel 2"), _T("Channel 3"), _T("Channel 4"), _T("Channel 5"), _T("Channel 6")},
+	{_T("VRC7 FM 1"), _T("VRC7 FM 2"), _T("VRC7 FM 3"), _T("VRC7 FM 4"), _T("VRC7 FM 5"), _T("VRC7 FM 6")},
 	// FDS
-	{_T("FDS")},
+	{_T("2C33")},
 	// MMC5
-	{_T("Pulse 1"), _T("Pulse 2")},
+	{_T("MMC5 Pulse 1"), _T("MMC5 Pulse 2"), _T("MMC5 PCM")},
 	// N163
-	{_T("Channel 1"), _T("Channel 2"), _T("Channel 3"), _T("Channel 4"), _T("Channel 5"), _T("Channel 6"), _T("Channel 7"), _T("Channel 8")},
+	{
+		_T("163 Waveform 1"), _T("163 Waveform 2"), _T("163 Waveform 3"), _T("163 Waveform 4"), 
+		 _T("163 Waveform 5"), _T("163 Waveform 6"), _T("163 Waveform 7"), _T("163 Waveform 8")
+	},
 	 // S5B
-	{_T("PSG 1"), _T("PSG 2"), _T("PSG 3")}
+	{_T("SY1202 PSG 1"), _T("SY1202 PSG 2"), _T("SY1202 PSG 3")}
 };
 
 // CChannelsDlg dialog
