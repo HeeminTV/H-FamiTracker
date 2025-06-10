@@ -4,29 +4,26 @@
 
 H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**eemin"
 
-## New features
-
 Presents two fantasy chips based on RP2A03 and Sunsoft 5B, called **7E02**, **SY1202**
-
-### 7E02
-
-- Two FWG channels (FWG stands for **F**ixed-set **W**aveform **G**enerator)
-- One user-configuable 2-bit 8 samples long waveform channel with 4-bit volume control
-- Noise and DPCM are the same ones as the RP2A03's
-
-### SY1202
-
-- Three square generator
-- Noise generator
-- **Linear** envelope generator
 
 ## E-FamiTracker modifications
 
 This fork also presents some features from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
 
-This fork ***DO NOT OWN*** the codes that are taken from E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
+This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
+
+- 5E01
 
 - MMC5 PCM
+
+## To do list
+[x] - 7E02
+[x] - MMC5 PCM
+[ ] - PCM importer via DPCM instrument
+[x] - 5E01
+[ ] - 2A03
+[ ] - UA6527
+[ ] - SN76489
 
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)
 

@@ -78,7 +78,7 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_BN_CLICKED(IDC_EXPANSION_S5B, OnBnClickedExpansionS5B)
 	ON_BN_CLICKED(IDC_EXPANSION_N163, OnBnClickedExpansionN163)
 
-	ON_BN_CLICKED(IDC_EXPANSION_5E01, OnBnClickedExpansion5E01)
+	ON_BN_CLICKED(IDC_EXPANSION_5E01, OnBnClickedExpansion5E01) // Taken from E-FamiTracker by Euly
 
 	ON_WM_VSCROLL()
 	ON_EN_CHANGE(IDC_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeApu1OffsetEdit)
@@ -273,6 +273,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_EXPANSION_MMC5))->SetCheck((m_iExpansions & SNDCHIP_MMC5) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_N163))->SetCheck((m_iExpansions & SNDCHIP_N163) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_SY1202) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_5E01))->SetCheck((m_iExpansions & SNDCHIP_5E01) != 0);
 
 	// N163 channel count UI
 	m_cChannelsLabel.SubclassDlgItem(IDC_CHANNELS_NR, this);
