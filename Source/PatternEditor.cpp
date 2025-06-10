@@ -1539,7 +1539,7 @@ void CPatternEditor::DrawCell(CDC *pDC, int PosX, cursor_column_t Column, int Ch
 								if (pDPCMInst->GetDSample(pNoteData->Octave, pNoteData->Note - 1) == nullptr)
 									noteCol = WarningColor;
 							}
-							else if (m_pDocument->GetInstrument(pNoteData->Instrument) == nullptr || m_pDocument->GetInstrument(pNoteData->Instrument)->GetType() != INST_7E02)
+							else if (m_pDocument->GetInstrument(pNoteData->Instrument) == nullptr || m_pDocument->GetInstrument(pNoteData->Instrument)->GetType() != INST_2A03)
 								noteCol = WarningColor;
 						} else if (pNoteData->Instrument == HOLD_INSTRUMENT && pTrackerChannel->GetID() == CHANID_DPCM)
 							noteCol = WarningColor;
@@ -1845,7 +1845,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		m_pDocument->ExpansionEnabled(SNDCHIP_N163) * 18 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_FDS) * 13 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_S5B) * 8);		// // //
+		m_pDocument->ExpansionEnabled(SNDCHIP_SY1202) * 8);		// // //
 	int vis_line = 0;
 
 	const auto DrawHeaderFunc = [&] (CString Text) {
@@ -2169,7 +2169,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 				//double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_MMC5, 2);		// // //
 
 				int freq = ((reg[1] << 8) + reg[0]) * 0.255234375;
-				text.Format(_T("%s,vol = %02i"), GetPitchTextFunc(4, 0, freq), vol);
+
+				text.Format(_T("%s, vol = %02i"), GetPitchTextFunc(3, (reg[1] << 8) + reg[0], freq), vol);
 				DrawTextFunc(180, text);
 				DrawVolFunc(freq, vol << 4);
 
@@ -2334,23 +2335,23 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		}
 	}
 
-	if (m_pDocument->ExpansionEnabled(SNDCHIP_S5B)) {		// // //
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_SY1202)) {		// // //
 		DrawHeaderFunc(_T("SY1202"));		// // //
 
 		// S5B
 		for (int i = 0; i < 4; ++i) {
-			GetRegsFunc(SNDCHIP_S5B, [&] (int x) { return i * 2 + x; }, 2);
+			GetRegsFunc(SNDCHIP_SY1202, [&] (int x) { return i * 2 + x; }, 2);
 			text.Format(_T("$%02X:"), i * 2);
 			DrawRegFunc(text, 2);
 
 			int period = reg[0] | ((reg[1] & 0x0F) << 8);
-			int period_noise = pSoundGen->GetReg(SNDCHIP_S5B, 0x06) & 0x1F;
-			int vol = pSoundGen->GetReg(SNDCHIP_S5B, 8 + i) & 0x0F;
-			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_S5B, i);		// // //
-			double freq_env = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_S5B, 3);		// // //
-			bool enable_tone = !(pSoundGen->GetReg(SNDCHIP_S5B, 7) & (1 << i));
-			bool enable_noise = !(pSoundGen->GetReg(SNDCHIP_S5B, 7) & (8 << i));
-			bool enable_env = pSoundGen->GetReg(SNDCHIP_S5B, 8 + i) & 0x10;
+			int period_noise = pSoundGen->GetReg(SNDCHIP_SY1202, 0x06) & 0x1F;
+			int vol = pSoundGen->GetReg(SNDCHIP_SY1202, 8 + i) & 0x0F;
+			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SY1202, i);		// // //
+			double freq_env = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SY1202, 3);		// // //
+			bool enable_tone = !(pSoundGen->GetReg(SNDCHIP_SY1202, 7) & (1 << i));
+			bool enable_noise = !(pSoundGen->GetReg(SNDCHIP_SY1202, 7) & (8 << i));
+			bool enable_env = pSoundGen->GetReg(SNDCHIP_SY1202, 8 + i) & 0x10;
 			if (i < 3)
 				text.Format(_T("%s, vol = %02i, mode = %c%c%c"), GetPitchTextFunc(3, period, freq), vol,
 					enable_tone ? _T('T') : _T('-'),
@@ -2365,13 +2366,13 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		}
 
 		for (int i = 0; i < 2; ++i) {
-			GetRegsFunc(SNDCHIP_S5B, [&] (int x) { return i * 3 + x + 8; }, 3);
+			GetRegsFunc(SNDCHIP_SY1202, [&] (int x) { return i * 3 + x + 8; }, 3);
 			text.Format(_T("$%02X:"), i * 3 + 8);
 			DrawRegFunc(text, 3);
 			
 			if (i == 1) {
 				int period = (reg[0] | (reg[1] << 8));
-				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_S5B, 3);		// // //
+				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SY1202, 3);		// // //
 				if (freq != 0. && reg[1] == 0)
 					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq, "pitch "), reg[2]);
 				else
@@ -4284,7 +4285,7 @@ void CPatternEditor::GetSelectionAsPPMCK(CString &str) const		// // //
 		case SNDCHIP_FDS:  Type += 'F' - CHANID_FDS; break;
 		case SNDCHIP_MMC5: Type += 'a' - CHANID_MMC5_SQUARE1; break;
 		case SNDCHIP_N163: Type += 'P' - CHANID_N163_CH1; break;
-		case SNDCHIP_S5B:  Type += 'X' - CHANID_SY1202_CH1; break;
+		case SNDCHIP_SY1202:  Type += 'X' - CHANID_SY1202_CH1; break;
 		}
 		str.AppendFormat(_T("%c\t"), Type);
 

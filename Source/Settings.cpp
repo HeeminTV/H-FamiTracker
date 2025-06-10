@@ -230,10 +230,13 @@ void CSettings::SetupSettings()
 	SETTING_INT("Mixer", "APU2", 0, &ChipLevels.iLevelAPU2);
 	SETTING_INT("Mixer", "VRC6", 0, &ChipLevels.iLevelVRC6);
 	SETTING_INT("Mixer", "VRC7", 0, &ChipLevels.iLevelVRC7);
-	SETTING_INT("Mixer", "FDS", 0, &ChipLevels.iLevelFDS);
+	SETTING_INT("Mixer", "2C33", 0, &ChipLevels.iLevelFDS);
 	SETTING_INT("Mixer", "MMC5", 0, &ChipLevels.iLevelMMC5);
 	SETTING_INT("Mixer", "N163", 0, &ChipLevels.iLevelN163);
-	SETTING_INT("Mixer", "S5B", 0, &ChipLevels.iLevelS5B);
+	SETTING_INT("Mixer", "SY1202", 0, &ChipLevels.iLevelS5B);
+
+	// SETTING_INT("Mixer", "5E01", 0, &ChipLevels.iLevel5E01); // Taken from E-FamiTracker by Euly
+
 		// Survey mixing levels, described in millibels.
 		// Default values derived from NSFplay
 		// https://github.com/bbbradsmith/nsfplay/blob/master/xgm/player/nsf/nsfplay.cpp#L843
@@ -241,10 +244,10 @@ void CSettings::SetupSettings()
 	SETTING_INT("Mixer", "APU2 survey level", -20, &ChipLevels.iSurveyMixAPU2);
 	SETTING_INT("Mixer", "VRC6 survey level", 0, &ChipLevels.iSurveyMixVRC6);
 	SETTING_INT("Mixer", "VRC7 survey level", 1340, &ChipLevels.iSurveyMixVRC7);
-	SETTING_INT("Mixer", "FDS survey level", 690, &ChipLevels.iSurveyMixFDS);
+	SETTING_INT("Mixer", "2C33 survey level", 690, &ChipLevels.iSurveyMixFDS);
 	SETTING_INT("Mixer", "MMC5 survey level", 0, &ChipLevels.iSurveyMixMMC5);
 	SETTING_INT("Mixer", "N163 survey level", 1540, &ChipLevels.iSurveyMixN163);
-	SETTING_INT("Mixer", "S5B survey level", -250, &ChipLevels.iSurveyMixS5B);
+	SETTING_INT("Mixer", "SY1202 survey level", -250, &ChipLevels.iSurveyMixS5B);
 
 	// Emulation
 		// VRC7

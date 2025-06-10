@@ -186,7 +186,7 @@ int CSeqInstrument::Compile(CChunk *pChunk, int Index)
 
 	const char *label = nullptr;		// // //
 	switch (GetType()) {
-	case INST_7E02: pChunk->StoreByte(0);  label = CChunkRenderText::LABEL_SEQ_2A03; break;
+	case INST_2A03: pChunk->StoreByte(0);  label = CChunkRenderText::LABEL_SEQ_2A03; break;
 	case INST_VRC6: pChunk->StoreByte(4);  label = CChunkRenderText::LABEL_SEQ_VRC6; break;
 	case INST_N163: pChunk->StoreByte(9);  label = CChunkRenderText::LABEL_SEQ_N163; break;
 	case INST_S5B:  pChunk->StoreByte(10); label = CChunkRenderText::LABEL_SEQ_S5B;  break;

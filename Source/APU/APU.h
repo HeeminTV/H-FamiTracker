@@ -43,6 +43,8 @@ class CMMC5;
 class CN163;
 class CS5B;
 
+class C5E01; // Taken from E-FamiTracker by Euly
+
 class CSoundChip;		// // //
 class CSoundChip2;
 class CRegisterState;		// // //
@@ -77,6 +79,13 @@ public:
 	bool	DPCMPlaying() const;
 	void	WriteSample(const char *pBuf, int Size);		// // //
 	void	ClearSample();		// // //
+
+	// Taken from E-FamiTracker by Euly
+	uint8_t	Get5E01SamplePos() const;
+	uint8_t	Get5E01DeltaCounter() const;
+	bool	DPCM5E01Playing() const;
+	void	Write5E01Sample(const char* pBuf, int Size);
+	void	Clear5E01Sample();
 
 	// Configuration methods:
 	/// it's a config method which should be dependency-tracked by CAPUConfig,
@@ -131,13 +140,15 @@ private:
 	IAudioCallback *m_pParent;
 
 	// Expansion chips
-	std::unique_ptr<C2A03> m_p2A03;
+	std::unique_ptr<C2A03> m_p7E02;
 	CVRC6		*m_pVRC6;
 	CMMC5		*m_pMMC5;
 	std::unique_ptr<CFDS> m_pFDS;
 	std::unique_ptr<CN163> m_pN163;
 	std::unique_ptr<CVRC7> m_pVRC7;
 	CS5B		*m_pS5B;
+
+	std::unique_ptr<C5E01> m_p5E01; // Taken from E-FamiTracker by Euly
 
 	/// Bitfield of external sound chips enabled.
 	/// Never read, except for code hidden behind #ifdef LOGGING.

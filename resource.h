@@ -2,6 +2,12 @@
 // Microsoft Visual C++ generated include file.
 // Used by Dn-FamiTracker.rc
 //
+
+// E-FamiTracker (by Euly) modifications 
+#define IDC_EXPANSION_5E01              1496
+#define ID_INSTRUMENT_ADD_5E01          36873
+#define IDC_CHIP_5E01                   1502
+
 #define ID_MANIFEST                     1
 #define IDAPPLY                         3
 #define IDC_IMPORT                      4
@@ -118,7 +124,7 @@
 #define IDS_SEL_NONTERMINAL_SKIP        177
 #define ID_DECREASEVALUES               178
 #define IDS_SEL_TERMINAL_SKIP           178
-#define IDI_INST_7E02                   179
+#define IDI_INST_2A03                   179
 #define IDS_PASTE_REPEATED_ROW          179
 #define ID_INCREASEVALUESCOARSE         179
 #define ID_DECREASEVALUESCOARSE         180

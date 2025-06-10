@@ -35,7 +35,7 @@
 
 CInstrumentFactory::CInstrumentFactory() : CFactory()
 {
-	AddProduct<CInstrument2A03>(INST_7E02);
+	AddProduct<CInstrument2A03>(INST_2A03);
 	AddProduct<CSeqInstrument, inst_type_t>(INST_VRC6, INST_VRC6);
 	AddProduct<CInstrumentVRC7>(INST_VRC7);
 	AddProduct<CInstrumentN163>(INST_N163);

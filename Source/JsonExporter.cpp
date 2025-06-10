@@ -119,7 +119,7 @@ namespace {
 
 	constexpr std::string_view GetInstrumentChipName(inst_type_t inst_type) noexcept {
 		switch (inst_type) {
-			case inst_type_t::INST_7E02: return "7E02"sv;
+			case inst_type_t::INST_2A03: return "7E02"sv;
 			case inst_type_t::INST_VRC6: return "VRC6"sv;
 			case inst_type_t::INST_VRC7: return "VRC7"sv;
 			case inst_type_t::INST_FDS:  return "FDS"sv;
@@ -137,7 +137,7 @@ namespace {
 			case SNDCHIP_FDS:  return "FDS"sv;
 			case SNDCHIP_MMC5: return "MMC5"sv;
 			case SNDCHIP_N163: return "N163"sv;
-			case SNDCHIP_S5B:  return "SY1202"sv;
+			case SNDCHIP_SY1202:  return "SY1202"sv;
 			default: return ""sv;
 		}
 	}
@@ -394,7 +394,7 @@ void to_json(json& j, const CFamiTrackerDoc& modfile) {
 			case SNDCHIP_N163: subindex -= CHANID_N163_CH1; break;
 			case SNDCHIP_FDS: subindex -= CHANID_FDS; break;
 			case SNDCHIP_VRC7: subindex -= CHANID_VRC7_CH1; break;
-			case SNDCHIP_S5B: subindex -= CHANID_SY1202_CH1; break;
+			case SNDCHIP_SY1202: subindex -= CHANID_SY1202_CH1; break;
 			default: break;
 		}
 	};
@@ -575,7 +575,7 @@ void to_json(json& j, const CFamiTrackerDoc& modfile) {
 				}
 	};
 
-	InsertSequences(INST_7E02);
+	InsertSequences(INST_2A03);
 	InsertSequences(INST_VRC6);
 //	InsertSequences(INST_FDS);
 	InsertSequences(INST_N163);

@@ -295,7 +295,7 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 			}
 #ifdef OPTIMIZE_DURATIONS
 			if (Instrument == LastInstrument && Instrument < MAX_INSTRUMENTS) {		// // //
-				if (ChanID != CHANID_DPCM) {
+				if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 					WriteDuration();
 					Action = true;
 				}
@@ -316,8 +316,8 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 			NESNote = 0x6F + Octave;
 		}
 		else {
-			if (ChanID == CHANID_DPCM) {
-				// 2A03 DPCM
+			if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
+				// 7E02 / 5E01 DPCM
 				int LookUp = FindSample(DPCMInst, Octave, Note);
 				if (LookUp > 0) {
 					NESNote = LookUp - 1;
@@ -343,6 +343,15 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 				NESNote = (Note - 1) + (Octave * NOTE_RANGE);
 				NESNote = (NESNote & 0x0F) | 0x10;
 			}
+
+			// Taken from E-FamiTracker Euly
+			else if (ChanID == CHANID_5E01_NOISE) {
+				// 2A03 Noise
+				NESNote = (Note - 1) + (Octave * NOTE_RANGE);
+				// TOFIX
+				NESNote = (NESNote & 0x1F);
+			}
+
 			else
 				// All other channels
 				NESNote = (Note - 1) + (Octave * NOTE_RANGE);
@@ -387,13 +396,14 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					switch (ChanID) {
 					case CHANID_FWG1: case CHANID_FWG2: case CHANID_WAVEFORM: case CHANID_NOISE:
 					case CHANID_MMC5_SQUARE1: case CHANID_MMC5_SQUARE2:
+					case CHANID_5E01_SQUARE1: case CHANID_5E01_SQUARE2: case CHANID_5E01_WAVEFORM: case CHANID_5E01_NOISE: // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_VOLUME));
 						if ((EffParam <= 0x1F) || (EffParam >= 0xE0 && EffParam <= 0xE3))
 							WriteData(EffParam & 0x9F);
 					}
 					break;
 				case EF_PORTAMENTO:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						if (EffParam == 0)
 							WriteData(Command(CMD_EFF_CLEAR));
 						else {
@@ -403,12 +413,12 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_PORTA_UP:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						if (EffParam == 0)
 							WriteData(Command(CMD_EFF_CLEAR));
 						else {
 							switch (ChipID) {		// // //
-							case SNDCHIP_NONE: case SNDCHIP_VRC6: case SNDCHIP_MMC5: case SNDCHIP_S5B:
+							case SNDCHIP_NONE: case SNDCHIP_VRC6: case SNDCHIP_MMC5: case SNDCHIP_SY1202: case SNDCHIP_5E01: // Taken from E-FamiTracker by Euly
 								if (!m_pDocument->GetLinearPitch()) {
 									WriteData(Command(CMD_EFF_PORTAUP));
 									break;
@@ -422,12 +432,12 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_PORTA_DOWN:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						if (EffParam == 0)
 							WriteData(Command(CMD_EFF_CLEAR));
 						else {
 							switch (ChipID) {		// // //
-							case SNDCHIP_NONE: case SNDCHIP_VRC6: case SNDCHIP_MMC5: case SNDCHIP_S5B:
+							case SNDCHIP_NONE: case SNDCHIP_VRC6: case SNDCHIP_MMC5: case SNDCHIP_SY1202: case SNDCHIP_5E01: // Taken from E-FamiTracker by Euly
 								if (!m_pDocument->GetLinearPitch()) {
 									WriteData(Command(CMD_EFF_PORTADOWN));
 									break;
@@ -448,19 +458,19 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;*/
 				case EF_SWEEPUP:
-					if (ChanID < CHANID_WAVEFORM) {
+					if (ChanID < CHANID_WAVEFORM || ChanID == CHANID_5E01_SQUARE1 || ChanID == CHANID_5E01_SQUARE2) { // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_SWEEP));
 						WriteData(0x88 | (EffParam & 0x77));	// Calculate sweep
 					}
 					break;
 				case EF_SWEEPDOWN:
-					if (ChanID < CHANID_WAVEFORM) {
+					if (ChanID < CHANID_WAVEFORM || ChanID == CHANID_5E01_SQUARE1 || ChanID == CHANID_5E01_SQUARE2) { // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_SWEEP));
 						WriteData(0x80 | (EffParam & 0x77));	// Calculate sweep
 					}
 					break;
 				case EF_ARPEGGIO:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						if (EffParam == 0)
 							WriteData(Command(CMD_EFF_CLEAR));
 						else {
@@ -470,26 +480,26 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_VIBRATO:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_VIBRATO));
 						//WriteData(EffParam);
 						WriteData((EffParam & 0xF) << 4 | (EffParam >> 4));
 					}
 					break;
 				case EF_TREMOLO:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_TREMOLO));
 //						WriteData(EffParam & 0xF7);
 						WriteData((EffParam & 0xF) << 4 | (EffParam >> 4));
 					}
 					break;
 				case EF_PITCH:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						if (EffParam == 0x80)
 							WriteData(Command(CMD_EFF_RESET_PITCH));
 						else {
 							switch (ChipID) {
-							case SNDCHIP_NONE: case SNDCHIP_VRC6: case SNDCHIP_MMC5: case SNDCHIP_S5B:		// // //
+							case SNDCHIP_NONE: case SNDCHIP_VRC6: case SNDCHIP_MMC5: case SNDCHIP_SY1202:		// // //
 								if (!m_pDocument->GetLinearPitch()) break;
 							default:
 								EffParam = (char)(256 - (int)EffParam);
@@ -503,7 +513,7 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_DAC:
-					if (ChanID == CHANID_DPCM) { // Taken from E-FamiTracker by Euly
+					if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) { // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_DAC));
 						WriteData(EffParam & 0x7F);
 					}
@@ -518,39 +528,42 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 						WriteData(Command(CMD_EFF_VRC7_PATCH));
 						WriteData(EffParam << 4);
 					}
-					else if (ChipID == SNDCHIP_S5B) {
+					else if (ChipID == SNDCHIP_SY1202) {
 						WriteData(Command(CMD_EFF_DUTY));
 						WriteData((EffParam << 6) | ((EffParam & 0x04) << 3));
 					}
-					else if (ChanID != CHANID_WAVEFORM && ChanID != CHANID_DPCM) {	// Not triangle and dpcm
+					else if (ChanID != CHANID_WAVEFORM && ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM) {	// Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_DUTY));
 						WriteData(EffParam);
 					}
 					break;
+
+				// Taken from E-FamiTracker by Euly
 				case EF_SAMPLE_OFFSET:
-					if (ChanID == CHANID_DPCM) {	// DPCM
+					if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) {	// DPCM
 						WriteData(Command(CMD_EFF_OFFSET));
 						WriteData(EffParam);
 					}
 					break;
 				case EF_SLIDE_UP:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) {
 						WriteData(Command(CMD_EFF_SLIDE_UP));
 						WriteData(EffParam);
 					}
 					break;
 				case EF_SLIDE_DOWN:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) {
 						WriteData(Command(CMD_EFF_SLIDE_DOWN));
 						WriteData(EffParam);
 					}
 					break;
 				case EF_VOLUME_SLIDE:
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) {
 						WriteData(Command(CMD_EFF_VOL_SLIDE));
 						WriteData(EffParam);
 					}
 					break;
+
 				case EF_NOTE_CUT:
 					if (EffParam >= 0x80 && ChanID == CHANID_WAVEFORM) {		// // //
 						WriteData(Command(CMD_EFF_LINEAR_COUNTER));
@@ -562,13 +575,14 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_RETRIGGER:
-					if (ChanID == CHANID_DPCM) {
+					if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) { // Taken by E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_RETRIGGER));
 						WriteData(EffParam + 1);
 					}
 					break;
 				case EF_DPCM_PITCH:
-					if (ChanID == CHANID_DPCM) {
+					if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) { // Taken by E-FamiTracker by Euly
+						// Tarcaker?? what kind of typo is that heemin..
 						WriteData(Command(CMD_EFF_DPCM_PITCH));
 						WriteData(EffParam);
 					}
@@ -591,13 +605,14 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					}
 					break;
 				case EF_DELAYED_VOLUME:		// // //
-					if (ChanID != CHANID_DPCM && (EffParam >> 4) && (EffParam & 0x0F)) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM && (EffParam >> 4) && (EffParam & 0x0F)) { // Taken from E-FamiTracker by Euly
+						// I shouldn't have started this bullshit
 						WriteData(Command(CMD_EFF_DELAYED_VOLUME));
 						WriteData(EffParam);
 					}
 					break;
 				case EF_TRANSPOSE:			// // //
-					if (ChanID != CHANID_DPCM) {
+					if (ChanID != CHANID_DPCM && ChanID != CHANID_5E01_DPCM && (EffParam >> 4) && (EffParam & 0x0F)) { // Taken from E-FamiTracker by Euly
 						WriteData(Command(CMD_EFF_TRANSPOSE));
 						WriteData(EffParam);
 					}
@@ -606,8 +621,8 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					if (ChanID != CHANID_WAVEFORM ||
 					ChanID != CHANID_NOISE ||
 					ChipID != SNDCHIP_VRC7 ||
-					ChipID != SNDCHIP_S5B) {
-						if (ChanID == CHANID_DPCM) {
+					ChipID != SNDCHIP_SY1202) {
+						if (ChanID == CHANID_DPCM || ChanID == CHANID_5E01_DPCM) {
 							WriteData(Command(CMD_EFF_DPCM_PHASE_RESET));
 							WriteData(EffParam);
 						}
@@ -677,25 +692,25 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 					break;
 				// // // Sunsoft 5B
 				case EF_SUNSOFT_ENV_TYPE:
-					if (ChipID == SNDCHIP_S5B) {
+					if (ChipID == SNDCHIP_SY1202) {
 						WriteData(Command(CMD_EFF_S5B_ENV_TYPE));
 						WriteData(EffParam);
 					}
 					break;
 				case EF_SUNSOFT_ENV_HI:
-					if (ChipID == SNDCHIP_S5B) {
+					if (ChipID == SNDCHIP_SY1202) {
 						WriteData(Command(CMD_EFF_S5B_ENV_RATE_HI));
 						WriteData(EffParam);
 					}
 					break;
 				case EF_SUNSOFT_ENV_LO:
-					if (ChipID == SNDCHIP_S5B) {
+					if (ChipID == SNDCHIP_SY1202) {
 						WriteData(Command(CMD_EFF_S5B_ENV_RATE_LO));
 						WriteData(EffParam);
 					}
 					break;
 				case EF_SUNSOFT_NOISE:		// // // 050B
-					if (ChipID == SNDCHIP_S5B) {
+					if (ChipID == SNDCHIP_SY1202) {
 						WriteData(Command(CMD_EFF_S5B_NOISE));
 						WriteData(EffParam & 0x1F);
 					}

@@ -77,6 +77,9 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_BN_CLICKED(IDC_EXPANSION_MMC5, OnBnClickedExpansionMMC5)
 	ON_BN_CLICKED(IDC_EXPANSION_S5B, OnBnClickedExpansionS5B)
 	ON_BN_CLICKED(IDC_EXPANSION_N163, OnBnClickedExpansionN163)
+
+	ON_BN_CLICKED(IDC_EXPANSION_5E01, OnBnClickedExpansion5E01)
+
 	ON_WM_VSCROLL()
 	ON_EN_CHANGE(IDC_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeApu1OffsetEdit)
 	ON_EN_CHANGE(IDC_APU2_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeApu2OffsetEdit)
@@ -269,7 +272,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_EXPANSION_FDS))->SetCheck((m_iExpansions & SNDCHIP_FDS) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_MMC5))->SetCheck((m_iExpansions & SNDCHIP_MMC5) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_N163))->SetCheck((m_iExpansions & SNDCHIP_N163) != 0);
-	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_S5B) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_SY1202) != 0);
 
 	// N163 channel count UI
 	m_cChannelsLabel.SubclassDlgItem(IDC_CHANNELS_NR, this);
@@ -360,6 +363,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 			case 3: str += _T("MMC5 "); break;
 			case 4: str += _T("N163 "); break;
 			case 5: str += _T("5B ");   break;
+			case 6: str += _T("5E01 ");   break;
 			}
 			if (i == 4 && m_pDocument->ExpansionEnabled(SNDCHIP_N163)
 				&& (m_iExpansions & SNDCHIP_N163) && m_iN163Channels < m_pDocument->GetNamcoChannels()) {
@@ -663,7 +667,8 @@ void CModulePropertiesDlg::OnBnClickedSongImport()
 	((CButton*)GetDlgItem(IDC_EXPANSION_FDS))->SetCheck((m_iExpansions & SNDCHIP_FDS) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_MMC5))->SetCheck((m_iExpansions & SNDCHIP_MMC5) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_N163))->SetCheck((m_iExpansions & SNDCHIP_N163) != 0);
-	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_S5B) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_SY1202) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_5E01))->SetCheck((m_iExpansions & SNDCHIP_5E01) != 0);
 
 
 	for (int i = 0; i < 8; i++)
@@ -784,9 +789,9 @@ void CModulePropertiesDlg::OnBnClickedExpansionS5B()
 	CButton *pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_S5B);
 
 	if (pCheckBox->GetCheck() == BST_CHECKED)
-		m_iExpansions |= SNDCHIP_S5B;
+		m_iExpansions |= SNDCHIP_SY1202;
 	else
-		m_iExpansions &= ~SNDCHIP_S5B;		// // //
+		m_iExpansions &= ~SNDCHIP_SY1202;		// // //
 
 	updateDeviceMixOffsetUI(7);
 }
@@ -813,6 +818,17 @@ void CModulePropertiesDlg::setN163NChannels(int nchan) {
 	text.LoadString(IDS_PROPERTIES_CHANNELS);
 	text.AppendFormat(_T(" %i"), nchan);
 	SetDlgItemText(IDC_CHANNELS_NR, text);
+}
+
+// Taken from Euly by E-FamiTracker
+void CModulePropertiesDlg::OnBnClickedExpansion5E01()
+{
+	CButton* pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_5E01);
+
+	if (pCheckBox->GetCheck() == BST_CHECKED)
+		m_iExpansions |= SNDCHIP_5E01;
+	else
+		m_iExpansions &= ~SNDCHIP_5E01;
 }
 
 // Device mix offset GUI
@@ -857,7 +873,7 @@ void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 		SNDCHIP_FDS,
 		SNDCHIP_MMC5,
 		SNDCHIP_N163,
-		SNDCHIP_S5B
+		SNDCHIP_SY1202
 	};
 
 	std::array<CWnd*, 4> DeviceMixOffsetUI = {

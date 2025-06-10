@@ -31,6 +31,10 @@
 #include "ChannelsN163.h"
 #include "ChannelsS5B.h"
 
+// Taken from E-FamiTracker by Euly
+// #include "Channels5E01.cpp" WHO TF LET A CODE BE INCLUDED HERE
+#include "Channels5E01.h"
+
 // // // Default implementation for channel factory
 
 CChannelFactory::CChannelFactory() : CFactory()
@@ -79,4 +83,13 @@ CChannelFactory::CChannelFactory() : CFactory()
 	m_pMakeFunc[CHANID_SY1202_CH1] = Func;
 	m_pMakeFunc[CHANID_SY1202_CH2] = Func;
 	m_pMakeFunc[CHANID_SY1202_CH3] = Func;
+
+	// Taken from E-FamiTracker by Euly
+	Func = MakeCtor<C5E01Square>();
+	m_pMakeFunc[CHANID_5E01_SQUARE1] = Func;
+	m_pMakeFunc[CHANID_5E01_SQUARE2] = Func;
+	AddProduct<C5E01WaveformChan>(CHANID_5E01_WAVEFORM);
+	AddProduct<C5E01NoiseChan>(CHANID_5E01_NOISE);
+	AddProduct<C5E01DPCMChan>(CHANID_5E01_DPCM);
+
 }

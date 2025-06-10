@@ -272,10 +272,18 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("VRC7 FM 5"), _T("FM5"), SNDCHIP_VRC7, CHANID_VRC7_CH5));
 	AssignChannel(new CTrackerChannel(_T("VRC7 FM 6"), _T("FM6"), SNDCHIP_VRC7, CHANID_VRC7_CH6));
 
-	// // // Sunsoft 5B
-	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 1"), _T("SY1"), SNDCHIP_S5B, CHANID_SY1202_CH1));
-	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 2"), _T("SY2"), SNDCHIP_S5B, CHANID_SY1202_CH2));
-	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 3"), _T("SY3"), SNDCHIP_S5B, CHANID_SY1202_CH3));
+	// // // Saeyahn SY1202
+	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 1"), _T("SY1"), SNDCHIP_SY1202, CHANID_SY1202_CH1));
+	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 2"), _T("SY2"), SNDCHIP_SY1202, CHANID_SY1202_CH2));
+	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 3"), _T("SY3"), SNDCHIP_SY1202, CHANID_SY1202_CH3));
+
+	// Taken from E-FamiTracker by Euly
+	// // // Eulous 5E01
+	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 1"), _T("5E1"), SNDCHIP_5E01, CHANID_5E01_SQUARE1));
+	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 2"), _T("5E2"), SNDCHIP_5E01, CHANID_5E01_SQUARE2));
+	AssignChannel(new CTrackerChannel(_T("5E01 Waveform"), _T("5EW"), SNDCHIP_5E01, CHANID_5E01_WAVEFORM));
+	AssignChannel(new CTrackerChannel(_T("5E01 Noise"), _T("5EN"), SNDCHIP_5E01, CHANID_5E01_NOISE));
+	AssignChannel(new CTrackerChannel(_T("5E01 DPCM"), _T("5ED"), SNDCHIP_5E01, CHANID_5E01_DPCM));
 }
 
 void CSoundGen::AssignChannel(CTrackerChannel *pTrackerChannel)		// // //
@@ -568,6 +576,7 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		const unsigned int *Table = nullptr;
 		switch (m_pTrackerChannels[i]->GetID()) {
 		case CHANID_FWG1: case CHANID_FWG2: case CHANID_WAVEFORM:
+		case CHANID_5E01_SQUARE1: case CHANID_5E01_SQUARE2: case CHANID_5E01_WAVEFORM: // Taken from E-FamiTracker by Euly
 			Table = Machine == PAL ? m_iNoteLookupTablePAL : m_iNoteLookupTableNTSC; break;
 		case CHANID_VRC6_PULSE1: case CHANID_VRC6_PULSE2:
 		case CHANID_MMC5_SQUARE1: case CHANID_MMC5_SQUARE2:
@@ -614,7 +623,7 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 	SurveyMixLevels.at(CHIP_LEVEL_FDS) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixFDS);
 	SurveyMixLevels.at(CHIP_LEVEL_MMC5) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixMMC5);
 	SurveyMixLevels.at(CHIP_LEVEL_N163) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixN163);
-	SurveyMixLevels.at(CHIP_LEVEL_S5B) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixS5B);
+	SurveyMixLevels.at(CHIP_LEVEL_SY1202) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixS5B);
 
 	bool refreshsettings = false;
 
@@ -994,7 +1003,7 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_FDS, float(pSettings->ChipLevels.iLevelFDS / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_MMC5, float(pSettings->ChipLevels.iLevelMMC5 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_N163, float(pSettings->ChipLevels.iLevelN163 / 10.0f));
-			config.SetChipLevel(CHIP_LEVEL_S5B, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_SY1202, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
 		}
 	}
 
@@ -1480,9 +1489,15 @@ static CString GetStateString(const stChannelState &State)
 		effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 	}
 
-	if ((State.ChannelIndex >= CHANID_FWG1 && State.ChannelIndex <= CHANID_FWG2) ||
-			State.ChannelIndex == CHANID_NOISE ||
-		(State.ChannelIndex >= CHANID_MMC5_SQUARE1 && State.ChannelIndex <= CHANID_MMC5_SQUARE2))
+	// Taken from E-FamiTracker by Euly
+	if (
+			(State.ChannelIndex >= CHANID_FWG1 && State.ChannelIndex <= CHANID_FWG2) ||
+				State.ChannelIndex == CHANID_NOISE ||
+			(State.ChannelIndex >= CHANID_5E01_SQUARE1 && State.ChannelIndex <= CHANID_5E01_SQUARE2) ||
+			State.ChannelIndex == CHANID_5E01_NOISE ||
+			(State.ChannelIndex >= CHANID_MMC5_SQUARE1 && State.ChannelIndex <= CHANID_MMC5_SQUARE2) ||
+			(State.ChannelIndex >= CHANID_MMC5_SQUARE1 && State.ChannelIndex <= CHANID_MMC5_SQUARE2)
+		)
 		for (const auto &x : {EF_VOLUME}) {
 			int p = State.Effect[x];
 			if (p < 0) continue;
@@ -1494,7 +1509,7 @@ static CString GetStateString(const stChannelState &State)
 			if (p < 0) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex == CHANID_DPCM)
+	else if (State.ChannelIndex == CHANID_DPCM || State.ChannelIndex == CHANID_5E01_DPCM)
 		for (const auto &x : {EF_SAMPLE_OFFSET, /*EF_DPCM_PITCH*/}) {
 			int p = State.Effect[x];
 			if (p <= 0) continue;
@@ -1652,7 +1667,7 @@ void CSoundGen::HaltPlayer()
 	if (m_pDocument) { // TODO: do this in BeginPlayer
 		if (m_pDocument->ExpansionEnabled(SNDCHIP_FDS))
 			*reinterpret_cast<int*>(Header + 0x84) |= 0x80000000;
-		if (m_pDocument->ExpansionEnabled(SNDCHIP_S5B)) {
+		if (m_pDocument->ExpansionEnabled(SNDCHIP_SY1202)) {
 			*reinterpret_cast<int*>(Header + 0x74) = CAPU::BASE_FREQ_NTSC / 2;
 			*reinterpret_cast<int*>(Header + 0x78) = 0x0110;
 		}

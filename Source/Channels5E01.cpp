@@ -1,24 +1,26 @@
 /*
-** Dn-FamiTracker - NES/Famicom sound tracker
-** Copyright (C) 2020-2025 D.P.C.M.
-** FamiTracker Copyright (C) 2005-2020 Jonathan Liss
-** 0CC-FamiTracker Copyright (C) 2014-2018 HertzDevil
+** FamiTracker - NES/Famicom sound tracker
+** Copyright (C) 2005-2014  Jonathan Liss
 **
-** This program is free software: you can redistribute it and/or modify
+** 0CC-FamiTracker is (C) 2014-2015 HertzDevil
+**
+** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation, either version 3 of the License, or
+** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
-** This program is distributed in the hope that it will be useful,
+** This program is distributed in the hope that it will be useful, 
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-** GNU General Public License for more details.
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+** Library General Public License for more details.  To obtain a 
+** copy of the GNU Library General Public License, write to the Free 
+** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
-** You should have received a copy of the GNU General Public License
-** along with this program. If not, see https://www.gnu.org/licenses/.
+** Any permitted reproduction of these routines, in whole or in part,
+** must bear this legend.
 */
 
-// This file handles playing of 2A03 channels
+// This file handles playing of 5E01 channels
 
 #include "stdafx.h"
 #include "FamiTracker.h"
@@ -28,13 +30,13 @@
 #include "DSample.h"		// // //
 #include "Instrument.h"
 #include "ChannelHandler.h"
-#include "Channels2A03.h"
+#include "Channels5E01.h"
 #include "Settings.h"
 #include "InstHandler.h"		// // //
 #include "SeqInstHandler.h"		// // //
 #include "InstHandlerDPCM.h"		// // //
 
-CChannelHandler2A03::CChannelHandler2A03() :
+CChannelHandler5E01::CChannelHandler5E01() :
 	CChannelHandler(0x7FF, 0x0F),
 	m_bHardwareEnvelope(false),
 	m_bEnvelopeLoop(true),
@@ -43,7 +45,7 @@ CChannelHandler2A03::CChannelHandler2A03() :
 {
 }
 
-void CChannelHandler2A03::HandleNoteData(stChanNote *pNoteData, int EffColumns)
+void CChannelHandler5E01::HandleNoteData(stChanNote *pNoteData, int EffColumns)
 {
 	// // //
 	CChannelHandler::HandleNoteData(pNoteData, EffColumns);
@@ -54,7 +56,7 @@ void CChannelHandler2A03::HandleNoteData(stChanNote *pNoteData, int EffColumns)
 	}
 }
 
-bool CChannelHandler2A03::HandleEffect(effect_t EffNum, unsigned char EffParam)
+bool CChannelHandler5E01::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_VOLUME:
@@ -79,17 +81,17 @@ bool CChannelHandler2A03::HandleEffect(effect_t EffNum, unsigned char EffParam)
 	return true;
 }
 
-void CChannelHandler2A03::HandleEmptyNote()
+void CChannelHandler5E01::HandleEmptyNote()
 {
 	// // //
 }
 
-void CChannelHandler2A03::HandleCut()
+void CChannelHandler5E01::HandleCut()
 {
 	CutNote();
 }
 
-void CChannelHandler2A03::HandleRelease()
+void CChannelHandler5E01::HandleRelease()
 {
 	if (!m_bRelease)
 		ReleaseNote();
@@ -106,7 +108,7 @@ void CChannelHandler2A03::HandleRelease()
 	*/
 }
 
-bool CChannelHandler2A03::CreateInstHandler(inst_type_t Type)
+bool CChannelHandler5E01::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
 	case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS:
@@ -120,7 +122,7 @@ bool CChannelHandler2A03::CreateInstHandler(inst_type_t Type)
 	return false;
 }
 
-void CChannelHandler2A03::ResetChannel()
+void CChannelHandler5E01::ResetChannel()
 {
 	CChannelHandler::ResetChannel();
 	m_bEnvelopeLoop = true;		// // //
@@ -129,24 +131,24 @@ void CChannelHandler2A03::ResetChannel()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // // 2A03 Square
+// // // 5E01 Square
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-C2A03Square::C2A03Square() :
-	CChannelHandler2A03(),
+C5E01Square::C5E01Square() :
+	CChannelHandler5E01(),
 	m_cSweep(0),
 	m_bSweeping(0),
 	m_iSweep(0)
 {
 }
 
-const char C2A03Square::MAX_DUTY = 0x03;
+const char C5E01Square::MAX_DUTY = 0x03;
 
-int C2A03Square::getDutyMax() const {
+int C5E01Square::getDutyMax() const {
 	return static_cast<int>(MAX_DUTY);
 }
 
-void C2A03Square::RefreshChannel()
+void C5E01Square::RefreshChannel()
 {
 	int Period = CalculatePeriod();
 	int Volume = CalculateVolume();
@@ -155,7 +157,7 @@ void C2A03Square::RefreshChannel()
 	unsigned char HiFreq = (Period & 0xFF);
 	unsigned char LoFreq = (Period >> 8);
 	
-	int Address = 0x4000 + m_iChannel * 4;		// // //
+	int Address = 0x4100 + m_iChannel * 4;		// // //
 	if (m_bGate)		// // //
 		WriteRegister(Address, (DutyCycle << 6) | (m_bEnvelopeLoop << 5) | (!m_bHardwareEnvelope << 4) | Volume);		// // //
 	else {
@@ -168,8 +170,8 @@ void C2A03Square::RefreshChannel()
 		if (m_cSweep & 0x80) {
 			WriteRegister(Address + 1, m_cSweep);
 			m_cSweep &= 0x7F;
-			WriteRegister(0x4017, 0x80);	// Clear sweep unit
-			WriteRegister(0x4017, 0x00);
+			WriteRegister(0x4117, 0x80);	// Clear sweep unit
+			WriteRegister(0x4117, 0x00);
 			WriteRegister(Address + 2, HiFreq);
 			WriteRegister(Address + 3, LoFreq + (m_iLengthCounter << 3));		// // //
 			m_iLastPeriod = 0xFFFF;
@@ -189,24 +191,24 @@ void C2A03Square::RefreshChannel()
 	m_bResetEnvelope = false;		// // //
 }
 
-void C2A03Square::SetChannelID(int ID)		// // //
+void C5E01Square::SetChannelID(int ID)		// // //
 {
 	CChannelHandler::SetChannelID(ID);
-	m_iChannel = ID - CHANID_FWG1;
+	m_iChannel = ID - CHANID_5E01_SQUARE1;
 }
 
-int C2A03Square::ConvertDuty(int Duty) const		// // //
+int C5E01Square::ConvertDuty(int Duty)		// // //
 {
 	switch (m_iInstTypeCurrent) {
 	case INST_VRC6:	return DUTY_2A03_FROM_VRC6[Duty & 0x07];
-	case INST_S5B:	return 0x02;
+	case INST_S5B:	return 0x03;
 	default:		return Duty;
 	}
 }
 
-void C2A03Square::ClearRegisters()
+void C5E01Square::ClearRegisters()
 {
-	int Address = 0x4000 + m_iChannel * 4;		// // //
+	int Address = 0x4100 + m_iChannel * 4;		// // //
 	WriteRegister(Address + 0, 0x30);
 	WriteRegister(Address + 1, 0x08);
 	WriteRegister(Address + 2, 0x00);
@@ -214,14 +216,14 @@ void C2A03Square::ClearRegisters()
 	m_iLastPeriod = 0xFFFF;
 }
 
-void C2A03Square::HandleNoteData(stChanNote *pNoteData, int EffColumns)
+void C5E01Square::HandleNoteData(stChanNote *pNoteData, int EffColumns)
 {
 	m_iSweep = 0;
 	m_bSweeping = false;
-	CChannelHandler2A03::HandleNoteData(pNoteData, EffColumns);
+	CChannelHandler5E01::HandleNoteData(pNoteData, EffColumns);
 }
 
-bool C2A03Square::HandleEffect(effect_t EffNum, unsigned char EffParam)
+bool C5E01Square::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_SWEEPUP:
@@ -234,26 +236,21 @@ bool C2A03Square::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		m_iLastPeriod = 0xFFFF;
 		m_bSweeping = true;
 		break;
-	case EF_PHASE_RESET:
-		if (EffParam == 0) {
-			resetPhase();
-		}
-		break;
-	default: return CChannelHandler2A03::HandleEffect(EffNum, EffParam);
+	default: return CChannelHandler5E01::HandleEffect(EffNum, EffParam);
 	}
 
 	return true;
 }
 
-void C2A03Square::HandleEmptyNote()
+void C5E01Square::HandleEmptyNote()
 {
 	if (m_bSweeping)
 		m_cSweep = m_iSweep;
 }
 
-void C2A03Square::HandleNote(int Note, int Octave)		// // //
+void C5E01Square::HandleNote(int Note, int Octave)		// // //
 {
-	CChannelHandler2A03::HandleNote(Note, Octave);
+	CChannelHandler5E01::HandleNote(Note, Octave);
 
 	if (!m_bSweeping && (m_cSweep != 0 || m_iSweep != 0)) {
 		m_iSweep = 0;
@@ -266,7 +263,7 @@ void C2A03Square::HandleNote(int Note, int Octave)		// // //
 	}
 }
 
-CString C2A03Square::GetCustomEffectString() const		// // //
+CString C5E01Square::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
 	
@@ -278,74 +275,55 @@ CString C2A03Square::GetCustomEffectString() const		// // //
 	return str;
 }
 
-void C2A03Square::resetPhase()
-{
-	int Address = 0x4000 + m_iChannel * 4;
-	int LoPeriod = CalculatePeriod() >> 8;
-	WriteRegister(Address + 3, LoPeriod + (m_iLengthCounter << 3));
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Triangle 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CTriangleChan::CTriangleChan() :		// // //
-	CChannelHandler2A03(),
+C5E01WaveformChan::C5E01WaveformChan() :		// // //
+	CChannelHandler5E01(),
 	m_iLinearCounter(-1)
 {
 }
 
-void CTriangleChan::RefreshChannel()
+void C5E01WaveformChan::RefreshChannel()
 {
 	int Freq = CalculatePeriod();
 
-	char WaveHighBytes = (m_iTremoloSpeed * 16) + (m_iTremoloDepth / 16); // EFT 
-	char WaveLowBytes = m_iDefaultDuty;
-
-	// char WaveType = m_iInstrument & 1;
-	char Volume = (((m_iVolume >> 3) + 1) * m_iInstVolume + 1) - 1 >> 4; // EFT 
-
+	char DutyCycle = (m_iDutyPeriod & MAX_DUTY);
 	unsigned char HiFreq = (Freq & 0xFF);
 	unsigned char LoFreq = (Freq >> 8);
 
-	int WaveType = (m_iInstrument < 1) ? true : false; // Wave mode of the wave channel
-	
 	if (m_iInstVolume > 0 && m_iVolume > 0 && m_bGate) {
-		WriteRegister(0x4008, (m_bEnvelopeLoop << 7) | (m_iLinearCounter & 0x7F));		// // //
-
-		WriteRegister(0x4009, WaveHighBytes);		// EFT
-		WriteRegister(0x400D, WaveLowBytes);		// EFT
-		// WriteRegister(0x400C, WaveType);
-		WriteRegister(0x4016, Volume + (WaveType << 4)); // $4016, (x,y). y = 4-bit volume, x = wave mode (0 = wave, 1 = triangle) 
-
-		WriteRegister(0x400A, HiFreq);
+		WriteRegister(0x4108, (m_bEnvelopeLoop << 7) | (m_iLinearCounter & 0x7F));		// // //
+		WriteRegister(0x4109, DutyCycle);		// // //
+		WriteRegister(0x410A, HiFreq);
 		if (m_bEnvelopeLoop || m_bResetEnvelope)		// // //
-			WriteRegister(0x400B, LoFreq + (m_iLengthCounter << 3));
+			WriteRegister(0x410B, LoFreq + (m_iLengthCounter << 3));
 	}
 	else
-		WriteRegister(0x4008, 0);
+		WriteRegister(0x4108, 0);
 
 	m_bResetEnvelope = false;		// // //
 }
 
-void CTriangleChan::ResetChannel()
+void C5E01WaveformChan::ResetChannel()
 {
-	CChannelHandler2A03::ResetChannel();
+	CChannelHandler5E01::ResetChannel();
 	m_iLinearCounter = -1;
 }
 
-int CTriangleChan::GetChannelVolume() const
+int C5E01WaveformChan::GetChannelVolume() const
 {
 	return m_iVolume ? VOL_COLUMN_MAX : 0;
 }
 
-//const char CTriangleChan::MAX_DUTY = 0x03;
+const char C5E01WaveformChan::MAX_DUTY = 0x03;
 
-int CTriangleChan::getDutyMax() const {
-	return static_cast<int>(255);
+int C5E01WaveformChan::getDutyMax() const {
+	return static_cast<int>(MAX_DUTY);
 }
 
-bool CTriangleChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
+bool C5E01WaveformChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_VOLUME:
@@ -369,24 +347,24 @@ bool CTriangleChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		}
 		else {
 			m_bEnvelopeLoop = true;
-			return CChannelHandler2A03::HandleEffect(EffNum, EffParam); // true
+			return CChannelHandler5E01::HandleEffect(EffNum, EffParam); // true
 		}
 		break;
-	default: return CChannelHandler2A03::HandleEffect(EffNum, EffParam);
+	default: return CChannelHandler5E01::HandleEffect(EffNum, EffParam);
 	}
 
 	return true;
 }
 
-void CTriangleChan::ClearRegisters()
+void C5E01WaveformChan::ClearRegisters()
 {
-	WriteRegister(0x4008, 0);
-	WriteRegister(0x400A, 0);
-	WriteRegister(0x400B, 0);
-	WriteRegister(0x410B, 0); // EFT
+	WriteRegister(0x4108, 0);
+	WriteRegister(0x4109, 0);
+	WriteRegister(0x410A, 0);
+	WriteRegister(0x410B, 0);
 }
 
-CString CTriangleChan::GetCustomEffectString() const		// // //
+CString C5E01WaveformChan::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
 	
@@ -404,11 +382,11 @@ CString CTriangleChan::GetCustomEffectString() const		// // //
 // Noise
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CNoiseChan::HandleNote(int Note, int Octave)
+void C5E01NoiseChan::HandleNote(int Note, int Octave)
 {
-	CChannelHandler2A03::HandleNote(Note, Octave);		// // //
+	CChannelHandler5E01::HandleNote(Note, Octave);		// // //
 
-	int NewNote = (MIDI_NOTE(Octave, Note) & 0x0F) | 0x100;
+	int NewNote = (MIDI_NOTE(Octave, Note) & 0x1F) | 0x100;
 	int NesFreq = TriggerNote(NewNote);
 
 	// // // NesFreq = (NesFreq & 0x0F) | 0x10;
@@ -428,7 +406,7 @@ void CNoiseChan::HandleNote(int Note, int Octave)
 	m_iNote			= NewNote;
 }
 
-void CNoiseChan::SetupSlide()		// // //
+void C5E01NoiseChan::SetupSlide()		// // //
 {
 	#define GET_SLIDE_SPEED(x) (((x & 0xF0) >> 3) + 1)
 
@@ -452,55 +430,52 @@ void CNoiseChan::SetupSlide()		// // //
 	m_iPortaTo = m_iNote;
 }
 
-int CNoiseChan::LimitPeriod(int Period) const		// // //
+int C5E01NoiseChan::LimitPeriod(int Period) const		// // //
 {
 	return Period; // no limit
 }
 
-int CNoiseChan::LimitRawPeriod(int Period) const		// // //
+int C5E01NoiseChan::LimitRawPeriod(int Period) const		// // //
 {
 	return Period; // no limit
 }
 
-const char CNoiseChan::MAX_DUTY = 0x01;
+const char C5E01NoiseChan::MAX_DUTY = 0x01;
 
-int CNoiseChan::getDutyMax() const {
+int C5E01NoiseChan::getDutyMax() const {
 	return MAX_DUTY;
 }
 
-void CNoiseChan::RefreshChannel()
+void C5E01NoiseChan::RefreshChannel()
 {
 	int Period = CalculatePeriod();
 	int Volume = CalculateVolume();
 	char NoiseMode = (m_iDutyPeriod & MAX_DUTY) << 7;
 
-	// int WaveType = (m_iInstrument < 1) ? 0 : 128; // Wave mode of the wave channel
-
-	Period = Period & 0x0F;
-	Period ^= 0x0F;
+	Period = Period & 0x1F;
+	Period ^= 0x1F;
 	
 	if (m_bGate)		// // //
-		WriteRegister(0x400C, (m_bEnvelopeLoop << 5) | (!m_bHardwareEnvelope << 4) | Volume);		// // //
+		WriteRegister(0x410C, (m_bEnvelopeLoop << 5) | (!m_bHardwareEnvelope << 4) | Volume);		// // //
 	else {
-		WriteRegister(0x400C, 48);
+		WriteRegister(0x410C, 0x30);
 		return;
 	}
-	WriteRegister(0x400E, NoiseMode | Period);
+	WriteRegister(0x410E, NoiseMode | Period);
 	if (m_bEnvelopeLoop || m_bResetEnvelope)		// // //
-		WriteRegister(0x400F, m_iLengthCounter << 3);
+		WriteRegister(0x410F, m_iLengthCounter << 3);
 
 	m_bResetEnvelope = false;		// // //
 }
 
-void CNoiseChan::ClearRegisters()
+void C5E01NoiseChan::ClearRegisters()
 {
-	WriteRegister(0x400C, 0x30);
-	WriteRegister(0x400D, 0);
-	WriteRegister(0x400E, 0);
-	WriteRegister(0x400F, 0);
+	WriteRegister(0x410C, 0x30);
+	WriteRegister(0x410E, 0);
+	WriteRegister(0x410F, 0);
 }
 
-CString CNoiseChan::GetCustomEffectString() const		// // //
+CString C5E01NoiseChan::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
 
@@ -512,7 +487,7 @@ CString CNoiseChan::GetCustomEffectString() const		// // //
 	return str;
 }
 
-int CNoiseChan::TriggerNote(int Note)
+int C5E01NoiseChan::TriggerNote(int Note)
 {
 	RegisterKeyState(Note);
 	return Note | 0x100;		// // //
@@ -522,18 +497,18 @@ int CNoiseChan::TriggerNote(int Note)
 // DPCM
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CDPCMChan::CDPCMChan() :		// // //
+C5E01DPCMChan::C5E01DPCMChan() :		// // //
 	CChannelHandler(0xF, 0x3F),		// // // does not use these anyway
 	mEnabled(false),
 	mTriggerSample(false),
 	m_cDAC(255),
 	mRetriggerPeriod(0),
 	mRetriggerCtr(0)
-{ 
+{
 }
 
 
-void CDPCMChan::HandleNoteData(stChanNote *pNoteData, int EffColumns)
+void C5E01DPCMChan::HandleNoteData(stChanNote* pNoteData, int EffColumns)
 {
 	m_iCustomPitch = -1;
 	mRetriggerPeriod = 0;
@@ -549,7 +524,7 @@ void CDPCMChan::HandleNoteData(stChanNote *pNoteData, int EffColumns)
 
 
 // Called once per row.
-bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
+bool C5E01DPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_DAC:
@@ -562,60 +537,10 @@ bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		m_iCustomPitch = EffParam & 0x0F;		// // //
 		break;
 	case EF_RETRIGGER:
-		/*
-		int mRetriggerPeriod;	// If zero, DPCM will not retrigger.
-		int mRetriggerCtr;		// Time until next DPCM retrigger (frames)
-
-		queueSample() sets mRetriggerCtr to mRetriggerPeriod + 1, which gets decremented to mRetriggerPeriod
-			during the same frame by RefreshChannel().
-		In the absence of queueSample(), mRetriggerCtr is cycled within [1..mRetriggerPeriod] by RefreshChannel().
-		If a row-note plays on any non-Xxx row, mRetriggerCtr is reset to mRetriggerPeriod=0.
-
-		If new row:
-			mRetriggerPeriod = 0.
-			
-			If xx = (Xxx, HandleEffect.EF_RETRIGGER):
-				mRetriggerPeriod = xx
-				if mRetriggerCtr == 0:	// Most recent row contains note without Xxx
-					queueSample()
-			
-			if note: PlaySample():
-				triggerSample()
-
-		queueSample() {
-			// If mRetriggerPeriod != 0, this initializes retriggering.
-			// Otherwise reset mRetriggerCtr.
-			if (mRetriggerPeriod == 0)
-				mRetriggerCtr = 0;
-			else
-				mRetriggerCtr = mRetriggerPeriod + 1;	// Decremented the same frame in RefreshChannel()
-		}
-		triggerSample() {
-			mTriggerSample = true	// play sample this frame.
-			queueSample()
-		}
-
-		Each frame: RefreshChannel():	// renders channel (pushes registers to 2a03)
-			// Optionally retrigger sample
-			If mRetriggerPeriod:
-				mRetriggerCtr--
-				If zero:
-					mRetriggerCtr = mRetriggerPeriod.
-					mEnabled = true
-					mTriggerSample = true
-			
-			if mTriggerSample:
-				play DPCM.
-		*/
 
 		mRetriggerPeriod = std::max((int)EffParam, 1);
 		if (mRetriggerCtr == 0) {	// Most recent row contains note without Xxx
 			queueSample();
-		}
-		break;
-	case EF_PHASE_RESET:
-		if (EffParam == 0) {
-			resetPhase();
 		}
 		break;
 	case EF_NOTE_CUT:
@@ -627,22 +552,22 @@ bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 	return true;
 }
 
-void CDPCMChan::HandleEmptyNote()
+void C5E01DPCMChan::HandleEmptyNote()
 {
 }
 
-void CDPCMChan::HandleCut()
+void C5E01DPCMChan::HandleCut()
 {
-//	KillChannel();
+	//	KillChannel();
 	CutNote();
 }
 
-void CDPCMChan::HandleRelease()
+void C5E01DPCMChan::HandleRelease()
 {
 	m_bRelease = true;
 }
 
-void CDPCMChan::HandleNote(int Note, int Octave)
+void C5E01DPCMChan::HandleNote(int Note, int Octave)
 {
 	CChannelHandler::HandleNote(Note, Octave);		// // //
 	m_iNote = MIDI_NOTE(Octave, Note);		// // //
@@ -650,7 +575,7 @@ void CDPCMChan::HandleNote(int Note, int Octave)
 	m_bGate = true;
 }
 
-bool CDPCMChan::CreateInstHandler(inst_type_t Type)
+bool C5E01DPCMChan::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
 	case INST_2A03:
@@ -664,18 +589,12 @@ bool CDPCMChan::CreateInstHandler(inst_type_t Type)
 	return false;
 }
 
-void CDPCMChan::resetPhase()
-{
-	// Trigger the sample again
-	triggerSample();
-}
-
 
 // Called once per row.
-void CDPCMChan::PlaySample(const CDSample *pSamp, int Pitch)		// // //
+void C5E01DPCMChan::PlaySample(const CDSample* pSamp, int Pitch)		// // //
 {
 	int SampleSize = pSamp->GetSize();
-	m_pAPU->WriteSample(pSamp->GetData(), SampleSize);		// // //
+	m_pAPU->Write5E01Sample(pSamp->GetData(), SampleSize);		// // //
 	m_iPeriod = m_iCustomPitch != -1 ? m_iCustomPitch : Pitch;
 	m_iSampleLength = (SampleSize >> 4) - (m_iOffset << 2);
 	m_iLoopLength = SampleSize - m_iLoopOffset;
@@ -684,7 +603,7 @@ void CDPCMChan::PlaySample(const CDSample *pSamp, int Pitch)		// // //
 }
 
 
-void CDPCMChan::triggerSample() {
+void C5E01DPCMChan::triggerSample() {
 	// Trigger sample.
 	mEnabled = true;
 	mTriggerSample = true;
@@ -693,11 +612,12 @@ void CDPCMChan::triggerSample() {
 	queueSample();
 }
 
-void CDPCMChan::queueSample() {
+void C5E01DPCMChan::queueSample() {
 	if (mRetriggerPeriod == 0) {
 		// Not retriggering, reset mRetriggerCtr.
 		mRetriggerCtr = 0;
-	} else {
+	}
+	else {
 		// mRetriggerCtr gets decremented this frame, and reaches 0 in mRetriggerPeriod frames.
 		mRetriggerCtr = mRetriggerPeriod + 1;
 	}
@@ -705,10 +625,10 @@ void CDPCMChan::queueSample() {
 
 
 // Called once per frame. Renders note to registers. Initializes playback.
-void CDPCMChan::RefreshChannel()
+void C5E01DPCMChan::RefreshChannel()
 {
 	if (m_cDAC != 255) {
-		WriteRegister(0x4011, m_cDAC);
+		WriteRegister(0x4111, m_cDAC);
 		m_cDAC = 255;
 	}
 
@@ -724,45 +644,36 @@ void CDPCMChan::RefreshChannel()
 
 	if (m_bRelease) {
 		// Release command
-		WriteRegister(0x4015, 0x0F);
+		WriteRegister(0x4115, 0x0F);
 		mEnabled = false;
 		m_bRelease = false;
 	}
-
-/*	
-	if (m_bRelease) {
-		// Release loop flag
-		m_bRelease = false;
-		WriteRegister(0x4010, 0x00 | (m_iPeriod & 0x0F));
-		return;
-	}
-*/	
 
 	if (!mEnabled)
 		return;
 
 	if (!m_bGate) {
 		// Cut sample
-		WriteRegister(0x4015, 0x0F);
+		WriteRegister(0x4115, 0x0F);
 
 		if (!theApp.GetSettings()->General.bNoDPCMReset || theApp.IsPlaying()) {
-			WriteRegister(0x4011, 0);	// regain full volume for TN
+			WriteRegister(0x4111, 0);	// regain full volume for TN
 		}
 
 		mEnabled = false;		// don't write to this channel anymore
 	}
 	else if (mTriggerSample) {
 		// Start playing the sample
-		WriteRegister(0x4010, (m_iPeriod & 0x0F) | m_iLoop);
-		WriteRegister(0x4012, m_iOffset);							// load address, start at $C000
-		WriteRegister(0x4013, m_iSampleLength);						// length
-		WriteRegister(0x4015, 0x0F);
-		WriteRegister(0x4015, 0x1F);								// fire sample
+		WriteRegister(0x4110, (m_iPeriod & 0x0F) | m_iLoop);
+		WriteRegister(0x4112, m_iOffset);							// load address, start at $C000
+		WriteRegister(0x4113, m_iSampleLength);						// length
+		WriteRegister(0x4115, 0x0F);
+		WriteRegister(0x4115, 0x1F);								// fire sample
 
 		// Loop offset
 		if (m_iLoopOffset > 0) {
-			WriteRegister(0x4012, m_iLoopOffset);
-			WriteRegister(0x4013, m_iLoopLength);
+			WriteRegister(0x4112, m_iLoopOffset);
+			WriteRegister(0x4113, m_iLoopLength);
 		}
 
 		mTriggerSample = false;
@@ -770,37 +681,37 @@ void CDPCMChan::RefreshChannel()
 }
 
 
-int CDPCMChan::GetChannelVolume() const
+int C5E01DPCMChan::GetChannelVolume() const
 {
 	return VOL_COLUMN_MAX;
 }
 
-void CDPCMChan::WriteDCOffset(unsigned char Delta)		// // //
+void C5E01DPCMChan::WriteDCOffset(unsigned char Delta)		// // //
 {
 	// Initial delta counter value
 	if (Delta != 255 && m_cDAC == 255)
 		m_cDAC = Delta;
 }
 
-void CDPCMChan::SetLoopOffset(unsigned char Loop)		// // //
+void C5E01DPCMChan::SetLoopOffset(unsigned char Loop)		// // //
 {
 	m_iLoopOffset = Loop;
 }
 
-void CDPCMChan::ClearRegisters()
+void C5E01DPCMChan::ClearRegisters()
 {
-	WriteRegister(0x4015, 0x0F);
+	WriteRegister(0x4115, 0x0F);
 
-	WriteRegister(0x4010, 0);
-	WriteRegister(0x4011, 0);
-	WriteRegister(0x4012, 0);
-	WriteRegister(0x4013, 0);
+	WriteRegister(0x4110, 0);
+	WriteRegister(0x4111, 0);
+	WriteRegister(0x4112, 0);
+	WriteRegister(0x4113, 0);
 
 	m_iOffset = 0;
 	m_cDAC = 255;
 }
 
-CString CDPCMChan::GetCustomEffectString() const		// // //
+CString C5E01DPCMChan::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
 

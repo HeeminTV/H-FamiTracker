@@ -48,7 +48,7 @@ const int32_t ENV_WAVEFORM[32] = {
 	  223, 223, 247, 247
 };
 
-CS5BChannel::CS5BChannel(CMixer *pMixer, uint8_t ID) : CChannel(pMixer, SNDCHIP_S5B, ID),
+CS5BChannel::CS5BChannel(CMixer *pMixer, uint8_t ID) : CChannel(pMixer, SNDCHIP_SY1202, ID),
 	m_iVolume(0),
 	m_iPeriod(0),
 	m_iPeriodClock(0),

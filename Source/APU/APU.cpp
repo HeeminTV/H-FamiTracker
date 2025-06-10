@@ -32,6 +32,9 @@
 #include "N163.h"
 #include "VRC7.h"
 #include "S5B.h"
+
+#include "5E01.h" // Taken from E-FamiTracker by Euly
+
 #include "SoundChip.h"
 #include "SoundChip2.h"
 #include "../RegisterState.h"		// // //
@@ -180,13 +183,16 @@ CAPU::CAPU(IAudioCallback *pCallback) :		// // //
 	m_iFrameCycles(0),
 	m_pSoundBuffer(NULL),
 	m_pMixer(new CMixer(this)),
-	m_p2A03(std::make_unique<C2A03>()),
+	m_p7E02(std::make_unique<C2A03>()),
 	m_pFDS(std::make_unique<CFDS>()),
 	m_pN163(std::make_unique<CN163>()),
 	m_pVRC7(std::make_unique<CVRC7>()),
 	m_iExternalSoundChips(0),
 	m_iCyclesToRun(0),
-	m_iSampleRate(44100)		// // //
+	m_iSampleRate(44100),		// // //
+
+	m_p5E01(std::make_unique<C5E01>()) // Taken from E-FamiTracker by Euly
+
 {
 	m_pMMC5 = new CMMC5(m_pMixer);
 	m_pVRC6 = new CVRC6(m_pMixer);
@@ -251,8 +257,11 @@ void CAPU::StepSequence()		// // //
 	if (++m_iSequencerCount == SEQUENCER_FREQUENCY)
 		m_iSequencerClock = m_iSequencerCount = 0;
 	m_iSequencerNext = (uint64_t)BASE_FREQ_NTSC * (m_iSequencerCount + 1) / SEQUENCER_FREQUENCY;
-	m_p2A03->ClockSequence();
+	m_p7E02->ClockSequence();
 	m_pMMC5->ClockSequence();		// // //
+
+	m_p5E01->ClockSequence(); // Taken from E-FamiTracker by Euly
+
 }
 
 // End of audio frame, flush the buffer if enough samples has been produced, and start a new frame
@@ -318,7 +327,7 @@ void CAPU::SetExternalSound(uint8_t Chip)
 	m_SoundChips.clear();
 	m_SoundChips2.clear();
 
-	m_SoundChips2.push_back(m_p2A03.get());		// // //
+	m_SoundChips2.push_back(m_p7E02.get());		// // //
 	if (Chip & SNDCHIP_VRC6)
 		m_SoundChips.push_back(m_pVRC6);
 	if (Chip & SNDCHIP_VRC7)
@@ -329,8 +338,11 @@ void CAPU::SetExternalSound(uint8_t Chip)
 		m_SoundChips.push_back(m_pMMC5);
 	if (Chip & SNDCHIP_N163)
 		m_SoundChips2.push_back(m_pN163.get());
-	if (Chip & SNDCHIP_S5B)
+	if (Chip & SNDCHIP_SY1202)
 		m_SoundChips.push_back(m_pS5B);
+
+	if (Chip & SNDCHIP_5E01) // Taken from E-FamiTracker by Euly
+		m_SoundChips2.push_back(m_p5E01.get());
 
 	// Set (unused) bitfield of external sound chips enabled.
 	m_iExternalSoundChips = Chip;
@@ -356,11 +368,12 @@ void CAPU::SetExternalSound(uint8_t Chip)
 
 void CAPU::ChangeMachineRate(int Machine, int FrameRate)		// // //
 {
-	// Allow to change speed on the fly
-	//
 	
 	uint32_t BaseFreq = (Machine == MACHINE_NTSC) ? BASE_FREQ_NTSC : BASE_FREQ_PAL;
-	m_p2A03->ChangeMachine(Machine);
+	m_p7E02->ChangeMachine(Machine);
+
+	m_p5E01->ChangeMachine(Machine); // Taken from E-FamiTracker by Euly
+
 	m_pMixer->SetClockRate(BaseFreq);
 
 	m_pVRC7->SetSampleSpeed(m_iSampleRate, BaseFreq, FrameRate);
@@ -453,27 +466,54 @@ int32_t CAPU::GetVol(uint8_t Chan) const
 
 uint8_t CAPU::GetSamplePos() const
 {
-	return m_p2A03->GetSamplePos();
+	return m_p7E02->GetSamplePos();
 }
 
 uint8_t CAPU::GetDeltaCounter() const
 {
-	return m_p2A03->GetDeltaCounter();
+	return m_p7E02->GetDeltaCounter();
 }
 
 bool CAPU::DPCMPlaying() const
 {
-	return m_p2A03->DPCMPlaying();
+	return m_p7E02->DPCMPlaying();
 }
 
 void CAPU::WriteSample(const char *pBuf, int Size)		// // //
 {
-	m_p2A03->GetSampleMemory()->SetMem(pBuf, Size);
+	m_p7E02->GetSampleMemory()->SetMem(pBuf, Size);
 }
 
 void CAPU::ClearSample()		// // //
 {
-	m_p2A03->GetSampleMemory()->Clear();
+	m_p7E02->GetSampleMemory()->Clear();
+}
+
+// Taken from E-FamiTracker by Euly
+
+uint8_t CAPU::Get5E01SamplePos() const
+{
+	return m_p5E01->GetSamplePos();
+}
+
+uint8_t CAPU::Get5E01DeltaCounter() const
+{
+	return m_p5E01->GetDeltaCounter();
+}
+
+bool CAPU::DPCM5E01Playing() const
+{
+	return m_p5E01->DPCMPlaying();
+}
+
+void CAPU::Write5E01Sample(const char* pBuf, int Size)		// // //
+{
+	m_p5E01->GetSampleMemory()->SetMem(pBuf, Size);
+}
+
+void CAPU::Clear5E01Sample()		// // //
+{
+	m_p5E01->GetSampleMemory()->Clear();
 }
 
 #ifdef LOGGING
@@ -509,10 +549,10 @@ void CAPU::Log()
 		for (int i = 0; i < 0x40; ++i)
 			str.AppendFormat("%02X ", GetReg(SNDCHIP_VRC7, i));
 	}
-	if (m_iExternalSoundChips & SNDCHIP_S5B) {
+	if (m_iExternalSoundChips & SNDCHIP_SY1202) {
 		str.Append("S5B ");
 		for (int i = 0; i < 0x10; ++i)
-			str.AppendFormat("%02X ", GetReg(SNDCHIP_S5B, i));
+			str.AppendFormat("%02X ", GetReg(SNDCHIP_SY1202, i));
 	}
 	str.Append("\r\n");
 	m_pLog->Write(str, str.GetLength());
@@ -551,13 +591,16 @@ double CAPU::GetFreq(int Chip, int Chan) const
 	};
 
 	switch (Chip) {
-	case SNDCHIP_NONE: return PtrGetFreq(*m_p2A03);
+	case SNDCHIP_NONE: return PtrGetFreq(*m_p7E02);
 	case SNDCHIP_VRC6: return PtrGetFreq(*m_pVRC6);
 	case SNDCHIP_VRC7: return PtrGetFreq(*m_pVRC7);
 	case SNDCHIP_FDS:  return PtrGetFreq(*m_pFDS);
 	case SNDCHIP_MMC5: return PtrGetFreq(*m_pMMC5);
 	case SNDCHIP_N163: return PtrGetFreq(*m_pN163);
-	case SNDCHIP_S5B:  return PtrGetFreq(*m_pS5B);
+	case SNDCHIP_SY1202:  return PtrGetFreq(*m_pS5B);
+
+	case SNDCHIP_5E01: return PtrGetFreq(*m_p5E01); // Taken from E-FamiTracker by Euly
+
 	default: AfxDebugBreak(); return 0.;
 	}
 }
@@ -574,13 +617,16 @@ CRegisterState *CAPU::GetRegState(int Chip, int Reg) const		// // //
 	};
 
 	switch (Chip) {
-	case SNDCHIP_NONE: return PtrGetRegState(*m_p2A03);
+	case SNDCHIP_NONE: return PtrGetRegState(*m_p7E02);
 	case SNDCHIP_VRC6: return PtrGetRegState(*m_pVRC6);
 	case SNDCHIP_VRC7: return PtrGetRegState(*m_pVRC7);
 	case SNDCHIP_FDS:  return PtrGetRegState(*m_pFDS);
 	case SNDCHIP_MMC5: return PtrGetRegState(*m_pMMC5);
 	case SNDCHIP_N163: return PtrGetRegState(*m_pN163);
-	case SNDCHIP_S5B:  return PtrGetRegState(*m_pS5B);
+	case SNDCHIP_SY1202:  return PtrGetRegState(*m_pS5B);
+
+	case SNDCHIP_5E01: return PtrGetRegState(*m_p5E01); // Taken from E-FamiTracker by Euly
+
 	default: AfxDebugBreak(); return nullptr;
 	}
 }

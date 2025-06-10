@@ -583,7 +583,7 @@ void CChunkRenderText::StoreNSFStub(unsigned char Expansion, vibrato_t VibratoSt
 			str.Append("USE_MMC5 = 1\n");
 		if (Expansion & SNDCHIP_N163)
 			str.Append("USE_N163 = 1\n");
-		if (Expansion & SNDCHIP_S5B)
+		if (Expansion & SNDCHIP_SY1202)
 			str.Append("USE_S5B = 1\n");
 		str.AppendFormat("NAMCO_CHANNELS = %d\n", ActualNamcoChannels);
 		if (m_bBankSwitched)
@@ -819,7 +819,7 @@ void CChunkRenderText::StoreUpdateExt(unsigned char Expansion) const
 	else
 		str.Append("\tnop\n\tnop\n\tnop\n");
 	str.Append("\t; S5B\n");
-	if (Expansion & SNDCHIP_S5B)
+	if (Expansion & SNDCHIP_SY1202)
 		str.Append("\tjsr ft_update_s5b");
 	else
 		str.Append("\tnop\n\tnop\n\tnop\n");
@@ -881,7 +881,7 @@ void CChunkRenderText::StoreEnableExt(unsigned char Expansion) const
 		str.Append("\t.byte 0\n");
 
 	str.Append("\t; S5B\n");
-	if (Expansion & SNDCHIP_S5B)
+	if (Expansion & SNDCHIP_SY1202)
 		str.Append("\t.byte 1, 1, 1\n");
 	else
 		str.Append("\t.byte 0, 0, 0\n");

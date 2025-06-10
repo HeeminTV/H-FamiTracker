@@ -201,9 +201,9 @@ void CChannelHandlerS5B::HandleRelease()
 bool CChannelHandlerS5B::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
-	case INST_7E02: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS:
+	case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS:
 		switch (m_iInstTypeCurrent) {
-		case INST_7E02: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS: break;
+		case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS: break;
 		default:
 			m_pInstHandler.reset(new CSeqInstHandlerS5B(this, 0x0F, Type == INST_S5B ? 0x40 : 0));
 			return true;
@@ -242,7 +242,7 @@ int CChannelHandlerS5B::CalculateVolume() const		// // //
 int CChannelHandlerS5B::ConvertDuty(int Duty) const		// // //
 {
 	switch (m_iInstTypeCurrent) {
-	case INST_7E02: case INST_VRC6: case INST_N163:
+	case INST_2A03: case INST_VRC6: case INST_N163:
 		return S5B_MODE_SQUARE;
 	default:
 		return Duty;

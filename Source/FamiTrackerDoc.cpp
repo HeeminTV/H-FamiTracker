@@ -644,7 +644,7 @@ void CFamiTrackerDoc::ReorderSequences()
 								Seq.Value[k] = std::max(std::min<int>(Seq.Value[k], 3), 0);
 						Indices[Index][j] = Slots[j];
 						pInst->SetSeqIndex(j, Slots[j]);
-						m_pInstrumentManager->SetSequence(INST_7E02, j, Slots[j]++, Seq.Convert(j));
+						m_pInstrumentManager->SetSequence(INST_2A03, j, Slots[j]++, Seq.Convert(j));
 					}
 				}
 				else
@@ -1044,7 +1044,7 @@ bool CFamiTrackerDoc::WriteBlock_Sequences(CDocumentFile *pDocFile, const int Ve
 	// Count number of used sequences
 	for (int i = 0; i < MAX_SEQUENCES; ++i)
 		for (int j = 0; j < SEQ_COUNT; ++j)
-			if (GetSequenceItemCount(INST_7E02, i, j) > 0)
+			if (GetSequenceItemCount(INST_2A03, i, j) > 0)
 				Count++;
 
 	if (!Count) return true;		// // //
@@ -1052,7 +1052,7 @@ bool CFamiTrackerDoc::WriteBlock_Sequences(CDocumentFile *pDocFile, const int Ve
 	pDocFile->CreateBlock(FILE_BLOCK_SEQUENCES, Version);
 	pDocFile->WriteBlockInt(Count);
 	
-	CSequenceManager *pManager = GetSequenceManager(INST_7E02);		// // //
+	CSequenceManager *pManager = GetSequenceManager(INST_2A03);		// // //
 
 	for (int i = 0; i < SEQ_COUNT; ++i) {
 		const CSequenceCollection *pCol = pManager->GetCollection(i);
@@ -2040,11 +2040,11 @@ void CFamiTrackerDoc::ReadBlock_Sequences(CDocumentFile *pDocFile, const int Ver
 				char Value = pDocFile->GetBlockChar();
 				Seq.AddItem(pDocFile->GetBlockChar(), Value);
 			}
-			m_pInstrumentManager->SetSequence(INST_7E02, Type, Index, Seq.Convert(Type));		// // //
+			m_pInstrumentManager->SetSequence(INST_2A03, Type, Index, Seq.Convert(Type));		// // //
 		}
 	}
 	else if (Version >= 3) {
-		CSequenceManager *pManager = GetSequenceManager(INST_7E02);		// // //
+		CSequenceManager *pManager = GetSequenceManager(INST_2A03);		// // //
 		int Indices[MAX_SEQUENCES * SEQ_COUNT];
 		int Types[MAX_SEQUENCES * SEQ_COUNT];
 
@@ -2840,8 +2840,8 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 		return false;
 	}
 
-	static const inst_type_t inst[] = {INST_7E02, INST_VRC6, INST_N163, INST_S5B};		// // //
-	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_S5B};
+	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B};		// // //
+	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_SY1202};
 	int (*seqTable[])[SEQ_COUNT] = {SequenceTable2A03, SequenceTableVRC6, SequenceTableN163, SequenceTableS5B};
 
 	// Copy sequences
@@ -2895,7 +2895,7 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 			inst_type_t Type = pInst->GetType();
 			// Update references
 			switch (Type) {
-			case INST_7E02: case INST_VRC6: case INST_N163: case INST_S5B:		// // //
+			case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B:		// // //
 				{
 					// Update sequence references
 					CSeqInstrument *pInstrument = static_cast<CSeqInstrument*>(pInst);
@@ -2913,7 +2913,7 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 			default:
 				AfxDebugBreak();	// Add code for this instrument
 			}
-			if (Type == INST_7E02) {
+			if (Type == INST_2A03) {
 				CInstrument2A03 *pInstrument = static_cast<CInstrument2A03*>(pInst);
 				// Update DPCM samples
 				for (int o = 0; o < OCTAVE_RANGE; ++o) for (int n = 0; n < NOTE_RANGE; ++n) {
@@ -3371,7 +3371,7 @@ int CFamiTrackerDoc::LoadInstrument(CString FileName)
 
 		inst_type_t InstType = static_cast<inst_type_t>(file.ReadChar());
 		if (InstType == INST_NONE)
-			InstType = INST_7E02;
+			InstType = INST_2A03;
 		auto pInstrument = CInstrumentManager::CreateNew(InstType);
 		AssertFileData(pInstrument.get() != nullptr, "Failed to create instrument");
 		m_pInstrumentManager->InsertInstrument(Slot, pInstrument);
@@ -4416,7 +4416,7 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 	unsigned int pos = Channel;
 	//if (pos == CHANID_MMC5_VOICE) return -1;
 
-	if (!(Chip & SNDCHIP_S5B)) {
+	if (!(Chip & SNDCHIP_SY1202)) {
 		if (pos > CHANID_SY1202_CH3) pos -= 3;
 		else if (pos >= CHANID_SY1202_CH1) return -1;
 	}
@@ -4438,6 +4438,12 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 	if (!(Chip & SNDCHIP_VRC6)) {
 		if (pos > CHANID_VRC6_SAWTOOTH) pos -= 3;
 		else if (pos >= CHANID_VRC6_PULSE1) return -1;
+	}
+
+	// Taken from E-FamiTracker by Euly
+	if (!(Chip & SNDCHIP_5E01)) {
+		if (pos > CHANID_5E01_DPCM) pos -= 5;
+		else if (pos >= CHANID_5E01_SQUARE1) return -1;
 	}
 
 	return pos;
@@ -5030,8 +5036,8 @@ void CFamiTrackerDoc::RemoveUnusedInstruments()
 		}
 	}
 
-	static const inst_type_t inst[] = {INST_7E02, INST_VRC6, INST_N163, INST_S5B};
-	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_S5B};
+	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B};
+	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_SY1202};
 
 	// Also remove unused sequences
 	for (unsigned int i = 0; i < MAX_SEQUENCES; ++i) for (int j = 0; j < SEQ_COUNT; ++j) {
@@ -5086,7 +5092,7 @@ void CFamiTrackerDoc::RemoveUnusedSamples()		// // //
 						stChanNote *pNote = m_pTracks[j]->GetPatternData(CHANID_DPCM, Pattern, Row);
 						int Index = pNote->Instrument;
 						if (pNote->Note < NOTE_C || pNote->Note > NOTE_B || Index == MAX_INSTRUMENTS) continue;		// // //
-						if (GetInstrumentType(Index) != INST_7E02) continue;
+						if (GetInstrumentType(Index) != INST_2A03) continue;
 						AssignUsed[Index][pNote->Octave][pNote->Note - 1] = true;
 						auto pInst = std::static_pointer_cast<CInstrument2A03>(GetInstrument(Index));
 						if (pInst->GetSampleIndex(pNote->Octave, pNote->Note - 1) == i + 1)
@@ -5518,17 +5524,17 @@ void CFamiTrackerDoc::MakeKraid()			// // // Easter Egg
 
 	// Instruments
 	for (int i = 0; i < MAX_INSTRUMENTS; i++) RemoveInstrument(i);
-	auto kraidInst = std::static_pointer_cast<CInstrument2A03>(CInstrumentManager::CreateNew(INST_7E02));
+	auto kraidInst = std::static_pointer_cast<CInstrument2A03>(CInstrumentManager::CreateNew(INST_2A03));
 	kraidInst->SetSeqEnable(SEQ_VOLUME, 1);
 	kraidInst->SetSeqIndex(SEQ_VOLUME, 0);
 	kraidInst->SetName("Lead ");
 	m_pInstrumentManager->InsertInstrument(0, kraidInst);
-	kraidInst = std::static_pointer_cast<CInstrument2A03>(CInstrumentManager::CreateNew(INST_7E02));
+	kraidInst = std::static_pointer_cast<CInstrument2A03>(CInstrumentManager::CreateNew(INST_2A03));
 	kraidInst->SetSeqEnable(SEQ_VOLUME, 1);
 	kraidInst->SetSeqIndex(SEQ_VOLUME, 1);
 	kraidInst->SetName("Echo");
 	m_pInstrumentManager->InsertInstrument(1, kraidInst);
-	kraidInst = std::static_pointer_cast<CInstrument2A03>(CInstrumentManager::CreateNew(INST_7E02));
+	kraidInst = std::static_pointer_cast<CInstrument2A03>(CInstrumentManager::CreateNew(INST_2A03));
 	kraidInst->SetSeqEnable(SEQ_VOLUME, 1);
 	kraidInst->SetSeqIndex(SEQ_VOLUME, 2);
 	kraidInst->SetName("Triangle");
@@ -5536,17 +5542,17 @@ void CFamiTrackerDoc::MakeKraid()			// // // Easter Egg
 
 	// Sequences
 	CSequence *kraidSeq;
-	kraidSeq = GetSequence(INST_7E02, 0, SEQ_VOLUME);
+	kraidSeq = GetSequence(INST_2A03, 0, SEQ_VOLUME);
 	kraidSeq->SetItemCount(1);
 	kraidSeq->SetItem(0, 6);
 	kraidSeq->SetLoopPoint(-1);
 	kraidSeq->SetReleasePoint(-1);
-	kraidSeq = GetSequence(INST_7E02, 1, SEQ_VOLUME);
+	kraidSeq = GetSequence(INST_2A03, 1, SEQ_VOLUME);
 	kraidSeq->SetItemCount(1);
 	kraidSeq->SetItem(0, 2);
 	kraidSeq->SetLoopPoint(-1);
 	kraidSeq->SetReleasePoint(-1);
-	kraidSeq = GetSequence(INST_7E02, 2, SEQ_VOLUME);
+	kraidSeq = GetSequence(INST_2A03, 2, SEQ_VOLUME);
 	kraidSeq->SetItemCount(1);
 	kraidSeq->SetItem(0, 15);
 	kraidSeq->SetLoopPoint(-1);

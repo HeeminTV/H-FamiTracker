@@ -47,6 +47,8 @@ private:
 	int m_iLevelN163;
 	int m_iLevelS5B;
 
+	int m_iLevel5E01; // Taken from E-FamiTracker by Euly
+
 protected:
 	void SetupSlider(int nID) const;
 	void UpdateLevels();

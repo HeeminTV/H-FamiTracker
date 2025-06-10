@@ -28,7 +28,10 @@ const uint8_t SNDCHIP_VRC7 = 2;			// Konami VRCVII
 const uint8_t SNDCHIP_FDS  = 4;			// Famicom Disk Sound
 const uint8_t SNDCHIP_MMC5 = 8;			// Nintendo MMC5
 const uint8_t SNDCHIP_N163 = 16;		// Namco 163
-const uint8_t SNDCHIP_S5B  = 32;		// Saeyahn SY1202
+const uint8_t SNDCHIP_SY1202  = 32;		// Saeyahn SY1202
+
+// Taken from E-FamiTracker by Euly
+const int SNDCHIP_5E01 = 64;		// Eulous 5E01
 
 enum chan_id_t {
 	CHANID_FWG1,
@@ -66,6 +69,14 @@ enum chan_id_t {
 	CHANID_SY1202_CH1,
 	CHANID_SY1202_CH2,
 	CHANID_SY1202_CH3,
+
+	CHANID_5E01_SQUARE1,
+	CHANID_5E01_SQUARE2,
+	CHANID_5E01_WAVEFORM,
+	CHANID_5E01_NOISE,
+	CHANID_5E01_DPCM,
+
+	// TODO: ADD 2A03 TOO
 
 	CHANNELS		/* Total number of channels */
 };

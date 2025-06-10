@@ -63,7 +63,8 @@ enum VRC7_PATCH {
 	PATCH_KT2 = 5,		// OPLL_VRC7_KT2_TONE
 	PATCH_KT1 = 6,		// OPLL_VRC7_KT1_TONE
 	PATCH_2413 = 7,		// OPLL_2413_TONE
-	PATCH_281B = 8		// OPLL_281B_TONE
+	PATCH_281B = 8,		// OPLL_281B_TONE
+	PATCH_HM = 9		// ?
 };
 
 // // // helper class for loading settings from official famitracker
@@ -248,6 +249,9 @@ public:
 		int		iLevelMMC5;
 		int		iLevelN163;
 		int		iLevelS5B;
+
+		int		iLevel5E01; // Taken from E-FamiTracker by Euly
+
 		int		iSurveyMixAPU1;
 		int		iSurveyMixAPU2;
 		int		iSurveyMixVRC6;
@@ -256,6 +260,8 @@ public:
 		int		iSurveyMixMMC5;
 		int		iSurveyMixN163;
 		int		iSurveyMixS5B;
+
+		int		iSurveyMix5E01; // Taken from E-FamiTracker by Euly
 	} ChipLevels;
 
 	struct {

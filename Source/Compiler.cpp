@@ -1801,7 +1801,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 			m_iVibratoTableLocation = VIBRATO_TABLE_LOCATION_N163;
 			Print(" * N163 expansion enabled\n");
 			break;
-		case SNDCHIP_S5B:
+		case SNDCHIP_SY1202:
 			m_pDriverData = &DRIVER_PACK_S5B;
 			m_iVibratoTableLocation = VIBRATO_TABLE_LOCATION_S5B;
 			Print(" * S5B expansion enabled\n");
@@ -1844,7 +1844,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 		int Channel = m_pDocument->GetChannelIndex(CHANID_FDS);
 		m_vChanOrder.push_back(Channel);
 	}
-	if (Chip & SNDCHIP_S5B) for (int i = 0; i < 3; i++) {
+	if (Chip & SNDCHIP_SY1202) for (int i = 0; i < 3; i++) {
 		int Channel = m_pDocument->GetChannelIndex(CHANID_SY1202_CH1 + i);
 		m_vChanOrder.push_back(Channel);
 	}
@@ -2008,7 +2008,7 @@ void CCompiler::ScanSong()
 	memset(m_bSequencesUsedVRC6, false, sizeof(bool) * MAX_SEQUENCES * SEQ_COUNT);
 	memset(m_bSequencesUsedN163, false, sizeof(bool) * MAX_SEQUENCES * SEQ_COUNT);
 	memset(m_bSequencesUsedS5B, false, sizeof(bool) * MAX_SEQUENCES * SEQ_COUNT);		// // //
-	static const inst_type_t inst[] = { INST_7E02, INST_VRC6, INST_N163, INST_S5B };		// // //
+	static const inst_type_t inst[] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };		// // //
 	bool *used[] = { *m_bSequencesUsed2A03, *m_bSequencesUsedVRC6, *m_bSequencesUsedN163, *m_bSequencesUsedS5B };
 
 	for (int i = 0; i < MAX_INSTRUMENTS; ++i) {
@@ -2149,7 +2149,7 @@ void CCompiler::CreateSequenceList()
 	//
 
 	unsigned int Size = 0, StoredCount = 0;
-	static const inst_type_t inst[] = { INST_7E02, INST_VRC6, INST_N163, INST_S5B };
+	static const inst_type_t inst[] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };
 	const bool *used[] = { *m_bSequencesUsed2A03, *m_bSequencesUsedVRC6, *m_bSequencesUsedN163, *m_bSequencesUsedS5B };
 	static const char *format[] = {
 		CChunkRenderText::LABEL_SEQ_2A03, CChunkRenderText::LABEL_SEQ_VRC6,
@@ -2338,7 +2338,7 @@ void CCompiler::CreateSampleList()
 	// Store sample instruments
 	unsigned int Item = 0;
 	for (int i = 0; i < MAX_INSTRUMENTS; ++i) {
-		if (m_pDocument->IsInstrumentUsed(i) && m_pDocument->GetInstrumentType(i) == INST_7E02) {
+		if (m_pDocument->IsInstrumentUsed(i) && m_pDocument->GetInstrumentType(i) == INST_2A03) {
 			auto pInstrument = std::static_pointer_cast<CInstrument2A03>(m_pDocument->GetInstrument(i));
 
 			for (int j = 0; j < OCTAVE_RANGE; ++j) {

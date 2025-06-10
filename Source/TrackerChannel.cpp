@@ -150,11 +150,14 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 		case SNDCHIP_NONE:
 		case SNDCHIP_MMC5:
 		case SNDCHIP_N163:		// // //
-		case SNDCHIP_S5B:
+		case SNDCHIP_SY1202:
 		case SNDCHIP_VRC6:
 		case SNDCHIP_FDS:
+
+		case SNDCHIP_5E01: // Taken from E-FamiTracker by Euly
+
 			switch (Type) {
-			case INST_7E02:
+			case INST_2A03:
 			case INST_VRC6:
 			case INST_N163:
 			case INST_S5B:
@@ -186,16 +189,16 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 		case EF_PORTAMENTO: case EF_ARPEGGIO: case EF_VIBRATO: case EF_TREMOLO:
 		case EF_PITCH: case EF_PORTA_UP: case EF_PORTA_DOWN: case EF_SLIDE_UP: case EF_SLIDE_DOWN:
 		case EF_VOLUME_SLIDE: case EF_DELAYED_VOLUME: case EF_TRANSPOSE: case EF_TARGET_VOLUME_SLIDE:
-			return m_iChannelID != CHANID_DPCM;
+			return (m_iChannelID != CHANID_DPCM && m_iChannelID != CHANID_5E01_DPCM); // Taken from E-FamiTracker by Euly
 		case EF_PORTAOFF:
 			return false;
 		case EF_SWEEPUP: case EF_SWEEPDOWN:
-			return m_iChannelID == CHANID_FWG1 || m_iChannelID == CHANID_FWG2;
+			return m_iChannelID == CHANID_FWG1 || m_iChannelID == CHANID_FWG2 || m_iChannelID == CHANID_5E01_SQUARE1 || m_iChannelID == CHANID_5E01_SQUARE2; // Taken from E-FamiTracker by Euly
 
 		// Taken from E-FamiTracker by Euly
 		case EF_DAC: case EF_SAMPLE_OFFSET: case EF_RETRIGGER: case EF_DPCM_PITCH: {
 			// TODO move to virtual method of Effect subclasses.
-			if (m_iChannelID != CHANID_DPCM && m_iChannelID != CHANID_MMC5_VOICE) return false;
+			if (m_iChannelID != CHANID_DPCM && m_iChannelID != CHANID_5E01_DPCM && m_iChannelID != CHANID_MMC5_VOICE) return false; // Taken from E-FamiTracker by Euly
 
 			int limit;
 			switch (EffNumber) {
@@ -230,7 +233,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_FDS;
 		case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE:
 		case EF_SUNSOFT_NOISE:		// // // 050B
-			return m_iChip == SNDCHIP_S5B;
+			return m_iChip == SNDCHIP_SY1202;
 		case EF_N163_WAVE_BUFFER:
 			return m_iChip == SNDCHIP_N163 && EffParam <= 0x7F;
 		case EF_FDS_VOLUME:
@@ -244,7 +247,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			if (m_iChannelID == CHANID_MMC5_VOICE) return false;
 			// VRC7 and S5B is not supported yet.
 			if (m_iChip == SNDCHIP_VRC7) return false;
-			if (m_iChip == SNDCHIP_S5B) return false;
+			if (m_iChip == SNDCHIP_SY1202) return false;
 			return EffParam == 0x00;
 		case EF_HARMONIC:
 			// VRC7 is not supported yet.

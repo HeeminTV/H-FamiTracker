@@ -61,7 +61,7 @@ effect_t GetEffectFromChar(char ch, int Chip, bool *bValid)		// // //
 			if (ch == EFF_CHAR[x])
 				return x;
 		break;
-	case SNDCHIP_S5B:
+	case SNDCHIP_SY1202:
 		for (const auto &x : S5B_EFFECTS)
 			if (ch == EFF_CHAR[x])
 				return x;

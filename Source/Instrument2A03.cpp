@@ -31,7 +31,7 @@
 
 LPCTSTR CInstrument2A03::SEQUENCE_NAME[] = {_T("Volume"), _T("Arpeggio"), _T("Pitch"), _T("Hi-pitch"), _T("Waveform")};
 
-CInstrument2A03::CInstrument2A03() : CSeqInstrument(INST_7E02),		// // //
+CInstrument2A03::CInstrument2A03() : CSeqInstrument(INST_2A03),		// // //
 	m_cSamples(),
 	m_cSamplePitch(),
 	m_cSampleLoopOffset()

@@ -36,13 +36,16 @@ enum chip_level_t {
 	CHIP_LEVEL_FDS,
 	CHIP_LEVEL_MMC5,
 	CHIP_LEVEL_N163,
-	CHIP_LEVEL_S5B,
-	CHIP_LEVEL_COUNT
+	CHIP_LEVEL_SY1202,
+	CHIP_LEVEL_COUNT,
+	CHIP_LEVEL_5E01 // Taken from E-FamiTracker by Euly
 };
 
 class C2A03;
 class CFDS;
 class CAPU;
+
+class C5E01; // Taken from E-FamiTracker by Euly
 
 struct MixerConfig {
 	// Global lowpass
@@ -233,7 +236,9 @@ private:
 	float		m_fLevelMMC5;
 	float		m_fLevelFDS;
 	float		m_fLevelN163;
-	float		m_fLevelS5B;		// // // 050B
+	float		m_fLevelSY1202;		// // // 050B
+
+	float		m_fLevel5E01; // Taken from E-FamiTracker by Euly
 
 	friend class CAPU;
 };

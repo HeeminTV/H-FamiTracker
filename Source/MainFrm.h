@@ -227,6 +227,9 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
+	// E-FamiTracker (by Euly) modifications
+	afx_msg void OnAddInstrument5E01();
+
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	virtual BOOL DestroyWindow();

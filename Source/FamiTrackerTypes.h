@@ -83,7 +83,11 @@ const int ECHO_BUFFER_LENGTH = 3;
 
 // Number of available channels (max) TODO: should not be used anymore!
 // instead, check the channelsavailable variable and allocate dynamically
-const int MAX_CHANNELS	 = 5 + 3 + 2 + 8 + 1 + 6 + 3;
+
+// Taken from E-FamiTracker by Eu- wait I wrote this by myself.
+// huh
+// 7E02 + VRC6 + MMC5 + C163 + 2C33 + VRC7 + SY1202 + 5E01
+const int MAX_CHANNELS	 = 5 + 3 + 3 + 8 + 1 + 6 + 3 + 5;
 
 const int CHANNELS_DEFAULT = 5;
 const int CHANNELS_VRC6	   = 3;
