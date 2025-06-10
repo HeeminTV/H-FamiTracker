@@ -17,13 +17,13 @@ This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https:/
 - MMC5 PCM
 
 ## To do list
-[x] - 7E02
-[x] - MMC5 PCM
-[ ] - PCM importer via DPCM instrument
-[x] - 5E01
-[ ] - 2A03
-[ ] - UA6527
-[ ] - SN76489
+- [x] 7E02
+- [x] MMC5 PCM
+- [ ] PCM importer via DPCM instrument
+- [x] 5E01
+- [ ] 2A03
+- [ ] UA6527
+- [ ] SN76489
 
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)
 
