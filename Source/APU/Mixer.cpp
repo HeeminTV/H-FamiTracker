@@ -97,8 +97,10 @@ CMixer::CMixer(CAPU* Parent)
 	m_fLevelFDS = 1.0f;
 	m_fLevelN163 = 1.0f;
 	m_fLevelSY1202 = 1.0f;		// // // 050B
+	m_fLevel5E01_APU1 = 1.0f;
+	m_fLevel5E01_APU2 = 1.0f;
 
-	m_fLevel5E01 = 1.0f; // Taken from E-FamiTracker by Euly
+	// m_fLevel5E01 = 1.0f; // Taken from E-FamiTracker by Euly
 
 	m_iExternalChip = 0;
 	m_iSampleRate = 0;
@@ -142,9 +144,11 @@ void CMixer::SetChipLevel(chip_level_t Chip, float Level)
 	case CHIP_LEVEL_SY1202:		// // // 050B
 		m_fLevelSY1202 = Level;
 		break;
-
-	case CHIP_LEVEL_5E01:		// Taken from E-FamiTracker by Euly
-		m_fLevel5E01 = Level;
+	case CHIP_LEVEL_5E01_APU1:
+		m_fLevel5E01_APU1 = Level;
+		break;
+	case CHIP_LEVEL_5E01_APU2:
+		m_fLevel5E01_APU2 = Level;
 		break;
 
 	case CHIP_LEVEL_COUNT:
@@ -244,9 +248,8 @@ void CMixer::RecomputeEmuMixState()
 	chip2A03.UpdateMixingAPU2(Volume * m_fLevelAPU2, UseSurveyMixing);
 	chipFDS.UpdateMixLevel(Volume * m_fLevelFDS, UseSurveyMixing);
 	chipN163.UpdateMixLevel(Volume * m_fLevelN163, UseSurveyMixing);
-
-	chip5E01.UpdateMixingAPU1(Volume * m_fLevelAPU1); // Taken from E-FamiTracker by Euly
-	chip5E01.UpdateMixingAPU2(Volume * m_fLevelAPU2);
+	chip5E01.UpdateMixing5E01_APU1(Volume * m_fLevel5E01_APU1); // Taken from E-FamiTracker by Euly
+	chip5E01.UpdateMixing5E01_APU2(Volume * m_fLevel5E01_APU2);
 
 	if (UseSurveyMixing) {
 		chipVRC7.UpdateMixLevel(Volume * m_fLevelVRC7, UseSurveyMixing);

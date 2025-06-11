@@ -340,7 +340,6 @@ void CAPU::SetExternalSound(uint8_t Chip)
 		m_SoundChips2.push_back(m_pN163.get());
 	if (Chip & SNDCHIP_SY1202)
 		m_SoundChips.push_back(m_pS5B);
-
 	if (Chip & SNDCHIP_5E01) // Taken from E-FamiTracker by Euly
 		m_SoundChips2.push_back(m_p5E01.get());
 
@@ -598,7 +597,6 @@ double CAPU::GetFreq(int Chip, int Chan) const
 	case SNDCHIP_MMC5: return PtrGetFreq(*m_pMMC5);
 	case SNDCHIP_N163: return PtrGetFreq(*m_pN163);
 	case SNDCHIP_SY1202:  return PtrGetFreq(*m_pS5B);
-
 	case SNDCHIP_5E01: return PtrGetFreq(*m_p5E01); // Taken from E-FamiTracker by Euly
 
 	default: AfxDebugBreak(); return 0.;
@@ -624,7 +622,6 @@ CRegisterState *CAPU::GetRegState(int Chip, int Reg) const		// // //
 	case SNDCHIP_MMC5: return PtrGetRegState(*m_pMMC5);
 	case SNDCHIP_N163: return PtrGetRegState(*m_pN163);
 	case SNDCHIP_SY1202:  return PtrGetRegState(*m_pS5B);
-
 	case SNDCHIP_5E01: return PtrGetRegState(*m_p5E01); // Taken from E-FamiTracker by Euly
 
 	default: AfxDebugBreak(); return nullptr;

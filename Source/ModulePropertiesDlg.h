@@ -62,10 +62,10 @@ protected:
 
 	void FillSongList();
 
-	NoNotifyEdit m_cDeviceLevelEdit[8];
-	CSliderCtrl m_cDeviceLevelSlider[8];
-	CStatic m_cDeviceLevelLabel[8];
-	CStatic m_cDevicedBLabel[8];
+	NoNotifyEdit m_cDeviceLevelEdit[10]; // HFT modifications
+	CSliderCtrl m_cDeviceLevelSlider[10];
+	CStatic m_cDeviceLevelLabel[10];
+	CStatic m_cDevicedBLabel[10];
 
 	CStatic m_cOPLLPatchLabel[19];
 	NoNotifyEdit m_cOPLLPatchBytesEdit[19];
@@ -101,15 +101,15 @@ public:
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnLvnItemchangedSonglist(NMHDR *pNMHDR, LRESULT *pResult);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+
 	afx_msg void OnBnClickedExpansionVRC6();		// // //
 	afx_msg void OnBnClickedExpansionVRC7();
 	afx_msg void OnBnClickedExpansionFDS();
 	afx_msg void OnBnClickedExpansionMMC5();
 	afx_msg void OnBnClickedExpansionS5B();
-
 	afx_msg void OnBnClickedExpansion5E01(); // Taken from E-FamiTracker by Euly
-
 	afx_msg void OnBnClickedExpansionN163();
+
 	afx_msg void OnEnChangeApu1OffsetEdit();
 	afx_msg void OnEnChangeApu2OffsetEdit();
 	afx_msg void OnEnChangeVrc6OffsetEdit();
@@ -118,6 +118,10 @@ public:
 	afx_msg void OnEnChangeMmc5OffsetEdit();
 	afx_msg void OnEnChangeN163OffsetEdit();
 	afx_msg void OnEnChangeS5bOffsetEdit();
+	afx_msg void OnEnChange5E01_Apu1OffsetEdit();
+	afx_msg void OnEnChange5E01_Apu2OffsetEdit();
+
+	// what the heck is the real purpose of these?? 
 	afx_msg void OnBnClickedExternalOpll();
 	afx_msg void OnEnKillfocusOpllPatchbyte1();
 	afx_msg void OnEnChangeOpllPatchname1();

@@ -1678,7 +1678,6 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 			case SNDCHIP_SY1202:
 				String = _T(" SY1202");
 				break;
-
 			// Taken from E-FamiTracker by Euly
 			case SNDCHIP_5E01:
 				String = _T(" Eulous 5E01");

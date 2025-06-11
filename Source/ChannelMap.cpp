@@ -47,11 +47,10 @@ void CChannelMap::SetupSoundChips()
 	AddChip(SNDCHIP_NONE, INST_2A03, _T("NES channels only"));
 	AddChip(SNDCHIP_VRC6, INST_VRC6, _T("Konami VRC6"));
 	AddChip(SNDCHIP_VRC7, INST_VRC7, _T("Konami VRC7"));
-	AddChip(SNDCHIP_FDS,  INST_FDS,  _T("Nintendo FDS sound"));
+	AddChip(SNDCHIP_FDS,  INST_FDS,  _T("Nintendo 2C33"));
 	AddChip(SNDCHIP_MMC5, INST_2A03, _T("Nintendo MMC5"));
 	AddChip(SNDCHIP_N163, INST_N163, _T("Namco 163"));
 	AddChip(SNDCHIP_SY1202,  INST_S5B,  _T("Sunsoft 5B"));
-
 	// Taken from E-FamiTracker by Euly
 	AddChip(SNDCHIP_5E01, INST_2A03, _T("Eulous 5E01"));
 

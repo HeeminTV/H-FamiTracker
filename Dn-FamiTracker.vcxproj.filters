@@ -750,6 +750,18 @@
     <ClCompile Include="Source\JsonExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\APU\5E01.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\APU\nsfplay\xgm\devices\Sound\5e01_apu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\APU\nsfplay\xgm\devices\Sound\5e01_dmc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Channels5E01.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Exception.h">
@@ -1502,6 +1514,18 @@
     <ClInclude Include="Source\JsonExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\APU\5E01.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\APU\nsfplay\xgm\devices\Sound\5e01_apu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\APU\nsfplay\xgm\devices\Sound\5e01_dmc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Channels5E01.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dn-FamiTracker.rc">
@@ -1582,6 +1606,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Application.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\NewBanner.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

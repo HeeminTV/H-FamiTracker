@@ -196,11 +196,11 @@ int C5E01::GetChannelLevelRange(int Channel) const
 }
 
 
-void C5E01::UpdateMixingAPU1(double v) {
+void C5E01::UpdateMixing5E01_APU1(double v) {
 	Synth5E01SS.volume(v, 10000);
 }
 
-void C5E01::UpdateMixingAPU2(double v) {
+void C5E01::UpdateMixing5E01_APU2(double v) {
 	Synth5E01TND.volume(v, 10000);
 }
 

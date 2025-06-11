@@ -1848,7 +1848,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 
 	const int BAR_OFFSET = LINE_HEIGHT * (3 + 9 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC6) * 5 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_MMC5) * 4 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_MMC5) * 5 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_N163) * 18 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_FDS) * 13 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9 +

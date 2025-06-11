@@ -34,6 +34,8 @@
 
 LPCTSTR TRACK_FORMAT = _T("#%02i %s");
 
+int TotalMixerCount = 10; // ah fuck i hate hardcoding
+
 // CModulePropertiesDlg dialog
 
 //
@@ -77,7 +79,6 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_BN_CLICKED(IDC_EXPANSION_MMC5, OnBnClickedExpansionMMC5)
 	ON_BN_CLICKED(IDC_EXPANSION_S5B, OnBnClickedExpansionS5B)
 	ON_BN_CLICKED(IDC_EXPANSION_N163, OnBnClickedExpansionN163)
-
 	ON_BN_CLICKED(IDC_EXPANSION_5E01, OnBnClickedExpansion5E01) // Taken from E-FamiTracker by Euly
 
 	ON_WM_VSCROLL()
@@ -89,6 +90,10 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_EN_CHANGE(IDC_MMC5_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeMmc5OffsetEdit)
 	ON_EN_CHANGE(IDC_N163_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeN163OffsetEdit)
 	ON_EN_CHANGE(IDC_S5B_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeS5bOffsetEdit)
+	ON_EN_CHANGE(IDC_5E01_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange5E01_Apu1OffsetEdit)
+	ON_EN_CHANGE(IDC_5E01_APU2_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange5E01_Apu2OffsetEdit)
+
+
 	ON_BN_CLICKED(IDC_EXTERNAL_OPLL, &CModulePropertiesDlg::OnBnClickedExternalOpll)
 	ON_EN_KILLFOCUS(IDC_OPLL_PATCHBYTE1, &CModulePropertiesDlg::OnEnKillfocusOpllPatchbyte1)
 	ON_EN_CHANGE(IDC_OPLL_PATCHNAME1, &CModulePropertiesDlg::OnEnChangeOpllPatchname1)
@@ -205,7 +210,7 @@ constexpr std::array<unsigned int, 19> IDC_OPLL_PATCHNAME = {
 	IDC_OPLL_PATCHNAME18
 };
 
-constexpr std::array<unsigned int, 8> IDC_DEVICE_OFFSET_EDIT = {
+constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_EDIT = {
 	IDC_APU1_OFFSET_EDIT,
 	IDC_APU2_OFFSET_EDIT,
 	IDC_VRC6_OFFSET_EDIT,
@@ -213,10 +218,13 @@ constexpr std::array<unsigned int, 8> IDC_DEVICE_OFFSET_EDIT = {
 	IDC_FDS_OFFSET_EDIT,
 	IDC_MMC5_OFFSET_EDIT,
 	IDC_N163_OFFSET_EDIT,
-	IDC_S5B_OFFSET_EDIT
+	IDC_S5B_OFFSET_EDIT,
+	IDC_5E01_APU1_OFFSET_EDIT,
+	IDC_5E01_APU2_OFFSET_EDIT
+
 };
 
-constexpr std::array<unsigned int, 8> IDC_DEVICE_OFFSET_SLIDER = {
+constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_SLIDER = {
 	IDC_APU1_OFFSET_SLIDER,
 	IDC_APU2_OFFSET_SLIDER,
 	IDC_VRC6_OFFSET_SLIDER,
@@ -224,10 +232,12 @@ constexpr std::array<unsigned int, 8> IDC_DEVICE_OFFSET_SLIDER = {
 	IDC_FDS_OFFSET_SLIDER,
 	IDC_MMC5_OFFSET_SLIDER,
 	IDC_N163_OFFSET_SLIDER,
-	IDC_S5B_OFFSET_SLIDER
+	IDC_S5B_OFFSET_SLIDER,
+	IDC_5E01_APU1_OFFSET_SLIDER,
+	IDC_5E01_APU2_OFFSET_SLIDER
 };
 
-constexpr std::array<unsigned int, 8> IDC_DEVICE_OFFSET_DB = {
+constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_DB = {
 	IDC_APU1_OFFSET_DB,
 	IDC_APU2_OFFSET_DB,
 	IDC_VRC6_OFFSET_DB,
@@ -235,10 +245,12 @@ constexpr std::array<unsigned int, 8> IDC_DEVICE_OFFSET_DB = {
 	IDC_FDS_OFFSET_DB,
 	IDC_MMC5_OFFSET_DB,
 	IDC_N163_OFFSET_DB,
-	IDC_S5B_OFFSET_DB
+	IDC_S5B_OFFSET_DB,
+	IDC_5E01_APU1_OFFSET_DB,
+	IDC_5E01_APU2_OFFSET_DB
 };
 
-constexpr std::array<unsigned int, 8> IDC_STATIC_DEVICE = {
+constexpr std::array<unsigned int, 10> IDC_STATIC_DEVICE = {
 	IDC_STATIC_APU1,
 	IDC_STATIC_APU2,
 	IDC_STATIC_VRC6,
@@ -246,7 +258,9 @@ constexpr std::array<unsigned int, 8> IDC_STATIC_DEVICE = {
 	IDC_STATIC_FDS,
 	IDC_STATIC_MMC5,
 	IDC_STATIC_N163,
-	IDC_STATIC_S5B
+	IDC_STATIC_S5B,
+	IDC_STATIC_5E01_APU1,
+	IDC_STATIC_5E01_APU2
 };
 
 // CModulePropertiesDlg message handlers
@@ -280,7 +294,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 	m_cChanSlider.SubclassDlgItem(IDC_CHANNELS, this);
 
 	// Device mix offset UI
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < TotalMixerCount; i++) {
 		m_cDeviceLevelEdit[i].SubclassDlgItem(IDC_DEVICE_OFFSET_EDIT[i], this);
 		m_cDeviceLevelSlider[i].SubclassDlgItem(IDC_DEVICE_OFFSET_SLIDER[i], this);
 		m_cDevicedBLabel[i].SubclassDlgItem(IDC_DEVICE_OFFSET_DB[i], this);
@@ -356,7 +370,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 	{
 		CString str;
 		unsigned int Gone = m_pDocument->GetExpansionChip() & ~m_iExpansions;
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 7; i++) { // HFT modifiactions
 			if (Gone & (1 << i)) switch (i) {
 			case 0: str += _T("VRC6 "); break;
 			case 1: str += _T("VRC7 "); break;
@@ -391,7 +405,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 	m_pDocument->SetLinearPitch(pPitchBox->GetCurSel() == 1);
 
 	// Device mix offset
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < TotalMixerCount; i++) // HFT modification
 		m_pDocument->SetLevelOffset(i, -m_iDeviceLevelOffset[i]);
 
 	// Hardware-based mixing
@@ -455,6 +469,10 @@ void CModulePropertiesDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrol
 		OffsetSlider(6, pos); break;
 	case IDC_S5B_OFFSET_SLIDER:
 		OffsetSlider(7, pos); break;
+	case IDC_5E01_APU1_OFFSET_SLIDER:
+		OffsetSlider(8, pos); break;
+	case IDC_5E01_APU2_OFFSET_SLIDER:
+		OffsetSlider(9, pos); break;
 	}
 
 	UpdateData(TRUE);
@@ -672,7 +690,7 @@ void CModulePropertiesDlg::OnBnClickedSongImport()
 	((CButton*)GetDlgItem(IDC_EXPANSION_5E01))->SetCheck((m_iExpansions & SNDCHIP_5E01) != 0);
 
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < TotalMixerCount; i++) // HFT modifiaction
 		updateDeviceMixOffsetUI(i);
 
 	m_pDocument->UpdateAllViews(NULL, UPDATE_PROPERTIES);
@@ -866,7 +884,7 @@ void CModulePropertiesDlg::updateN163ChannelCountUI()
 
 void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 {
-	int const chipenable[8] = {
+	int const chipenable[9] = {
 		255,
 		255,
 		SNDCHIP_VRC6,
@@ -874,7 +892,8 @@ void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 		SNDCHIP_FDS,
 		SNDCHIP_MMC5,
 		SNDCHIP_N163,
-		SNDCHIP_SY1202
+		SNDCHIP_SY1202,
+		SNDCHIP_5E01
 	};
 
 	std::array<CWnd*, 4> DeviceMixOffsetUI = {
@@ -974,6 +993,16 @@ void CModulePropertiesDlg::OnEnChangeN163OffsetEdit()
 void CModulePropertiesDlg::OnEnChangeS5bOffsetEdit()
 {
 	DeviceOffsetEdit(7);
+}
+
+void CModulePropertiesDlg::OnEnChange5E01_Apu1OffsetEdit()
+{
+	DeviceOffsetEdit(8);
+}
+
+void CModulePropertiesDlg::OnEnChange5E01_Apu2OffsetEdit()
+{
+	DeviceOffsetEdit(9);
 }
 
 // Externall OPLL UI

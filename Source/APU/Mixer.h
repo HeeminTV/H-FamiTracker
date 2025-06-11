@@ -38,7 +38,8 @@ enum chip_level_t {
 	CHIP_LEVEL_N163,
 	CHIP_LEVEL_SY1202,
 	CHIP_LEVEL_COUNT,
-	CHIP_LEVEL_5E01 // Taken from E-FamiTracker by Euly
+	CHIP_LEVEL_5E01_APU1,
+	CHIP_LEVEL_5E01_APU2
 };
 
 class C2A03;
@@ -237,8 +238,8 @@ private:
 	float		m_fLevelFDS;
 	float		m_fLevelN163;
 	float		m_fLevelSY1202;		// // // 050B
-
-	float		m_fLevel5E01; // Taken from E-FamiTracker by Euly
+	float		m_fLevel5E01_APU1;
+	float		m_fLevel5E01_APU2;
 
 	friend class CAPU;
 };

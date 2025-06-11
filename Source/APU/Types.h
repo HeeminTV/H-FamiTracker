@@ -29,7 +29,6 @@ const uint8_t SNDCHIP_FDS  = 4;			// Famicom Disk Sound
 const uint8_t SNDCHIP_MMC5 = 8;			// Nintendo MMC5
 const uint8_t SNDCHIP_N163 = 16;		// Namco 163
 const uint8_t SNDCHIP_SY1202  = 32;		// Saeyahn SY1202
-
 // Taken from E-FamiTracker by Euly
 const int SNDCHIP_5E01 = 64;		// Eulous 5E01
 
