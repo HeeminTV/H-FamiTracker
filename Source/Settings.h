@@ -249,8 +249,8 @@ public:
 		int		iLevelMMC5;
 		int		iLevelN163;
 		int		iLevelS5B;
-
-		int		iLevel5E01; // Taken from E-FamiTracker by Euly
+		int		iLevel5E01_APU1;
+		int		iLevel5E01_APU2;
 
 		int		iSurveyMixAPU1;
 		int		iSurveyMixAPU2;
@@ -260,8 +260,8 @@ public:
 		int		iSurveyMixMMC5;
 		int		iSurveyMixN163;
 		int		iSurveyMixS5B;
-
-		int		iSurveyMix5E01; // Taken from E-FamiTracker by Euly
+		int		iSurveyMix5E01_APU1;
+		int		iSurveyMix5E01_APU2;
 	} ChipLevels;
 
 	struct {

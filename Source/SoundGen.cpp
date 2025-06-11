@@ -1004,6 +1004,8 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_MMC5, float(pSettings->ChipLevels.iLevelMMC5 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_N163, float(pSettings->ChipLevels.iLevelN163 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_SY1202, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_5E01_APU1, float(pSettings->ChipLevels.iLevel5E01_APU1 / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_5E01_APU2, float(pSettings->ChipLevels.iLevel5E01_APU2 / 10.0f));
 		}
 	}
 

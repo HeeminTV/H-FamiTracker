@@ -37,7 +37,9 @@ enum chip_level_t {
 	CHIP_LEVEL_MMC5,
 	CHIP_LEVEL_N163,
 	CHIP_LEVEL_SY1202,
+
 	CHIP_LEVEL_COUNT,
+
 	CHIP_LEVEL_5E01_APU1,
 	CHIP_LEVEL_5E01_APU2
 };
@@ -45,7 +47,6 @@ enum chip_level_t {
 class C2A03;
 class CFDS;
 class CAPU;
-
 class C5E01; // Taken from E-FamiTracker by Euly
 
 struct MixerConfig {
@@ -76,7 +77,9 @@ struct MixerConfig {
 		0,		// FDSOffset
 		0,		// MMC5Offset
 		0,		// N163Offset
-		0		// S5BOffset
+		0,		// S5BOffset
+		0,		// 5E01_APU1
+		0		// 5E01_APU2
 	};
 };
 

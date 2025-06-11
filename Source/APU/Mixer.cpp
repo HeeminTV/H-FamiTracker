@@ -72,7 +72,6 @@
 #include "2A03.h"
 #include "FDS.h"
 #include "N163.h"
-
 #include "5E01.h" // Taken from E-FamiTracker by Euly
 
 #include "utils/variadic_minmax.h"
@@ -165,9 +164,8 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 		const float ATTENUATION_VRC7 = 0.64f;
 		const float ATTENUATION_MMC5 = 0.83f;
 		const float ATTENUATION_FDS = 0.90f;
-		const float ATTENUATION_N163 = 0.70f;
+		const float ATTENUATION_N163 = 0.70f;		
 		const float ATTENUATION_SY1202 = 0.50f;		// // // 050B
-
 		const float ATTENUATION_5E01 = 0.80f; // Taken from E-FamiTracker by Euly
 
 		// Increase headroom if some expansion chips are enabled
@@ -184,7 +182,6 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 			ATTENUATION_2A03 *= ATTENUATION_N163;
 		if (m_iExternalChip & SNDCHIP_SY1202)		// // // 050B
 			ATTENUATION_2A03 *= ATTENUATION_SY1202;
-
 		if (m_iExternalChip & SNDCHIP_5E01)		// Taken from E-FamiTracker by Euly
 			ATTENUATION_2A03 *= ATTENUATION_5E01;
 
@@ -198,9 +195,7 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 		if (m_iExternalChip & SNDCHIP_MMC5) TotalChipsUsed++;
 		if (m_iExternalChip & SNDCHIP_N163) TotalChipsUsed++;
 		if (m_iExternalChip & SNDCHIP_SY1202) TotalChipsUsed++;
-
 		if (m_iExternalChip & SNDCHIP_5E01) TotalChipsUsed++; 
-
 		ATTENUATION_2A03 *= static_cast<float>(1.0 / (float)TotalChipsUsed);
 	}
 
@@ -233,7 +228,6 @@ void CMixer::RecomputeEmuMixState()
 	auto &chipVRC7 = *m_APU->m_pVRC7;
 	auto &chipFDS = *m_APU->m_pFDS;
 	auto &chipN163 = *m_APU->m_pN163;
-
 	auto& chip5E01 = *m_APU->m_p5E01; // Taken from E-FamiTracker by Euly
 
 	bool UseSurveyMixing = m_MixerConfig.UseSurveyMix;
@@ -248,8 +242,10 @@ void CMixer::RecomputeEmuMixState()
 	chip2A03.UpdateMixingAPU2(Volume * m_fLevelAPU2, UseSurveyMixing);
 	chipFDS.UpdateMixLevel(Volume * m_fLevelFDS, UseSurveyMixing);
 	chipN163.UpdateMixLevel(Volume * m_fLevelN163, UseSurveyMixing);
-	chip5E01.UpdateMixing5E01_APU1(Volume * m_fLevel5E01_APU1); // Taken from E-FamiTracker by Euly
-	chip5E01.UpdateMixing5E01_APU2(Volume * m_fLevel5E01_APU2);
+	//chip5E01.UpdateMixing5E01_APU1(Volume * m_fLevel5E01_APU1); // Taken from E-FamiTracker by Euly
+	//chip5E01.UpdateMixing5E01_APU2(Volume * m_fLevel5E01_APU2);
+	chip5E01.UpdateMixing5E01_APU1(Volume * m_fLevel5E01_APU1, UseSurveyMixing);
+	chip5E01.UpdateMixing5E01_APU2(Volume * m_fLevel5E01_APU2, UseSurveyMixing);
 
 	if (UseSurveyMixing) {
 		chipVRC7.UpdateMixLevel(Volume * m_fLevelVRC7, UseSurveyMixing);

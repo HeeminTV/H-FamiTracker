@@ -848,6 +848,8 @@ void CModulePropertiesDlg::OnBnClickedExpansion5E01()
 		m_iExpansions |= SNDCHIP_5E01;
 	else
 		m_iExpansions &= ~SNDCHIP_5E01;
+	updateDeviceMixOffsetUI(8);
+	updateDeviceMixOffsetUI(9);
 }
 
 // Device mix offset GUI
@@ -884,7 +886,7 @@ void CModulePropertiesDlg::updateN163ChannelCountUI()
 
 void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 {
-	int const chipenable[9] = {
+	int const chipenable[10] = {
 		255,
 		255,
 		SNDCHIP_VRC6,
@@ -893,6 +895,7 @@ void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 		SNDCHIP_MMC5,
 		SNDCHIP_N163,
 		SNDCHIP_SY1202,
+		SNDCHIP_5E01,
 		SNDCHIP_5E01
 	};
 
