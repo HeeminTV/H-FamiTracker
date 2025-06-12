@@ -187,11 +187,10 @@ CAPU::CAPU(IAudioCallback *pCallback) :		// // //
 	m_pFDS(std::make_unique<CFDS>()),
 	m_pN163(std::make_unique<CN163>()),
 	m_pVRC7(std::make_unique<CVRC7>()),
+	m_p5E01(std::make_unique<C5E01>()), // Taken from E-FamiTracker by Euly
 	m_iExternalSoundChips(0),
 	m_iCyclesToRun(0),
-	m_iSampleRate(44100),		// // //
-
-	m_p5E01(std::make_unique<C5E01>()) // Taken from E-FamiTracker by Euly
+	m_iSampleRate(44100)		// // //
 
 {
 	m_pMMC5 = new CMMC5(m_pMixer);
@@ -678,7 +677,7 @@ void CAPUConfig::SetChipLevel(chip_level_t Chip, float LeveldB, bool SurveyMix)
 		// and measuring the dB RMS delta between APU1 and other chips
 		// using methods described here: https://www.nesdev.org/wiki/NSFe#mixe
 		// TODO: investigate issues with rounding error
-		int16_t dblevelcorrection[10]{
+		int16_t dblevelcorrection[CHIP_LEVEL_COUNT]{
 			0,		// APU1
 			-13,	// APU2
 			-494,	// VRC6

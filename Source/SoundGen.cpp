@@ -624,10 +624,12 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 	SurveyMixLevels.at(CHIP_LEVEL_MMC5) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixMMC5);
 	SurveyMixLevels.at(CHIP_LEVEL_N163) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixN163);
 	SurveyMixLevels.at(CHIP_LEVEL_SY1202) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixS5B);
+	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU1);
+	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU2) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU2);
 
 	bool refreshsettings = false;
 
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < CHIP_LEVEL_COUNT; i++)
 		refreshsettings |= DeviceMixOffset[i] != pDocument->GetLevelOffset(i);
 
 	refreshsettings |= UseSurveyMix != pDocument->GetSurveyMixCheck();

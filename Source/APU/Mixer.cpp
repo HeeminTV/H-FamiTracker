@@ -242,8 +242,6 @@ void CMixer::RecomputeEmuMixState()
 	chip2A03.UpdateMixingAPU2(Volume * m_fLevelAPU2, UseSurveyMixing);
 	chipFDS.UpdateMixLevel(Volume * m_fLevelFDS, UseSurveyMixing);
 	chipN163.UpdateMixLevel(Volume * m_fLevelN163, UseSurveyMixing);
-	//chip5E01.UpdateMixing5E01_APU1(Volume * m_fLevel5E01_APU1); // Taken from E-FamiTracker by Euly
-	//chip5E01.UpdateMixing5E01_APU2(Volume * m_fLevel5E01_APU2);
 	chip5E01.UpdateMixing5E01_APU1(Volume * m_fLevel5E01_APU1, UseSurveyMixing);
 	chip5E01.UpdateMixing5E01_APU2(Volume * m_fLevel5E01_APU2, UseSurveyMixing);
 
