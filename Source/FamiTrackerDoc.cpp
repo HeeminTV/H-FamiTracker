@@ -190,6 +190,8 @@ const char* MMC5_OFFSET = "mmc5-offset";
 const char* N163_OFFSET = "n163-offset";
 const char* S5B_OFFSET = "sy-offset";
 const char* USE_SURVEY_MIX = "use-survey-mix";
+const char* _5E01_APU1_OFFSET = "5e01_apu1-offset";
+const char* _5E01_APU2_OFFSET = "5e01_apu2-offset";
 
 void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(APU1_OFFSET).get_to(d.APU1_OFFSET);
@@ -200,6 +202,8 @@ void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(MMC5_OFFSET).get_to(d.MMC5_OFFSET);
 	j.at(N163_OFFSET).get_to(d.N163_OFFSET);
 	j.at(S5B_OFFSET).get_to(d.S5B_OFFSET);
+	j.at(_5E01_APU1_OFFSET).get_to(d._5E01_APU1_OFFSET);
+	j.at(_5E01_APU2_OFFSET).get_to(d._5E01_APU2_OFFSET);
 	j.at(USE_SURVEY_MIX).get_to(d.USE_SURVEY_MIX);
 };
 
@@ -213,6 +217,8 @@ void to_json(json& j, const stJSONOptionalData& d) {
 		{ MMC5_OFFSET, d.MMC5_OFFSET },
 		{ N163_OFFSET, d.N163_OFFSET },
 		{ S5B_OFFSET, d.S5B_OFFSET },
+		{ _5E01_APU1_OFFSET, d._5E01_APU1_OFFSET },
+		{ _5E01_APU2_OFFSET, d._5E01_APU2_OFFSET },
 		{ USE_SURVEY_MIX, d.USE_SURVEY_MIX }
 	};
 };
@@ -4535,7 +4541,7 @@ void CFamiTrackerDoc::SetLevelOffset(int device, int16_t offset)
 
 void CFamiTrackerDoc::ResetLevelOffset()
 {
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < CHIP_LEVEL_COUNT; i++)
 		m_iDeviceLevelOffset[i] = 0;
 }
 
@@ -4631,6 +4637,8 @@ json CFamiTrackerDoc::InterfaceToOptionalJSON() const
 	if (GetLevelOffset(5) != DEFAULT.MMC5_OFFSET) json[MMC5_OFFSET] = GetLevelOffset(5);
 	if (GetLevelOffset(6) != DEFAULT.N163_OFFSET) json[N163_OFFSET] = GetLevelOffset(6);
 	if (GetLevelOffset(7) != DEFAULT.S5B_OFFSET) json[S5B_OFFSET] = GetLevelOffset(7);
+	if (GetLevelOffset(8) != DEFAULT._5E01_APU1_OFFSET) json[_5E01_APU1_OFFSET] = GetLevelOffset(8);
+	if (GetLevelOffset(9) != DEFAULT._5E01_APU2_OFFSET) json[_5E01_APU2_OFFSET] = GetLevelOffset(9);
 
 	if (GetSurveyMixCheck() != DEFAULT.USE_SURVEY_MIX) json[USE_SURVEY_MIX] = GetSurveyMixCheck();
 
@@ -4648,6 +4656,8 @@ void CFamiTrackerDoc::OptionalJSONToInterface(json& j)
 	if (j.find(MMC5_OFFSET) != j.end()) SetLevelOffset(5, j.at(MMC5_OFFSET));
 	if (j.find(N163_OFFSET) != j.end()) SetLevelOffset(6, j.at(N163_OFFSET));
 	if (j.find(S5B_OFFSET) != j.end()) SetLevelOffset(7, j.at(S5B_OFFSET));
+	if (j.find(_5E01_APU1_OFFSET) != j.end()) SetLevelOffset(8, j.at(_5E01_APU1_OFFSET));
+	if (j.find(_5E01_APU2_OFFSET) != j.end()) SetLevelOffset(9, j.at(_5E01_APU2_OFFSET));
 
 	if (j.find(USE_SURVEY_MIX) != j.end()) SetSurveyMixCheck(j.at(USE_SURVEY_MIX));
 }

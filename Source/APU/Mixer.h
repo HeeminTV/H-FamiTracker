@@ -226,7 +226,7 @@ private:
 	EmulatorConfig m_EmulatorConfig;
 
 	uint8_t m_VRC7PatchSelection;
-	uint8_t m_VRC7PatchSet[19 * 8];
+	uint8_t m_VRC7PatchSet[19 * 9];
 	bool m_VRC7PatchUserDefined;
 
 	// device level gain multipliers, in linear scale

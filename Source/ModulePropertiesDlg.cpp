@@ -298,7 +298,15 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 		m_cDeviceLevelEdit[i].SubclassDlgItem(IDC_DEVICE_OFFSET_EDIT[i], this);
 		m_cDeviceLevelSlider[i].SubclassDlgItem(IDC_DEVICE_OFFSET_SLIDER[i], this);
 		m_cDevicedBLabel[i].SubclassDlgItem(IDC_DEVICE_OFFSET_DB[i], this);
-		m_cDeviceLevelLabel[i].SubclassDlgItem(IDC_STATIC_DEVICE[i], this);
+
+		// switch (i) {
+		//	case 8: // if it's 5E01's APU1, enables also the label "5E01 Control"
+		//		m_cDeviceLevelLabel[i].SubclassDlgItem(IDC_STATIC_DEVICE[i], this);
+		//		break;
+		//	default:
+				m_cDeviceLevelLabel[i].SubclassDlgItem(IDC_STATIC_DEVICE[i], this);
+		//		break;
+		// }
 
 		SetupSlider(IDC_DEVICE_OFFSET_SLIDER[i]);
 		m_iDeviceLevelOffset[i] = -m_pDocument->GetLevelOffset(i);

@@ -1,13 +1,7 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by Dn-FamiTracker.rc
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// Dn-FamiTracker.rc에서 사용되고 있습니다.
 //
-
-// E-FamiTracker (by Euly) modifications 
-#define IDC_EXPANSION_5E01              1496
-#define ID_INSTRUMENT_ADD_5E01          36873
-#define IDC_CHIP_5E01                   1502
-
 #define ID_MANIFEST                     1
 #define IDAPPLY                         3
 #define IDC_IMPORT                      4
@@ -656,8 +650,10 @@
 #define IDC_RELEASE_MSG                 1492
 #define IDC_ICON_STATIC                 1493
 #define IDC_PATCH_TEXT                  1495
+#define IDC_EXPANSION_5E01              1496
 #define IDC_MAXCHANVIEW                 1496
 #define IDC_MAXCHANVIEW_SLIDER          1496
+#define IDC_CHIP_5E01                   1502
 #define IDC_IDLE_REFRESH_SLIDER         1505
 #define IDC_MAXCHANVIEW_EDIT            1508
 #define IDC_IDLE_REFRESH_EDIT           1512
@@ -894,6 +890,7 @@
 #define ID_INSTRUMENT_ADD_S5B           36868
 #define ID_INSTRUMENT_ADD_VRC6          36869
 #define ID_INSTRUMENT_ADD_VRC7          36870
+#define ID_INSTRUMENT_ADD_5E01          36873
 #define ID_INDICATOR_CHIP               53248
 #define ID_INDICATOR_INSTRUMENT         53249
 #define ID_INDICATOR_OCTAVE             53250
@@ -904,15 +901,19 @@
 #define ID_INDICATOR_DPCM_SEGMENT       53255
 #define ID_INDICATOR_DPCM_SIZE          53256
 #define ID_INDICATOR_DPCM_ENDPOS        53257
-#define IDC_5E01_APU1_OFFSET_SLIDER		53258
-#define IDC_5E01_APU2_OFFSET_SLIDER		53259
-#define IDC_5E01_APU1_OFFSET_DB			53260
-#define IDC_5E01_APU2_OFFSET_DB			53261
-#define IDC_5E01_APU1_OFFSET_EDIT		53262
-#define IDC_5E01_APU2_OFFSET_EDIT		53263
-#define IDC_STATIC_5E01_APU1			53264
-#define IDC_STATIC_5E01_APU2			53265
-
+#define IDC_5E01_APU1_OFFSET_SLIDER     53258
+#define IDC_5E01_APU2_OFFSET_SLIDER     53259
+#define IDC_5E01_APU1_OFFSET_DB         53260
+#define IDC_5E01_APU2_OFFSET_DB         53261
+#define IDC_5E01_APU1_OFFSET_EDIT       53262
+#define IDC_5E01_APU2_OFFSET_EDIT       53263
+#define IDC_STATIC_5E01_APU1            53264
+#define IDC_STATIC_5E01_APU2            53265
+#define IDC_SLIDER_5E01_APU1            53266
+#define IDC_STATIC_5E01_CONTROL         53266
+#define IDC_SLIDER_5E01_APU2            53267
+#define IDC_LEVEL_5E01_APU1             53268
+#define IDC_LEVEL_5E01_APU2             53269
 
 // Next default values for new objects
 // 

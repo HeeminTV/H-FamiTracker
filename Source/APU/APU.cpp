@@ -678,16 +678,18 @@ void CAPUConfig::SetChipLevel(chip_level_t Chip, float LeveldB, bool SurveyMix)
 		// using methods described here: https://www.nesdev.org/wiki/NSFe#mixe
 		// TODO: investigate issues with rounding error
 		int16_t dblevelcorrection[CHIP_LEVEL_COUNT]{
-			0,		// APU1
-			-13,	// APU2
+			0,		// 2A03 APU1
+			-13,	// 2A03 APU2
 			-494,	// VRC6
 			776,	// VRC7
 			-1700,	// FDS
 			869,	// MMC5
 			-1681,	// N163
-			108,		// S5B
-			0, // 5e01 apu1
-			-13 // 5e01 apu2
+			108,	// S5B
+			0,		// 5E01 APU1
+			-13		// 5E01 APU2
+			// 0,		// 7E02 APU1
+			// -13		// 7E02 APU2
 		};
 		LevelLinear = powf(10, (LeveldB +
 			((static_cast<float>(dblevelcorrection[Chip]) / 100.0f)) +

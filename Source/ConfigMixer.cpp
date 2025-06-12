@@ -48,6 +48,8 @@ void CConfigMixer::DoDataExchange(CDataExchange* pDX)
 	DDX_Slider(pDX, IDC_SLIDER_FDS, m_iLevelFDS);
 	DDX_Slider(pDX, IDC_SLIDER_N163, m_iLevelN163);
 	DDX_Slider(pDX, IDC_SLIDER_S5B, m_iLevelS5B);
+	DDX_Slider(pDX, IDC_SLIDER_5E01_APU1, m_iLevel5E01_APU1);
+	DDX_Slider(pDX, IDC_SLIDER_5E01_APU2, m_iLevel5E01_APU2);
 
 	UpdateLevels();
 }
@@ -75,6 +77,8 @@ BOOL CConfigMixer::OnInitDialog()
 	m_iLevelFDS = -pSettings->ChipLevels.iLevelFDS;
 	m_iLevelN163 = -pSettings->ChipLevels.iLevelN163;
 	m_iLevelS5B = -pSettings->ChipLevels.iLevelS5B;
+	m_iLevel5E01_APU1 = -pSettings->ChipLevels.iLevel5E01_APU1;
+	m_iLevel5E01_APU2 = -pSettings->ChipLevels.iLevel5E01_APU2;
 
 	SetupSlider(IDC_SLIDER_APU1);
 	SetupSlider(IDC_SLIDER_APU2);
@@ -84,6 +88,8 @@ BOOL CConfigMixer::OnInitDialog()
 	SetupSlider(IDC_SLIDER_FDS);
 	SetupSlider(IDC_SLIDER_N163);
 	SetupSlider(IDC_SLIDER_S5B);
+	SetupSlider(IDC_SLIDER_5E01_APU1);
+	SetupSlider(IDC_SLIDER_5E01_APU2);
 
 	CPropertyPage::OnInitDialog();
 
@@ -103,6 +109,8 @@ BOOL CConfigMixer::OnApply()
 	pSettings->ChipLevels.iLevelFDS = -m_iLevelFDS;
 	pSettings->ChipLevels.iLevelN163 = -m_iLevelN163;
 	pSettings->ChipLevels.iLevelS5B = -m_iLevelS5B;
+	pSettings->ChipLevels.iLevel5E01_APU1 = -m_iLevel5E01_APU1;
+	pSettings->ChipLevels.iLevel5E01_APU2 = -m_iLevel5E01_APU2;
 
 	theApp.LoadSoundConfig();
 
@@ -134,6 +142,8 @@ void CConfigMixer::UpdateLevels()
 	UpdateLevel(IDC_LEVEL_FDS, m_iLevelFDS);
 	UpdateLevel(IDC_LEVEL_N163, m_iLevelN163);
 	UpdateLevel(IDC_LEVEL_S5B, m_iLevelS5B);
+	UpdateLevel(IDC_LEVEL_5E01_APU1, m_iLevel5E01_APU1);
+	UpdateLevel(IDC_LEVEL_5E01_APU2, m_iLevel5E01_APU2);
 }
 
 void CConfigMixer::UpdateLevel(int nID, int Level)
@@ -155,6 +165,8 @@ void CConfigMixer::OnBnClickedButtonMixerReset()		// // // 050B
 	m_iLevelFDS = 0;
 	m_iLevelN163 = 0;
 	m_iLevelS5B = 0;
+	m_iLevel5E01_APU1 = 0;
+	m_iLevel5E01_APU2 = 0;
 
 	UpdateData(FALSE);
 	SetModified();
