@@ -40,7 +40,7 @@ private:
 	unsigned int m_iSelectedSong;
 	unsigned char m_iExpansions;		// // //
 	uint8_t m_iN163Channels;
-	int16_t m_iDeviceLevelOffset[8];
+	int16_t m_iDeviceLevelOffset[10];
 
 	uint8_t m_iOPLLPatchBytes[19 * 8];
 	std::string m_strOPLLPatchNames[19];

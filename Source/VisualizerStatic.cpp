@@ -26,19 +26,11 @@
 // derived from Generic bitmap font
 // https://forums.nesdev.org/viewtopic.php?t=10284&start=6
 static const uint8_t LOGO_FONT[][7] = {		// // !!
-	// D
-	{	0b01111110,
+	// H
+	{	0b01100011,
 		0b01100011,
 		0b01100011,
-		0b01100011,
-		0b01100011,
-		0b01100011,
-		0b01111110},
-	// n
-	{	0b00000000,
-		0b00000000,
-		0b01111110,
-		0b01100011,
+		0b01111111,
 		0b01100011,
 		0b01100011,
 		0b01100011},
@@ -123,7 +115,7 @@ static const uint8_t LOGO_FONT[][7] = {		// // !!
 		0b01100000,
 		0b00111111},
 	// cool string
-	{'D','n','-','F','T','!','~'}
+	// {'D','n','-','F','T','!','~'}
 };
 
 CVisualizerStatic::~CVisualizerStatic()
@@ -197,17 +189,16 @@ void CVisualizerStatic::DrawChar(char letter, int xPos, int yPos, const COLORREF
 
 
 	switch (letter) {
-	case 'D': case 'd': return drawFunc(LOGO_FONT[0]);
-	case 'N': case 'n': return drawFunc(LOGO_FONT[1]);
-	case '-':			return drawFunc(LOGO_FONT[2]);
-	case 'F': case 'f': return drawFunc(LOGO_FONT[3]);
-	case 'A': case 'a': return drawFunc(LOGO_FONT[4]);
-	case 'M': case 'm': return drawFunc(LOGO_FONT[5]);
-	case 'I': case 'i': return drawFunc(LOGO_FONT[6]);
-	case 'T': case 't': return drawFunc(LOGO_FONT[7]);
-	case 'R': case 'r': return drawFunc(LOGO_FONT[8]);
-	case 'C': case 'c': return drawFunc(LOGO_FONT[9]);
-	case 'K': case 'k': return drawFunc(LOGO_FONT[10]);
-	case 'E': case 'e': return drawFunc(LOGO_FONT[11]);
+		case 'H': case 'h': return drawFunc(LOGO_FONT[0]);
+		case '-':			return drawFunc(LOGO_FONT[1]);
+		case 'F': case 'f': return drawFunc(LOGO_FONT[2]);
+		case 'A': case 'a': return drawFunc(LOGO_FONT[3]);
+		case 'M': case 'm': return drawFunc(LOGO_FONT[4]);
+		case 'I': case 'i': return drawFunc(LOGO_FONT[5]);
+		case 'T': case 't': return drawFunc(LOGO_FONT[6]);
+		case 'R': case 'r': return drawFunc(LOGO_FONT[7]);
+		case 'C': case 'c': return drawFunc(LOGO_FONT[8]);
+		case 'K': case 'k': return drawFunc(LOGO_FONT[9]);
+		case 'E': case 'e': return drawFunc(LOGO_FONT[10]);
 	}
 }

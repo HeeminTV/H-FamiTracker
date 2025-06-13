@@ -577,7 +577,7 @@ private:
 	std::string		m_strOPLLPatchNames[19];
 
 	// JSON Optional properties
-	int16_t			m_iDeviceLevelOffset[8];					// !! !! Device level offsets, described in centibels
+	int16_t			m_iDeviceLevelOffset[10];					// !! !! Device level offsets, described in centibels
 	bool			m_bUseSurveyMixing;							// !! !! Use hardware-based mixing values, derived from survey: https://forums.nesdev.org/viewtopic.php?f=2&t=17741
 
 	// NSF info
