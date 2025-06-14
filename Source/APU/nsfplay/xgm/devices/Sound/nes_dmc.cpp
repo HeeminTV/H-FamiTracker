@@ -3,8 +3,6 @@
 #include "utils/variadic_minmax.h"
 #include "nsfplay_math.h"
 #include <cstdlib>
-#include <bitset>
-#include <array>
 
 namespace xgm
 {
@@ -42,38 +40,6 @@ namespace xgm
       0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
       0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF,
     };
-
-    /*
-    std::vector<int> convertDecimalTo2BitChunks(unsigned int hexStr) {
-        // unsigned int decimalValue = std::stoul(hexStr, nullptr, 16);
-
-        std::bitset<8> bits(hexStr);
-
-        std::vector<int> result(8, 0);
-
-        for (int i = 0; i < 4; ++i) {
-            int bit1 = bits[2 * i];       // first  bit
-            int bit2 = bits[2 * i + 1];   // second bit
-
-            // 2bit -> decimal
-            result[i] = (bit2 << 1) | bit1;
-        }
-
-        return result;
-    }
-    */
-    std::vector<int> splitInto2BitChunks(unsigned char value) {
-        std::bitset<8> bits(value);
-        std::vector<int> result;
-
-        for (int i = 6; i >= 0; i -= 2) {
-            int twoBits = (bits[i + 1] << 1) | bits[i];
-            result.push_back(twoBits);
-        }
-
-        return result;
-    }
-
 
     NES_DMC::NES_DMC() : GETA_BITS(20)
     {
@@ -128,7 +94,7 @@ namespace xgm
                 trkinfo[0].freq = clock / 32 / (trkinfo[0]._freq + 1);
             else
                 trkinfo[0].freq = 0;
-            //trkinfo[0].tone = tduty;
+            trkinfo[0].tone = -1;
             trkinfo[0].output = out[0];
             break;
         case 1:
@@ -268,7 +234,6 @@ namespace xgm
 
     }
 
-    // s
     UINT32 NES_DMC::calc_tri(UINT32 clocks)
     {
         static UINT32 tritbl[32] =
@@ -294,625 +259,599 @@ namespace xgm
         return ret;
     }
 
-  UINT32 NES_DMC::calc_noise(UINT32 clocks)
-  {
-    UINT32 env = envelope_disable ? noise_volume : envelope_counter;
-    if (length_counter[1] < 1) env = 0;
+    UINT32 NES_DMC::calc_noise(UINT32 clocks)
+    {
+        UINT32 env = envelope_disable ? noise_volume : envelope_counter;
+        if (length_counter[1] < 1) env = 0;
 
-    UINT32 last = (noise & 0x4000) ? 0 : env;
-    if (clocks < 1) return last;
+        UINT32 last = (noise & 0x4000) ? 0 : env;
+        if (clocks < 1) return last;
 
-    // simple anti-aliasing (noise requires it, even when oversampling is off)
-    UINT32 count = 0;
-    UINT32 accum = counter[1] * last; // samples pending from previous calc
-    UINT32 accum_clocks = counter[1];
-    #ifdef _DEBUG
+        // simple anti-aliasing (noise requires it, even when oversampling is off)
+        UINT32 count = 0;
+        UINT32 accum = counter[1] * last; // samples pending from previous calc
+        UINT32 accum_clocks = counter[1];
+#ifdef _DEBUG
         INT32 start_clocks = counter[1];
-    #endif
-    if (counter[1] < 0) // only happens on startup when using the randomize noise option
-    {
-        accum = 0;
-        accum_clocks = 0;
-    }
-
-    counter[1] -= clocks;
-    assert (nfreq > 0); // prevent infinite loop
-    while (counter[1] < 0)
-    {
-        // tick the noise generator
-        UINT32 feedback = (noise&1) ^ ((noise&noise_tap)?1:0);
-        noise = (noise>>1) | (feedback<<14);
-
-        last = (noise & 0x4000) ? 0 : env;
-        accum += (last * nfreq);
-        counter[1] += nfreq;
-        ++count;
-        accum_clocks += nfreq;
-    }
-
-    if (count < 1) // no change over interval, don't anti-alias
-    {
-       return last;
-    }
-
-    accum -= (last * counter[1]); // remove these samples which belong in the next calc
-    accum_clocks -= counter[1];
-    #ifdef _DEBUG
-        if (start_clocks >= 0) assert(accum_clocks == clocks); // these should be equal
-    #endif
-
-    UINT32 average = accum / accum_clocks;
-    assert(average <= 15); // above this would indicate overflow
-    return average;
-  }
-
-	// Tick the DMC for the number of clocks, and return output counter;
-	UINT32 NES_DMC::calc_dmc (UINT32 clocks)
-	{
-		counter[2] -= clocks;
-		assert (dfreq > 0); // prevent infinite loop
-		while (counter[2] < 0)
-		{
-			counter[2] += dfreq;
-
-			if ( data > 0x100 ) // data = 0x100 when shift register is empty
-			{
-				if (!empty)
-				{
-					if ((data & 1) && (damp < 63))
-						damp++;
-					else if (!(data & 1) && (0 < damp))
-						damp--;
-				}
-				data >>=1;
-			}
-
-			if ( data <= 0x100 ) // shift register is empty
-			{
-				if (dlength > 0)
-				{
-					memory->Read (daddress, data);
-					cpu->StealCycles(4); // DMC read takes 3 or 4 CPU cycles, usually 4
-					// (checking for the 3-cycle case would require sub-instruction emulation)
-					data &= 0xFF; // read 8 bits
-					if (option[OPT_DPCM_REVERSE]) data = BITREVERSE[data];
-					data |= 0x10000; // use an extra bit to signal end of data
-					empty = false;
-					daddress = ((daddress+1)&0xFFFF)|0x8000 ;
-					--dlength;
-					if (dlength == 0)
-					{
-						if (mode & 1) // looped DPCM = auto-reload
-						{
-							daddress = ((adr_reg<<6)|0xC000);
-							dlength = (len_reg<<4)+1;
-						}
-						else if (mode & 2) // IRQ and not looped
-						{
-							irq = true;
-							cpu->UpdateIRQ(NES_CPU::IRQD_DMC, true);
-						}
-					}
-				}
-				else
-				{
-					data = 0x10000; // DMC will do nothing
-					empty = true;
-				}
-			}
-		}
-
-		return (damp<<1) + dac_lsb;
-	}
-
-  void NES_DMC::TickFrameSequence (UINT32 clocks)
-  {
-      frame_sequence_count += clocks;
-      while (frame_sequence_count > frame_sequence_length)
-      {
-          FrameSequence(frame_sequence_step);
-          frame_sequence_count -= frame_sequence_length;
-          ++frame_sequence_step;
-          if(frame_sequence_step >= frame_sequence_steps)
-              frame_sequence_step = 0;
-      }
-  }
-
-  void NES_DMC::Tick (UINT32 clocks)
-  {
-    out[0] = calc_tri(clocks);
-    out[1] = calc_noise(clocks);
-    out[2] = calc_dmc(clocks);
-  }
-
-  UINT32 NES_DMC::ClocksUntilLevelChange()
-  {
-      // See TickFrameSequence().
-      // nsfplay is written strangely.
-      // When a countdown is 0, it means the event will occur
-      // on the next nonzero call to TickFrameSequence() or Tick().
-      // See https://docs.google.com/document/d/1BnXwR3Avol7S5YNa3d4duGdbI6GNMwuYWLHuYiMZh5Y/edit#heading=h.lnh9d8j1x3uc
-      // for discussion on how to handle 0.
-      UINT32 out =
-          (UINT32)value_or(frame_sequence_length - frame_sequence_count, frame_sequence_length);
-
-      // See calc_tri().
-      if (linear_counter > 0 && length_counter[0] > 0
-          && (!option[OPT_TRI_MUTE] || tri_freq > 0)) {
-        out = std::min(out, value_or(counter[0], tri_freq + 1));
-      }
-
-      // See calc_noise().
-      // Unfortunately, at noise pitch $F, this updates every 4 clocks,
-      // which drains CPU especially in debug builds.
-      //
-      // One solution is to only update noise intermittently,
-      // However it's tricky to get right, and may require editing calc_noise().
-      //
-      // For now, just accept the increased CPU usage as a tradeoff.
-      {
-          UINT32 env = envelope_disable ? noise_volume : envelope_counter;
-          if (length_counter[1] < 1) env = 0;
-          if (env > 0) {
-              out = std::min(out, [&] {
-                  if (counter[1] < 0) {
-                      // "only happens on startup when using the randomize noise option", idk what to return
-                      return (UINT32)1;
-                  }
-                  return value_or((UINT32) counter[1], nfreq);
-              }());
-          }
-      }
-
-      // See calc_dmc().
-      // It's quite tricky to predict if the DMC is playing a sample or not,
-      // so always assume it's playing.
-      // But the amount of CPU overhead is minimal, because the DMC frequency never exceeds 33 kHz,
-      // equivalent to a clock-skip of 54 (on NTSC, see `NES_DMC::freq_table`).
-      auto clocks_until_dmc = value_or(counter[2], dfreq);
-      out = std::min(out, clocks_until_dmc);
-
-      return out;
-  }
-
-  UINT32 NES_DMC::Render (INT32 b[2])
-  {
-    out[0] = (mask & 1) ? 0 : out[0];
-    out[1] = (mask & 2) ? 0 : out[1];
-    out[2] = (mask & 4) ? 0 : out[2];
-
-    INT32 m[3];
-    m[0] = tnd_table[0][out[0]][0][0];
-    m[1] = tnd_table[0][0][out[1]][0];
-    m[2] = tnd_table[0][0][0][out[2]];
-
-    if (option[OPT_NONLINEAR_MIXER])
-    {
-        INT32 ref = m[0] + m[1] + m[2];
-        INT32 voltage = tnd_table[1][out[0]][out[1]][out[2]];
-        if (ref)
+#endif
+        if (counter[1] < 0) // only happens on startup when using the randomize noise option
         {
-            for (int i=0; i < 3; ++i)
-                m[i] = (m[i] * voltage) / ref;
+            accum = 0;
+            accum_clocks = 0;
+        }
+
+        counter[1] -= clocks;
+        assert(nfreq > 0); // prevent infinite loop
+        while (counter[1] < 0)
+        {
+            // tick the noise generator
+            UINT32 feedback = (noise & 1) ^ ((noise & noise_tap) ? 1 : 0);
+            noise = (noise >> 1) | (feedback << 14);
+
+            last = (noise & 0x4000) ? 0 : env;
+            accum += (last * nfreq);
+            counter[1] += nfreq;
+            ++count;
+            accum_clocks += nfreq;
+        }
+
+        if (count < 1) // no change over interval, don't anti-alias
+        {
+            return last;
+        }
+
+        accum -= (last * counter[1]); // remove these samples which belong in the next calc
+        accum_clocks -= counter[1];
+#ifdef _DEBUG
+        if (start_clocks >= 0) assert(accum_clocks == clocks); // these should be equal
+#endif
+
+        UINT32 average = accum / accum_clocks;
+        assert(average <= 15); // above this would indicate overflow
+        return average;
+    }
+
+    // Tick the DMC for the number of clocks, and return output counter;
+    UINT32 NES_DMC::calc_dmc(UINT32 clocks)
+    {
+        counter[2] -= clocks;
+        assert(dfreq > 0); // prevent infinite loop
+        while (counter[2] < 0)
+        {
+            counter[2] += dfreq;
+
+            if (data > 0x100) // data = 0x100 when shift register is empty
+            {
+                if (!empty)
+                {
+                    if ((data & 1) && (damp < 63))
+                        damp++;
+                    else if (!(data & 1) && (0 < damp))
+                        damp--;
+                }
+                data >>= 1;
+            }
+
+            if (data <= 0x100) // shift register is empty
+            {
+                if (dlength > 0)
+                {
+                    memory->Read(daddress, data);
+                    cpu->StealCycles(4); // DMC read takes 3 or 4 CPU cycles, usually 4
+                    // (checking for the 3-cycle case would require sub-instruction emulation)
+                    data &= 0xFF; // read 8 bits
+                    if (option[OPT_DPCM_REVERSE]) data = BITREVERSE[data];
+                    data |= 0x10000; // use an extra bit to signal end of data
+                    empty = false;
+                    daddress = ((daddress + 1) & 0xFFFF) | 0x8000;
+                    --dlength;
+                    if (dlength == 0)
+                    {
+                        if (mode & 1) // looped DPCM = auto-reload
+                        {
+                            daddress = ((adr_reg << 6) | 0xC000);
+                            dlength = (len_reg << 4) + 1;
+                        }
+                        else if (mode & 2) // IRQ and not looped
+                        {
+                            irq = true;
+                            cpu->UpdateIRQ(NES_CPU::IRQD_DMC, true);
+                        }
+                    }
+                }
+                else
+                {
+                    data = 0x10000; // DMC will do nothing
+                    empty = true;
+                }
+            }
+        }
+
+        return (damp << 1) + dac_lsb;
+    }
+
+    void NES_DMC::TickFrameSequence(UINT32 clocks)
+    {
+        frame_sequence_count += clocks;
+        while (frame_sequence_count > frame_sequence_length)
+        {
+            FrameSequence(frame_sequence_step);
+            frame_sequence_count -= frame_sequence_length;
+            ++frame_sequence_step;
+            if (frame_sequence_step >= frame_sequence_steps)
+                frame_sequence_step = 0;
+        }
+    }
+
+    void NES_DMC::Tick(UINT32 clocks)
+    {
+        out[0] = calc_tri(clocks);
+        out[1] = calc_noise(clocks);
+        out[2] = calc_dmc(clocks);
+    }
+
+    UINT32 NES_DMC::ClocksUntilLevelChange()
+    {
+        // See TickFrameSequence().
+        // nsfplay is written strangely.
+        // When a countdown is 0, it means the event will occur
+        // on the next nonzero call to TickFrameSequence() or Tick().
+        // See https://docs.google.com/document/d/1BnXwR3Avol7S5YNa3d4duGdbI6GNMwuYWLHuYiMZh5Y/edit#heading=h.lnh9d8j1x3uc
+        // for discussion on how to handle 0.
+        UINT32 out =
+            (UINT32)value_or(frame_sequence_length - frame_sequence_count, frame_sequence_length);
+
+        // See calc_tri().
+        if (linear_counter > 0 && length_counter[0] > 0
+            && (!option[OPT_TRI_MUTE] || tri_freq > 0)) {
+            out = std::min(out, value_or(counter[0], tri_freq + 1));
+        }
+
+        // See calc_noise().
+        // Unfortunately, at noise pitch $F, this updates every 4 clocks,
+        // which drains CPU especially in debug builds.
+        //
+        // One solution is to only update noise intermittently,
+        // However it's tricky to get right, and may require editing calc_noise().
+        //
+        // For now, just accept the increased CPU usage as a tradeoff.
+        {
+            UINT32 env = envelope_disable ? noise_volume : envelope_counter;
+            if (length_counter[1] < 1) env = 0;
+            if (env > 0) {
+                out = std::min(out, [&] {
+                    if (counter[1] < 0) {
+                        // "only happens on startup when using the randomize noise option", idk what to return
+                        return (UINT32)1;
+                    }
+                    return value_or((UINT32)counter[1], nfreq);
+                    }());
+            }
+        }
+
+        // See calc_dmc().
+        // It's quite tricky to predict if the DMC is playing a sample or not,
+        // so always assume it's playing.
+        // But the amount of CPU overhead is minimal, because the DMC frequency never exceeds 33 kHz,
+        // equivalent to a clock-skip of 54 (on NTSC, see `NES_DMC::freq_table`).
+        auto clocks_until_dmc = value_or(counter[2], dfreq);
+        out = std::min(out, clocks_until_dmc);
+
+        return out;
+    }
+
+    UINT32 NES_DMC::Render(INT32 b[2])
+    {
+        out[0] = (mask & 1) ? 0 : out[0];
+        out[1] = (mask & 2) ? 0 : out[1];
+        out[2] = (mask & 4) ? 0 : out[2];
+
+        INT32 m[3];
+        m[0] = tnd_table[0][out[0]][0][0];
+        m[1] = tnd_table[0][0][out[1]][0];
+        m[2] = tnd_table[0][0][0][out[2]];
+
+        if (option[OPT_NONLINEAR_MIXER])
+        {
+            INT32 ref = m[0] + m[1] + m[2];
+            INT32 voltage = tnd_table[1][out[0]][out[1]][out[2]];
+            if (ref)
+            {
+                for (int i = 0; i < 3; ++i)
+                    m[i] = (m[i] * voltage) / ref;
+            }
+            else
+            {
+                for (int i = 0; i < 3; ++i)
+                    m[i] = voltage;
+            }
+        }
+
+        // anti-click nullifies any 4011 write but preserves nonlinearity
+        if (option[OPT_DPCM_ANTI_CLICK])
+        {
+            if (dmc_pop) // $4011 will cause pop this frame
+            {
+                // adjust offset to counteract pop
+                dmc_pop_offset += dmc_pop_follow - m[2];
+                dmc_pop = false;
+
+                // prevent overflow, keep headspace at edges
+                const INT32 OFFSET_MAX = (1 << 30) - (4 << 16);
+                if (dmc_pop_offset > OFFSET_MAX) dmc_pop_offset = OFFSET_MAX;
+                if (dmc_pop_offset < -OFFSET_MAX) dmc_pop_offset = -OFFSET_MAX;
+            }
+            dmc_pop_follow = m[2]; // remember previous position
+
+            m[2] += dmc_pop_offset; // apply offset
+
+            // TODO implement this in a better way
+            // roll off offset (not ideal, but prevents overflow)
+            if (dmc_pop_offset > 0) --dmc_pop_offset;
+            else if (dmc_pop_offset < 0) ++dmc_pop_offset;
+        }
+
+        b[0] = m[0] * sm[0][0];
+        b[0] += m[1] * sm[0][1];
+        b[0] += m[2] * sm[0][2];
+        b[0] >>= 7;
+
+        b[1] = m[0] * sm[1][0];
+        b[1] += m[1] * sm[1][1];
+        b[1] += m[2] * sm[1][2];
+        b[1] >>= 7;
+
+        return 2;
+    }
+
+    void NES_DMC::SetClock(double c)
+    {
+        clock = c;
+    }
+
+    void NES_DMC::SetRate(double r)
+    {
+        rate = (UINT32)(r ? r : DEFAULT_RATE);
+    }
+
+    void NES_DMC::SetPal(bool is_pal)
+    {
+        pal = (is_pal ? 1 : 0);
+        // set CPU cycles in frame_sequence
+        frame_sequence_length = is_pal ? 8314 : 7458;
+    }
+
+    void NES_DMC::SetAPU(NES_APU* apu_)
+    {
+        apu = apu_;
+    }
+
+    // Initializing TRI, NOISE, DPCM mixing table
+    void NES_DMC::InitializeTNDTable(double wt, double wn, double wd) {
+
+        // volume adjusted by 0.95 based on empirical measurements
+        // MDFourier tests show that this seems to further deviate from hardware
+        // see https://docs.google.com/document/d/1LIiskXiEBOyMX3j9SEjCB5hhUVRQFvG4eWz7dZC2cI8
+        const double MASTER = 8192.0;// * 0.95;
+      // truthfully, the nonlinear curve does not appear to match well
+      // with my tests. Do more testing of the APU/DMC DAC later.
+      // this value keeps the triangle consistent with measured levels,
+      // but not necessarily the rest of this APU channel,
+      // because of the lack of a good DAC model, currently.
+
+        { // Linear Mixer
+            for (int t = 0; t < 16; t++) {
+                for (int n = 0; n < 16; n++) {
+                    for (int d = 0; d < 128; d++) {
+                        tnd_table[0][t][n][d] = (UINT32)(MASTER * (3.0 * t + 2.0 * n + d) / 208.0);
+                    }
+                }
+            }
+        }
+        { // Non-Linear Mixer
+            tnd_table[1][0][0][0] = 0;
+            for (int t = 0; t < 16; t++) {
+                for (int n = 0; n < 16; n++) {
+                    for (int d = 0; d < 128; d++) {
+                        if (t != 0 || n != 0 || d != 0)
+                            tnd_table[1][t][n][d] = (UINT32)((MASTER * 159.79) / (100.0 + 1.0 / ((double)t / wt + (double)n / wn + (double)d / wd)));
+                    }
+                }
+            }
+        }
+
+    }
+
+    void NES_DMC::Reset()
+    {
+        int i;
+        mask = 0;
+
+        InitializeTNDTable(8227, 12241, 22638);
+
+        counter[0] = 0;
+        counter[1] = 0;
+        counter[2] = 0;
+        tphase = 0;
+        nfreq = wavlen_table[0][0];
+        dfreq = freq_table[0][0];
+        tri_freq = 0;
+        linear_counter = 0;
+        linear_counter_reload = 0;
+        linear_counter_halt = 0;
+        linear_counter_control = 0;
+        noise_volume = 0;
+        noise = 0;
+        noise_tap = 0;
+        envelope_loop = 0;
+        envelope_disable = 0;
+        envelope_write = 0;
+        envelope_div_period = 0;
+        envelope_div = 0;
+        envelope_counter = 0;
+        enable[0] = 0;
+        enable[1] = 0;
+        length_counter[0] = 0;
+        length_counter[1] = 0;
+        frame_irq = false;
+        frame_irq_enable = false;
+        frame_sequence_count = 0;
+        frame_sequence_steps = 4;
+        frame_sequence_step = 0;
+        cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
+
+        for (i = 0; i < 0x0F; i++)
+            Write(0x4008 + i, 0);
+        Write(0x4017, 0x40);
+
+        irq = false;
+        Write(0x4015, 0x00);
+        if (option[OPT_UNMUTE_ON_RESET])
+            Write(0x4015, 0x0f);
+        cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
+
+        out[0] = out[1] = out[2] = 0;
+        damp = 0;
+        dmc_pop = false;
+        dmc_pop_offset = 0;
+        dmc_pop_follow = 0;
+        dac_lsb = 0;
+        data = 0x100;
+        empty = true;
+        adr_reg = 0;
+        dlength = 0;
+        len_reg = 0;
+        daddress = 0;
+        noise = 1;
+        noise_tap = (1 << 1);
+
+        if (option[OPT_RANDOMIZE_NOISE])
+        {
+            noise |= ::rand();
+            counter[1] = -(rand() & 511);
+        }
+        if (option[OPT_RANDOMIZE_TRI])
+        {
+            tphase = ::rand() & 31;
+            counter[0] = -(rand() & 2047);
+        }
+
+        SetRate(rate);
+    }
+
+    void NES_DMC::SetMemory(IDevice* r)
+    {
+        memory = r;
+    }
+
+    void NES_DMC::SetOption(int id, int val)
+    {
+        if (id < OPT_END)
+        {
+            option[id] = val;
+            if (id == OPT_NONLINEAR_MIXER)
+                InitializeTNDTable(8227, 12241, 22638);
+        }
+    }
+
+    bool NES_DMC::Write(UINT32 adr, UINT32 val, UINT32 id)
+    {
+        static const UINT8 length_table[32] = {
+            0x0A, 0xFE,
+            0x14, 0x02,
+            0x28, 0x04,
+            0x50, 0x06,
+            0xA0, 0x08,
+            0x3C, 0x0A,
+            0x0E, 0x0C,
+            0x1A, 0x0E,
+            0x0C, 0x10,
+            0x18, 0x12,
+            0x30, 0x14,
+            0x60, 0x16,
+            0xC0, 0x18,
+            0x48, 0x1A,
+            0x10, 0x1C,
+            0x20, 0x1E
+        };
+
+        if (adr == 0x4015)
+        {
+            enable[0] = (val & 4) ? true : false;
+            enable[1] = (val & 8) ? true : false;
+
+            if (!enable[0])
+            {
+                length_counter[0] = 0;
+            }
+            if (!enable[1])
+            {
+                length_counter[1] = 0;
+            }
+
+            if ((val & 16) && dlength == 0)
+            {
+                daddress = (0xC000 | (adr_reg << 6));
+                dlength = (len_reg << 4) + 1;
+            }
+            else if (!(val & 16))
+            {
+                dlength = 0;
+            }
+
+            irq = false;
+            cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
+
+            reg[adr - 0x4008] = val;
+            return true;
+        }
+
+        if (adr == 0x4017)
+        {
+            //DEBUG_OUT("4017 = %02X\n", val);
+            frame_irq_enable = ((val & 0x40) != 0x40);
+            if (frame_irq_enable) frame_irq = false;
+            cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
+
+            frame_sequence_count = 0;
+            if (val & 0x80)
+            {
+                frame_sequence_steps = 5;
+                frame_sequence_step = 0;
+                FrameSequence(frame_sequence_step);
+                ++frame_sequence_step;
+            }
+            else
+            {
+                frame_sequence_steps = 4;
+                frame_sequence_step = 1;
+            }
+        }
+
+        if (adr < 0x4008 || 0x4013 < adr)
+            return false;
+
+        reg[adr - 0x4008] = val & 0xff;
+
+        //DEBUG_OUT("$%04X %02X\n", adr, val);
+
+        switch (adr)
+        {
+
+            // tri
+
+        case 0x4008:
+            linear_counter_control = (val >> 7) & 1;
+            linear_counter_reload = val & 0x7F;
+            break;
+
+        case 0x4009:
+            break;
+
+        case 0x400a:
+            tri_freq = val | (tri_freq & 0x700);
+            break;
+
+        case 0x400b:
+            tri_freq = (tri_freq & 0xff) | ((val & 0x7) << 8);
+            linear_counter_halt = true;
+            if (enable[0])
+            {
+                length_counter[0] = length_table[(val >> 3) & 0x1f];
+            }
+            break;
+
+            // noise
+
+        case 0x400c:
+            noise_volume = val & 15;
+            envelope_div_period = val & 15;
+            envelope_disable = (val >> 4) & 1;
+            envelope_loop = (val >> 5) & 1;
+            break;
+
+        case 0x400d:
+            break;
+
+        case 0x400e:
+            if (option[OPT_ENABLE_PNOISE])
+                noise_tap = (val & 0x80) ? (1 << 6) : (1 << 1);
+            else
+                noise_tap = (1 << 1);
+            nfreq = wavlen_table[pal][val & 15];
+            break;
+
+        case 0x400f:
+            if (enable[1])
+            {
+                length_counter[1] = length_table[(val >> 3) & 0x1f];
+            }
+            envelope_write = true;
+            break;
+
+            // dmc
+
+        case 0x4010:
+            mode = (val >> 6) & 3;
+            if (!(mode & 2))
+            {
+                irq = false;
+                cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
+            }
+            dfreq = freq_table[pal][val & 15];
+            break;
+
+        case 0x4011:
+            if (option[OPT_ENABLE_4011])
+            {
+                damp = (val >> 1) & 0x3f;
+                dac_lsb = val & 1;
+                dmc_pop = true;
+            }
+            break;
+
+        case 0x4012:
+            adr_reg = val & 0xff;
+            break;
+
+        case 0x4013:
+            len_reg = val & 0xff;
+            break;
+
+        default:
+            return false;
+        }
+
+        return true;
+    }
+
+    bool NES_DMC::Read(UINT32 adr, UINT32& val, UINT32 id)
+    {
+        if (adr == 0x4015)
+        {
+            val |= (irq ? 0x80 : 0)
+                | (frame_irq ? 0x40 : 0)
+                | ((dlength > 0) ? 0x10 : 0)
+                | (length_counter[1] ? 0x08 : 0)
+                | (length_counter[0] ? 0x04 : 0)
+                ;
+
+            frame_irq = false;
+            cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
+            return true;
+        }
+        else if (0x4008 <= adr && adr <= 0x4014)
+        {
+            val |= reg[adr - 0x4008];
+            return true;
         }
         else
-        {
-            for (int i=0; i < 3; ++i)
-                m[i] = voltage;
-        }
+            return false;
     }
 
-    // anti-click nullifies any 4011 write but preserves nonlinearity
-    if (option[OPT_DPCM_ANTI_CLICK])
+    // IRQ support requires CPU read access
+    void NES_DMC::SetCPU(NES_CPU* cpu_)
     {
-        if (dmc_pop) // $4011 will cause pop this frame
-        {
-            // adjust offset to counteract pop
-            dmc_pop_offset += dmc_pop_follow - m[2];
-            dmc_pop = false;
-
-            // prevent overflow, keep headspace at edges
-            const INT32 OFFSET_MAX = (1 << 30) - (4 << 16);
-            if (dmc_pop_offset >  OFFSET_MAX) dmc_pop_offset =  OFFSET_MAX;
-            if (dmc_pop_offset < -OFFSET_MAX) dmc_pop_offset = -OFFSET_MAX;
-        }
-        dmc_pop_follow = m[2]; // remember previous position
-
-        m[2] += dmc_pop_offset; // apply offset
-
-        // TODO implement this in a better way
-        // roll off offset (not ideal, but prevents overflow)
-        if (dmc_pop_offset > 0) --dmc_pop_offset;
-        else if (dmc_pop_offset < 0) ++dmc_pop_offset;
+        cpu = cpu_;
     }
-
-    b[0]  = m[0] * sm[0][0];
-    b[0] += m[1] * sm[0][1];
-    b[0] += m[2] * sm[0][2];
-    b[0] >>= 7;
-
-    b[1]  = m[0] * sm[1][0];
-    b[1] += m[1] * sm[1][1];
-    b[1] += m[2] * sm[1][2];
-    b[1] >>= 7;
-
-    return 2;
-  }
-
-  void NES_DMC::SetClock (double c)
-  {
-    clock = c;
-  }
-
-  void NES_DMC::SetRate (double r)
-  {
-    rate = (UINT32)(r?r:DEFAULT_RATE);
-  }
-
-  void NES_DMC::SetPal (bool is_pal)
-  {
-      pal = (is_pal ? 1 : 0);
-      // set CPU cycles in frame_sequence
-      frame_sequence_length = is_pal ? 8314 : 7458;
-  }
-
-  void NES_DMC::SetAPU (NES_APU* apu_)
-  {
-      apu = apu_;
-  }
-
-  // Initializing TRI, NOISE, DPCM mixing table
-  void NES_DMC::InitializeTNDTable(double wt, double wn, double wd) {
-
-    // volume adjusted by 0.95 based on empirical measurements
-    // MDFourier tests show that this seems to further deviate from hardware
-	// see https://docs.google.com/document/d/1LIiskXiEBOyMX3j9SEjCB5hhUVRQFvG4eWz7dZC2cI8
-      const double MASTER = 8192.0;// * 0.95;
-    // truthfully, the nonlinear curve does not appear to match well
-    // with my tests. Do more testing of the APU/DMC DAC later.
-    // this value keeps the triangle consistent with measured levels,
-    // but not necessarily the rest of this APU channel,
-    // because of the lack of a good DAC model, currently.
-
-    { // Linear Mixer
-          tnd_table[1][0][0][0] = 0;
-      for(int t=0; t<16 ; t++) {
-        for(int n=0; n<16; n++) {
-          for(int d=0; d<128; d++) {
-              tnd_table[0][t][n][d] = (UINT32)(MASTER*(3.0*t+2.0*n+d)/208.0);
-              tnd_table[1][t][n][d] = (UINT32)(MASTER * (3.0 * t + 2.0 * n + d) / 208.0);
-          }
-        }
-      }
-    }
-    /* { // Non-Linear Mixer (not)
-      tnd_table[1][0][0][0] = 0;
-      for (int t = 0; t < 16; t++) {
-          for (int n = 0; n < 16; n++) {
-              for (int d = 0; d < 128; d++) {
-                  tnd_table[1][t][n][d] = (UINT32)(MASTER * (3.0 * t + 2.0 * n + d) / 208.0);
-              }
-          }
-      }
-    }*/
-
-  }
-
-  void NES_DMC::Reset ()
-  {
-    int i;
-    mask = 0;
-
-    InitializeTNDTable(8227,12241,22638);
-
-    counter[0] = 0;
-    counter[1] = 0;
-    counter[2] = 0;
-    tphase = 0;
-
-    twaveH = 0;
-    twaveL = 0;
-    twaveT = 0;
-
-    nfreq = wavlen_table[0][0];
-    dfreq = freq_table[0][0];
-    tri_freq = 0;
-    linear_counter = 0;
-    linear_counter_reload = 0;
-    linear_counter_halt = 0;
-    linear_counter_control = 0;
-    noise_volume = 0;
-    noise = 0;
-    noise_tap = 0;
-    envelope_loop = 0;
-    envelope_disable = 0;
-    envelope_write = 0;
-    envelope_div_period = 0;
-    envelope_div = 0;
-    envelope_counter = 0;
-    enable[0] = 0;
-    enable[1] = 0;
-    length_counter[0] = 0;
-    length_counter[1] = 0;
-    frame_irq = false;
-    frame_irq_enable = false;
-    frame_sequence_count = 0;
-    frame_sequence_steps = 4;
-    frame_sequence_step = 0;
-    cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
-
-    for (i = 0; i < 0x0F; i++)
-      Write (0x4008 + i, 0);
-    Write (0x4017, 0x40);
-
-    irq = false;
-    Write (0x4015, 0x00);
-    if (option[OPT_UNMUTE_ON_RESET])
-      Write (0x4015, 0x0f);
-    cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
-
-    out[0] = out[1] = out[2] = 0;
-    damp = 0;
-    dmc_pop = false;
-    dmc_pop_offset = 0;
-    dmc_pop_follow = 0;
-    dac_lsb = 0;
-    data = 0x100;
-    empty = true;
-    adr_reg = 0;
-    dlength = 0;
-    len_reg = 0;
-    daddress = 0;
-    noise = 1;
-    noise_tap = (1<<1);
-
-    if (option[OPT_RANDOMIZE_NOISE])
-    {
-        noise |= ::rand();
-        counter[1] = -(rand() & 511);
-    }
-    if (option[OPT_RANDOMIZE_TRI])
-    {
-        tphase = ::rand() & 31;
-        counter[0] = -(rand() & 2047);
-    }
-
-    SetRate(rate);
-  }
-
-  void NES_DMC::SetMemory (IDevice * r)
-  {
-    memory = r;
-  }
-
-  void NES_DMC::SetOption (int id, int val)
-  {
-    if(id<OPT_END)
-    {
-      option[id] = val;
-      if(id==OPT_NONLINEAR_MIXER)
-        InitializeTNDTable(8227,12241,22638);
-    }
-  }
-
-  bool NES_DMC::Write (UINT32 adr, UINT32 val, UINT32 id)
-  {
-    static const UINT8 length_table[32] = {
-        0x0A, 0xFE,
-        0x14, 0x02,
-        0x28, 0x04,
-        0x50, 0x06,
-        0xA0, 0x08,
-        0x3C, 0x0A,
-        0x0E, 0x0C,
-        0x1A, 0x0E,
-        0x0C, 0x10,
-        0x18, 0x12,
-        0x30, 0x14,
-        0x60, 0x16,
-        0xC0, 0x18,
-        0x48, 0x1A,
-        0x10, 0x1C,
-        0x20, 0x1E
-    };
-
-    if (adr == 0x4015)
-    {
-      enable[0] = (val & 4) ? true : false;
-      enable[1] = (val & 8) ? true : false;
-
-      if (!enable[0])
-      {
-          length_counter[0] = 0;
-      }
-      if (!enable[1])
-      {
-          length_counter[1] = 0;
-      }
-
-      if ((val & 16) && dlength == 0)
-      {
-        daddress = (0xC000 | (adr_reg << 6));
-        dlength = (len_reg << 4) + 1;
-      }
-      else if (!(val & 16))
-      {
-        dlength = 0;
-      }
-
-      irq = false;
-      cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
-
-      reg[adr-0x4008] = val;
-      return true;
-    }
-
-    if (adr == 0x4016) {
-        twaveT = (val >> 4); // Wave mode of the 2-bit wave channel (False = Wave. True = Triangle)
-        tvol = val & 15;
-        // break;
-    }
-
-    if (adr == 0x4017)
-    {
-      //DEBUG_OUT("4017 = %02X\n", val);
-      frame_irq_enable = ((val & 0x40) != 0x40);
-      if (frame_irq_enable) frame_irq = false;
-      cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
-
-      frame_sequence_count = 0;
-      if (val & 0x80)
-      {
-        frame_sequence_steps = 5;
-        frame_sequence_step = 0;
-        FrameSequence(frame_sequence_step);
-        ++frame_sequence_step;
-      }
-      else
-      {
-        frame_sequence_steps = 4;
-        frame_sequence_step = 1;
-      }
-    }
-
-    if (adr<0x4008||0x4013<adr)
-      return false;
-
-    reg[adr-0x4008] = val&0xff;
-
-    //DEBUG_OUT("$%04X %02X\n", adr, val);
-
-    switch (adr)
-    {
-
-    // tri
-
-    case 0x4008:
-      linear_counter_control = (val >> 7) & 1;
-      linear_counter_reload = val & 0x7F;
-      break;
-
-    case 0x4009:
-        twaveH = val; // High bytes of wave
-      break;
-    case 0x400D:
-        twaveL = val; // Low bytes of wave
-        break;
-
-    case 0x400a:
-      tri_freq = val | (tri_freq & 0x700) ;
-      break;
-
-    case 0x400b:
-      tri_freq = (tri_freq & 0xff) | ((val & 0x7) << 8) ;
-      linear_counter_halt = true;
-      if (enable[0])
-      {
-        length_counter[0] = length_table[(val >> 3) & 0x1f];
-      }
-      break;
-    /*case 0x4016:
-        twaveT = val >> 5; // Wave mode of the 2-bit wave channel (False = Wave. True = Triangle)
-        tvol = (val & 15) + 1;
-        break;
-    */
-
-    // noise
-
-    case 0x400c:
-      noise_volume = val & 15;
-      envelope_div_period = val & 15;
-      envelope_disable = (val >> 4) & 1;
-      envelope_loop = (val >> 5) & 1;
-      break;
-
-    //case 0x400d: nah now you're used >:)
-     // break;
-
-    case 0x400e:
-      if (option[OPT_ENABLE_PNOISE])
-        noise_tap = (val & 0x80) ? (1<<6) : (1<<1);
-      else
-        noise_tap = (1<<1);
-      nfreq = wavlen_table[pal][val&15];
-      break;
-
-    case 0x400f:
-      if (enable[1])
-      {
-        length_counter[1] = length_table[(val >> 3) & 0x1f];
-      }
-      envelope_write = true;
-      break;
-
-    // dmc
-
-    case 0x4010:
-      mode = (val >> 6) & 3;
-      if (!(mode & 2))
-      {
-        irq = false;
-        cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
-      }
-      dfreq = freq_table[pal][val&15];
-      break;
-
-    case 0x4011:
-      if (option[OPT_ENABLE_4011])
-      {
-        damp = (val >> 1) & 0x3f;
-        dac_lsb = val & 1;
-        dmc_pop = true;
-      }
-      break;
-
-    case 0x4012:
-      adr_reg = val&0xff;
-      // A
-      break;
-
-    case 0x4013:
-      len_reg = val&0xff;
-      // A
-      break;
-
-    default:
-      return false;
-    }
-
-    return true;
-  }
-
- 
-
-
-  bool NES_DMC::Read (UINT32 adr, UINT32 & val, UINT32 id)
-  {
-    if (adr == 0x4015)
-    {
-      val |=(irq               ? 0x80 : 0)
-          | (frame_irq         ? 0x40 : 0)
-          | ((dlength>0)       ? 0x10 : 0)
-          | (length_counter[1] ? 0x08 : 0)
-          | (length_counter[0] ? 0x04 : 0)
-          ;
-
-      frame_irq = false;
-      cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
-      return true;
-    }
-    else if (0x4008<=adr&&adr<=0x4014)
-    {
-      val |= reg[adr-0x4008];
-      return true;
-    }
-    else
-      return false;
-  }
-
-  // IRQ support requires CPU read access
-  void NES_DMC::SetCPU(NES_CPU* cpu_)
-  {
-      cpu = cpu_;
-  }
 } // namespace

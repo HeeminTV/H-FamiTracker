@@ -6,9 +6,11 @@ H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**eemin"
 
 Presents two fantasy chips based on RP2A03 and Sunsoft 5B, called **7E02**, **SY1202**
 
-## E-FamiTracker modifications
+## Modifications from other forks
 
-This fork also presents some features from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
+This fork also presents some features from various FamiTracker forks.
+
+### [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) presented features
 
 This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
 
@@ -16,13 +18,25 @@ This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https:/
 
 - MMC5 PCM
 
+### [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) presented features
+
+This fork ***DO NOT OWN*** the codes that are taken from [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) by @HertzDevil
+
+- ~~SN76489~~
+
+### 0CC-LLTracker presented features
+
+This fork ***DO NOT OWN*** the codes that are taken from [0CC-LLTracker](https://www.patreon.com/posts/0cc-lltracker-57793427) by @shiru8bit
+
+- ~~YM2413~~
+
 ## To do list
 - [x] 7E02
 - [x] MMC5 PCM
 - [ ] PCM importer via DPCM instrument
 - [x] 5E01
-- [ ] 2A03
-- [ ] UA6527
+- [x] 2A03
+- [ ] YM2413
 - [ ] SN76489
 
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)

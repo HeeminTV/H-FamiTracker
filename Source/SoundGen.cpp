@@ -1015,6 +1015,8 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_5B, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU1, float(pSettings->ChipLevels.iLevel5E01_APU1 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU2, float(pSettings->ChipLevels.iLevel5E01_APU2 / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_7E02_APU1, float(pSettings->ChipLevels.iLevel7E02_APU1 / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_7E02_APU2, float(pSettings->ChipLevels.iLevel7E02_APU2 / 10.0f));
 		}
 	}
 
@@ -1505,8 +1507,9 @@ static CString GetStateString(const stChannelState &State)
 			(State.ChannelIndex >= CHANID_2A03_SQUARE1 && State.ChannelIndex <= CHANID_2A03_SQUARE2) ||
 				State.ChannelIndex == CHANID_2A03_NOISE ||
 			(State.ChannelIndex >= CHANID_5E01_SQUARE1 && State.ChannelIndex <= CHANID_5E01_SQUARE2) ||
-			State.ChannelIndex == CHANID_5E01_NOISE ||
-			(State.ChannelIndex >= CHANID_MMC5_SQUARE1 && State.ChannelIndex <= CHANID_MMC5_SQUARE2) ||
+				State.ChannelIndex == CHANID_5E01_NOISE ||
+			(State.ChannelIndex >= CHANID_7E02_SQUARE1 && State.ChannelIndex <= CHANID_7E02_SQUARE2) ||
+				State.ChannelIndex == CHANID_7E02_NOISE ||
 			(State.ChannelIndex >= CHANID_MMC5_SQUARE1 && State.ChannelIndex <= CHANID_MMC5_SQUARE2)
 		)
 		for (const auto &x : {EF_VOLUME}) {
@@ -1520,7 +1523,7 @@ static CString GetStateString(const stChannelState &State)
 			if (p < 0) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex == CHANID_2A03_DPCM || State.ChannelIndex == CHANID_5E01_DPCM)
+	else if (State.ChannelIndex == CHANID_2A03_DPCM || State.ChannelIndex == CHANID_5E01_DPCM || State.ChannelIndex == CHANID_7E02_DPCM)
 		for (const auto &x : {EF_SAMPLE_OFFSET, /*EF_DPCM_PITCH*/}) {
 			int p = State.Effect[x];
 			if (p <= 0) continue;
@@ -1698,8 +1701,12 @@ void CSoundGen::ResetAPU()
 	m_pAPU->Reset();
 
 	// Enable all channels
-	WriteRegister(0x4015, 0x0F);
-	WriteRegister(0x4017, 0x00);
+	// 2A03 parties
+	WriteRegister(0x4015, 0x0F); WriteRegister(0x4017, 0x00);
+
+	WriteRegister(0x4115, 0x0F); WriteRegister(0x4117, 0x00);
+
+	WriteRegister(0x4215, 0x0F); WriteRegister(0x4217, 0x00);
 
 	// FDS
 	WriteRegister(0x4023, 0x02);

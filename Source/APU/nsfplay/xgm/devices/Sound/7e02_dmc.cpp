@@ -307,116 +307,116 @@ namespace xgm
     return (ret * tvol) / 15;
   }
 
-  UINT32 I7e02_DMC::calc_noise(UINT32 clocks)
-  {
-    UINT32 env = envelope_disable ? noise_volume : envelope_counter;
-    if (length_counter[1] < 1) env = 0;
+    UINT32 I7e02_DMC::calc_noise(UINT32 clocks)
+    {
+        UINT32 env = envelope_disable ? noise_volume : envelope_counter;
+        if (length_counter[1] < 1) env = 0;
 
-    UINT32 last = (noise & 0x4200) ? 0 : env;
-    if (clocks < 1) return last;
+        UINT32 last = (noise & 0x4000) ? 0 : env;
+        if (clocks < 1) return last;
 
-    // simple anti-aliasing (noise requires it, even when oversampling is off)
-    UINT32 count = 0;
-    UINT32 accum = counter[1] * last; // samples pending from previous calc
-    UINT32 accum_clocks = counter[1];
-    #ifdef _DEBUG
+        // simple anti-aliasing (noise requires it, even when oversampling is off)
+        UINT32 count = 0;
+        UINT32 accum = counter[1] * last; // samples pending from previous calc
+        UINT32 accum_clocks = counter[1];
+#ifdef _DEBUG
         INT32 start_clocks = counter[1];
-    #endif
-    if (counter[1] < 0) // only happens on startup when using the randomize noise option
-    {
-        accum = 0;
-        accum_clocks = 0;
-    }
+#endif
+        if (counter[1] < 0) // only happens on startup when using the randomize noise option
+        {
+            accum = 0;
+            accum_clocks = 0;
+        }
 
-    counter[1] -= clocks;
-    assert (nfreq > 0); // prevent infinite loop
-    while (counter[1] < 0)
-    {
-        // tick the noise generator
-        UINT32 feedback = (noise&1) ^ ((noise&noise_tap)?1:0);
-        noise = (noise>>1) | (feedback<<14);
+        counter[1] -= clocks;
+        assert(nfreq > 0); // prevent infinite loop
+        while (counter[1] < 0)
+        {
+            // tick the noise generator
+            UINT32 feedback = (noise & 1) ^ ((noise & noise_tap) ? 1 : 0);
+            noise = (noise >> 1) | (feedback << 14);
 
-        last = (noise & 0x4200) ? 0 : env;
-        accum += (last * nfreq);
-        counter[1] += nfreq;
-        ++count;
-        accum_clocks += nfreq;
-    }
+            last = (noise & 0x4000) ? 0 : env;
+            accum += (last * nfreq);
+            counter[1] += nfreq;
+            ++count;
+            accum_clocks += nfreq;
+        }
 
-    if (count < 1) // no change over interval, don't anti-alias
-    {
-       return last;
-    }
+        if (count < 1) // no change over interval, don't anti-alias
+        {
+            return last;
+        }
 
-    accum -= (last * counter[1]); // remove these samples which belong in the next calc
-    accum_clocks -= counter[1];
-    #ifdef _DEBUG
+        accum -= (last * counter[1]); // remove these samples which belong in the next calc
+        accum_clocks -= counter[1];
+#ifdef _DEBUG
         if (start_clocks >= 0) assert(accum_clocks == clocks); // these should be equal
-    #endif
+#endif
 
-    UINT32 average = accum / accum_clocks;
-    assert(average <= 15); // above this would indicate overflow
-    return average;
-  }
+        UINT32 average = accum / accum_clocks;
+        assert(average <= 15); // above this would indicate overflow
+        return average;
+    }
 
 	// Tick the DMC for the number of clocks, and return output counter;
-	UINT32 I7e02_DMC::calc_dmc (UINT32 clocks)
-	{
-		counter[2] -= clocks;
-		assert (dfreq > 0); // prevent infinite loop
-		while (counter[2] < 0)
-		{
-			counter[2] += dfreq;
+    UINT32 I7e02_DMC::calc_dmc(UINT32 clocks)
+    {
+        counter[2] -= clocks;
+        assert(dfreq > 0); // prevent infinite loop
+        while (counter[2] < 0)
+        {
+            counter[2] += dfreq;
 
-			if ( data > 0x100 ) // data = 0x100 when shift register is empty
-			{
-				if (!empty)
-				{
-					if ((data & 1) && (damp < 63))
-						damp++;
-					else if (!(data & 1) && (0 < damp))
-						damp--;
-				}
-				data >>=1;
-			}
+            if (data > 0x100) // data = 0x100 when shift register is empty
+            {
+                if (!empty)
+                {
+                    if ((data & 1) && (damp < 63))
+                        damp++;
+                    else if (!(data & 1) && (0 < damp))
+                        damp--;
+                }
+                data >>= 1;
+            }
 
-			if ( data <= 0x100 ) // shift register is empty
-			{
-				if (dlength > 0)
-				{
-					memory->Read (daddress, data);
-					cpu->StealCycles(4); // DMC read takes 3 or 4 CPU cycles, usually 4
-					// (checking for the 3-cycle case would require sub-instruction emulation)
-					data &= 0xFF; // read 8 bits
-					if (option[OPT_DPCM_REVERSE]) data = BITREVERSE[data];
-					data |= 0x10000; // use an extra bit to signal end of data
-					empty = false;
-					daddress = ((daddress+1)&0xFFFF)|0x8000 ;
-					--dlength;
-					if (dlength == 0)
-					{
-						if (mode & 1) // looped DPCM = auto-reload
-						{
-							daddress = ((adr_reg<<6)|0xC000);
-							dlength = (len_reg<<4)+1;
-						}
-						else if (mode & 2) // IRQ and not looped
-						{
-							irq = true;
-							cpu->UpdateIRQ(I7e02_CPU::IRQD_DMC, true);
-						}
-					}
-				}
-				else
-				{
-					data = 0x10000; // DMC will do nothing
-					empty = true;
-				}
-			}
-		}
+            if (data <= 0x100) // shift register is empty
+            {
+                if (dlength > 0)
+                {
+                    memory->Read(daddress, data);
+                    cpu->StealCycles(4); // DMC read takes 3 or 4 CPU cycles, usually 4
+                    // (checking for the 3-cycle case would require sub-instruction emulation)
+                    data &= 0xFF; // read 8 bits
+                    if (option[OPT_DPCM_REVERSE]) data = BITREVERSE[data];
+                    data |= 0x10000; // use an extra bit to signal end of data
+                    empty = false;
+                    daddress = ((daddress + 1) & 0xFFFF) | 0x8000;
+                    --dlength;
+                    if (dlength == 0)
+                    {
+                        if (mode & 1) // looped DPCM = auto-reload
+                        {
+                            daddress = ((adr_reg << 6) | 0xC000);
+                            dlength = (len_reg << 4) + 1;
+                        }
+                        else if (mode & 2) // IRQ and not looped
+                        {
+                            irq = true;
+                            cpu->UpdateIRQ(I7e02_CPU::IRQD_DMC, true);
+                        }
+                    }
+                }
+                else
+                {
+                    data = 0x10000; // DMC will do nothing
+                    empty = true;
+                }
+            }
+        }
 
-		return (damp<<1) + dac_lsb;
-	}
+        return (damp << 1) + dac_lsb;
+    }
 
   void I7e02_DMC::TickFrameSequence (UINT32 clocks)
   {

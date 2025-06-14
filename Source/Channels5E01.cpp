@@ -236,6 +236,11 @@ bool C5E01Square::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		m_iLastPeriod = 0xFFFF;
 		m_bSweeping = true;
 		break;
+	case EF_PHASE_RESET:
+		if (EffParam == 0) {
+			resetPhase();
+		}
+		break;
 	default: return CChannelHandler5E01::HandleEffect(EffNum, EffParam);
 	}
 
@@ -273,6 +278,13 @@ CString C5E01Square::GetCustomEffectString() const		// // //
 		str.AppendFormat(_T(" EE%X"), !m_bEnvelopeLoop * 2 + m_bHardwareEnvelope);
 
 	return str;
+}
+
+void C5E01Square::resetPhase()
+{
+	int Address = 0x4100 + m_iChannel * 4;
+	int LoPeriod = CalculatePeriod() >> 8;
+	WriteRegister(Address + 3, LoPeriod + (m_iLengthCounter << 3));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -589,6 +601,11 @@ bool C5E01DPCMChan::CreateInstHandler(inst_type_t Type)
 	return false;
 }
 
+void C5E01DPCMChan::resetPhase()
+{
+	// Trigger the sample again
+	triggerSample();
+}
 
 // Called once per row.
 void C5E01DPCMChan::PlaySample(const CDSample* pSamp, int Pitch)		// // //
