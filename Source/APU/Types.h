@@ -22,22 +22,22 @@
 
 #include <cstdint>
 
-const uint8_t SNDCHIP_NONE = 0;			// 7E02 Only
-const uint8_t SNDCHIP_VRC6 = 1;			// Konami VRCVI
-const uint8_t SNDCHIP_VRC7 = 2;			// Konami VRCVII
-const uint8_t SNDCHIP_FDS  = 4;			// Famicom Disk Sound
-const uint8_t SNDCHIP_MMC5 = 8;			// Nintendo MMC5
-const uint8_t SNDCHIP_N163 = 16;		// Namco 163
-const uint8_t SNDCHIP_SY1202  = 32;		// Saeyahn SY1202
-// Taken from E-FamiTracker by Euly
-const int SNDCHIP_5E01 = 64;		// Eulous 5E01
+const uint8_t SNDCHIP_NONE	 = 0;			// 7E02 Only
+const uint8_t SNDCHIP_VRC6	 = 1;			// Konami VRCVI
+const uint8_t SNDCHIP_VRC7	 = 2;			// Konami VRCVII
+const uint8_t SNDCHIP_FDS	 = 4;			// Famicom Disk Sound
+const uint8_t SNDCHIP_MMC5	 = 8;			// Nintendo MMC5
+const uint8_t SNDCHIP_N163	 = 16;			// Namco 163
+const uint8_t SNDCHIP_5B = 32;			// Saeyahn 5B
+const uint8_t SNDCHIP_5E01	 = 64;			// Eulous 5E01
+const uint8_t SNDCHIP_7E02	 = 128;			// Saeyahn 7E02
 
 enum chan_id_t {
-	CHANID_FWG1,
-	CHANID_FWG2,
-	CHANID_WAVEFORM,
-	CHANID_NOISE,
-	CHANID_DPCM,
+	CHANID_2A03_SQUARE1,
+	CHANID_2A03_SQUARE2,
+	CHANID_2A03_TRIANGLE,
+	CHANID_2A03_NOISE,
+	CHANID_2A03_DPCM,
 
 	CHANID_VRC6_PULSE1,
 	CHANID_VRC6_PULSE2,
@@ -65,9 +65,9 @@ enum chan_id_t {
 	CHANID_VRC7_CH5,
 	CHANID_VRC7_CH6,
 
-	CHANID_SY1202_CH1,
-	CHANID_SY1202_CH2,
-	CHANID_SY1202_CH3,
+	CHANID_5B_CH1,
+	CHANID_5B_CH2,
+	CHANID_5B_CH3,
 
 	CHANID_5E01_SQUARE1,
 	CHANID_5E01_SQUARE2,
@@ -75,7 +75,11 @@ enum chan_id_t {
 	CHANID_5E01_NOISE,
 	CHANID_5E01_DPCM,
 
-	// TODO: ADD 2A03 TOO
+	CHANID_7E02_SQUARE1,
+	CHANID_7E02_SQUARE2,
+	CHANID_7E02_WAVEFORM,
+	CHANID_7E02_NOISE,
+	CHANID_7E02_DPCM,
 
 	CHANNELS		/* Total number of channels */
 };

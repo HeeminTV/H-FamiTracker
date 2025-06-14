@@ -1,4 +1,4 @@
-#ifndef _NES_APU_H_
+﻿#ifndef _NES_APU_H_
 #define _NES_APU_H_
 #include "../device.h"
 #include "nes_dmc.h"
@@ -22,7 +22,7 @@ namespace xgm
     { SQR0_MASK = 1, SQR1_MASK = 2, };
 
   public:
-    int option[OPT_END];        
+    int option[OPT_END];       
     int mask;
     INT32 sm[2][2];
 

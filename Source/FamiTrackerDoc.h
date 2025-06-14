@@ -84,6 +84,8 @@ struct stJSONOptionalData {
 	int16_t S5B_OFFSET = 0;
 	int16_t _5E01_APU1_OFFSET = 0;
 	int16_t _5E01_APU2_OFFSET = 0;
+	int16_t _7E02_APU1_OFFSET = 0;
+	int16_t _7E02_APU2_OFFSET = 0;
 
 	// Use hardware based mixing values derived from survey: https://forums.nesdev.org/viewtopic.php?f=2&t=17741
 	bool USE_SURVEY_MIX = false;

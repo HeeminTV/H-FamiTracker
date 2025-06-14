@@ -302,17 +302,19 @@ void CFindResultsBox::SelectItem(int Index)
 	const auto ToChannelIndex = [] (const std::string &_x) {
 		CString x {_x.c_str()};
 		static const CString HEADER_STR[] = {
-			_T("7E02 FWG "), _T("7E02 Waveform"), _T("7E02 Noise"), _T("7E02 DPCM"),
+			_T("2A03 Pulse "), _T("2A03 Triangle"), _T("2A03 Noise"), _T("2A03 DPCM"),
 			_T("VRC6 Pulse "), _T("VRC6 Sawtooth"),
-			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("SY1202 PSG "),
-			_T("5E01 Pulse "), _T("5E01 Waveform"), _T("5E01 Noise"), _T("5E01 DPCM")
+			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("5B PSG "),
+			_T("5E01 Pulse "), _T("5E01 Waveform"), _T("5E01 Noise"), _T("5E01 DPCM"),
+			_T("7E02 FWG "), _T("7E02 Waveform"), _T("7E02 Noise"), _T("7E02 DPCM"),
 			// bullshit
 		};
 		static const int HEADER_ID[] = {
-			CHANID_FWG1, CHANID_WAVEFORM, CHANID_NOISE, CHANID_DPCM,
+			CHANID_2A03_SQUARE1, CHANID_2A03_TRIANGLE, CHANID_2A03_NOISE, CHANID_2A03_DPCM,
 			CHANID_VRC6_PULSE1, CHANID_VRC6_SAWTOOTH,
-			CHANID_MMC5_SQUARE1, CHANID_N163_CH1, CHANID_FDS, CHANID_VRC7_CH1, CHANID_SY1202_CH1,
+			CHANID_MMC5_SQUARE1, CHANID_N163_CH1, CHANID_FDS, CHANID_VRC7_CH1, CHANID_5B_CH1,
 			CHANID_5E01_SQUARE1, CHANID_5E01_WAVEFORM, CHANID_5E01_NOISE, CHANID_5E01_DPCM,
+			CHANID_7E02_SQUARE1, CHANID_7E02_WAVEFORM, CHANID_7E02_NOISE, CHANID_7E02_DPCM,
 		};
 		for (int i = 0; i < sizeof(HEADER_ID) / sizeof(int); ++i) {
 			const auto &n = HEADER_STR[i];
@@ -515,7 +517,7 @@ int CFindResultsBox::ChannelCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM l
 		static const CString HEADER_STR[] = {
 			_T("7E02 FWG "), _T("7E02 2-bit Waveform"), _T("7E02 Noise"), _T("7E02 DPCM"),
 			_T("VRC6 Pulse "), _T("VRC6 Sawtooth"),
-			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("SY1202 PSG ")
+			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("5B PSG ")
 		}; // Why we should have two of this?? one should be enough!!
 		int Pos = 0;
 		for (const auto &n : HEADER_STR) {
@@ -1133,7 +1135,7 @@ bool CFindDlg::Find(bool ShowEnd)
 			m_pFindCursor->Move(m_iSearchDirection);
 		}
 		m_pFindCursor->Get(&Target);
-		if (CompareFields(Target, m_pFindCursor->m_iChannel == CHANID_NOISE,
+		if (CompareFields(Target, m_pFindCursor->m_iChannel == CHANID_2A03_NOISE,
 							m_pDocument->GetEffColumns(Track, m_pFindCursor->m_iChannel))) {
 			CFindCursor *pCursor = nullptr;
 			std::swap(pCursor, m_pFindCursor);
@@ -1366,9 +1368,9 @@ void CFindDlg::OnBnClickedButtonFindAll()
 	m_cResultsBox->ClearResults();
 	do {
 		m_pFindCursor->Get(&Target);
-		if (CompareFields(Target, m_pFindCursor->m_iChannel == CHANID_NOISE,
+		if (CompareFields(Target, m_pFindCursor->m_iChannel == CHANID_2A03_NOISE,
 							m_pDocument->GetEffColumns(Track, m_pFindCursor->m_iChannel)))
-			m_cResultsBox->AddResult(&Target, m_pFindCursor, m_pFindCursor->m_iChannel == CHANID_NOISE);
+			m_cResultsBox->AddResult(&Target, m_pFindCursor, m_pFindCursor->m_iChannel == CHANID_2A03_NOISE);
 		m_pFindCursor->Move(m_iSearchDirection);
 	} while (!m_pFindCursor->AtStart());
 
@@ -1393,7 +1395,7 @@ void CFindDlg::OnBnClickedButtonReplaceall()
 	stChanNote Target;
 	do {
 		m_pFindCursor->Get(&Target);
-		if (CompareFields(Target, m_pFindCursor->m_iChannel == CHANID_NOISE,
+		if (CompareFields(Target, m_pFindCursor->m_iChannel == CHANID_2A03_NOISE,
 							m_pDocument->GetEffColumns(Track, m_pFindCursor->m_iChannel))) {
 			m_bFound = true;
 			Replace(pAction);

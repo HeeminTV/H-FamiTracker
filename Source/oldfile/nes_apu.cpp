@@ -89,17 +89,17 @@ namespace xgm
 
   INT32 NES_APU::calc_sqr (int i, UINT32 clocks)
   {
-    static const INT16 sqrtbl[4][16] = {
-      {0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-      {0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-      {1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+      static const INT16 sqrtbl[4][32] = {
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 15, 15, 15, 15, 15, 15, 15 },
+          {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0},
+          {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15},
     };
 
     scounter[i] -= clocks;
     while (scounter[i] < 0)
     {
-        sphase[i] = (sphase[i] + 1) & 15;
+        sphase[i] = (sphase[i] + 1) & 31;
         scounter[i] += freq[i] + 1;
     }
 
@@ -110,10 +110,10 @@ namespace xgm
         )
     {
         int v = envelope_disable[i] ? volume[i] : envelope_counter[i];
-        ret = sqrtbl[duty[i]][sphase[i]] ? v : 0;
+        ret = (sqrtbl[duty[i]][sphase[i]] + 1) * v;
     }
     
-    return ret;
+    return ret / 16;
   }
 
   bool NES_APU::Read (UINT32 adr, UINT32 & val, UINT32 id)
@@ -181,6 +181,7 @@ namespace xgm
       return out;
   }
 
+  // s
   UINT32 NES_APU::Render (INT32 b[2])
   {
     out[0] = (mask & 1) ? 0 : out[0];
@@ -347,7 +348,7 @@ namespace xgm
           freq[0] >= 8 &&
           sfreq[0] < 0x800))
       return 0.0;
-    return clock / 16 / (freq[0] + 1);
+    return clock / 32 / (freq[0] + 1);
   }
 
   double NES_APU::GetFrequencyPulse2() const    // // !!
@@ -358,7 +359,7 @@ namespace xgm
         freq[1] >= 8 &&
         sfreq[1] < 0x800))
       return 0.0;
-    return clock / 16 / (freq[1] + 1);
+    return clock / 32 / (freq[1] + 1);
   }
 
   bool NES_APU::Write (UINT32 adr, UINT32 val, UINT32 id)

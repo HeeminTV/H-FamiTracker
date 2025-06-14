@@ -51,13 +51,14 @@ const int CInstrumentEditDlg::KEYBOARD_HEIGHT = 58;
 
 const TCHAR *CInstrumentEditDlg::CHIP_NAMES[] = {
 	_T(""), 
-	_T("7E02"), 
+	_T("2A03"), 
 	_T("VRC6"), 
 	_T("VRC7"), 
 	_T("2C33"), 
 	_T("N163"), 
-	_T("SY1202"),
-	_T("5E01") // Taken from E-FamiTracker by Euly
+	_T("5B"),
+	_T("5E01"), // Taken from E-FamiTracker by Euly
+	_T("7E02")
 };
 
 // CInstrumentEditDlg dialog
@@ -189,8 +190,8 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 			case INST_2A03: {
 					int Channel = CFamiTrackerView::GetView()->GetSelectedChannel();
 					int Type = pDoc->GetChannelType(Channel);
-					bool bShowDPCM = (Type == CHANID_DPCM) || (std::static_pointer_cast<CInstrument2A03>(pInstrument)->AssignedSamples());
-					InsertPane(new CInstrumentEditorSeq(NULL, _T("FWG settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
+					bool bShowDPCM = (Type == CHANID_2A03_DPCM) || (std::static_pointer_cast<CInstrument2A03>(pInstrument)->AssignedSamples());
+					InsertPane(new CInstrumentEditorSeq(NULL, _T("2A03 settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
 					//InsertPane(new CInstrumentEditorSeq(NULL, _T("2-bit waveform settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // maybe later
 					InsertPane(new CInstrumentEditorDPCM(), bShowDPCM);
 				}
@@ -212,7 +213,7 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 				InsertPane(new CInstrumentEditorN163Wave(), false);
 				break;
 			case INST_S5B:
-				InsertPane(new CInstrumentEditorSeq(NULL, _T("SY1202"), CInstrumentS5B::SEQUENCE_NAME, 15, 255, INST_S5B), true);
+				InsertPane(new CInstrumentEditorSeq(NULL, _T("5B"), CInstrumentS5B::SEQUENCE_NAME, 15, 255, INST_S5B), true);
 				break;
 		}
 
@@ -362,10 +363,10 @@ void CInstrumentEditDlg::SwitchOnNote(int x, int y)
 
 	// // // Send to respective channels whenever cursor is outside instrument chip
 	if (m_iSelectedInstType == INST_2A03) {
-		if (m_pPanels[0]->IsWindowVisible() && Channel > CHANID_NOISE)
-			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_FWG1));
+		if (m_pPanels[0]->IsWindowVisible() && Channel > CHANID_2A03_NOISE)
+			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_2A03_SQUARE1));
 		if (m_pPanels[1]->IsWindowVisible())
-			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_DPCM));
+			pView->SelectChannel(pDoc->GetChannelIndex(CHANID_2A03_DPCM));
 	}
 	else {
 		chan_id_t First = CHANNELS;
@@ -374,7 +375,7 @@ void CInstrumentEditDlg::SwitchOnNote(int x, int y)
 		case INST_N163: First = CHANID_N163_CH1; break;
 		case INST_FDS:  First = CHANID_FDS; break;
 		case INST_VRC7: First = CHANID_VRC7_CH1; break;
-		case INST_S5B:  First = CHANID_SY1202_CH1; break;
+		case INST_S5B:  First = CHANID_5B_CH1; break;
 		}
 		int Index = pDoc->GetChannelIndex(First);
 		if (Index != -1 && pDoc->GetChipType(Index) != pDoc->GetChipType(Channel))

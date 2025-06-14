@@ -150,18 +150,18 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 		case SNDCHIP_NONE:
 		case SNDCHIP_MMC5:
 		case SNDCHIP_N163:		// // //
-		case SNDCHIP_SY1202:
+		case SNDCHIP_5B:
 		case SNDCHIP_VRC6:
 		case SNDCHIP_FDS:
-
 		case SNDCHIP_5E01: // Taken from E-FamiTracker by Euly
+		case SNDCHIP_7E02:
 
 			switch (Type) {
-			case INST_2A03:
-			case INST_VRC6:
-			case INST_N163:
-			case INST_S5B:
-			case INST_FDS:
+				case INST_2A03:
+				case INST_VRC6:
+				case INST_N163:
+				case INST_S5B:
+				case INST_FDS:
 				return true;
 			default: return false;
 			}
@@ -180,25 +180,43 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 		case EF_DELAY:
 			return true;
 		case EF_NOTE_CUT: case EF_NOTE_RELEASE:
-			return EffParam <= 0x7F || m_iChannelID == CHANID_WAVEFORM;
+			return EffParam <= 0x7F || m_iChannelID == CHANID_2A03_TRIANGLE || m_iChannelID == CHANID_5E01_WAVEFORM || m_iChannelID == CHANID_7E02_WAVEFORM;
 		case EF_GROOVE:
 			return EffParam < MAX_GROOVE;
 		case EF_VOLUME:
-			return ((m_iChip == SNDCHIP_NONE && m_iChannelID != CHANID_DPCM) || m_iChip == SNDCHIP_MMC5) &&
-				(EffParam <= 0x1F || (EffParam >= 0xE0 && EffParam <= 0xE3));
+			return (
+				(m_iChip == SNDCHIP_NONE && m_iChannelID != CHANID_2A03_DPCM) && 
+				(m_iChip == SNDCHIP_5E01 && m_iChannelID != CHANID_5E01_DPCM) &&
+				(m_iChip == SNDCHIP_7E02 && m_iChannelID != CHANID_7E02_DPCM) &&
+				m_iChip == SNDCHIP_MMC5) &&
+				(EffParam <= 0x1F || (EffParam >= 0xE0 && EffParam <= 0xE3)
+			);
 		case EF_PORTAMENTO: case EF_ARPEGGIO: case EF_VIBRATO: case EF_TREMOLO:
 		case EF_PITCH: case EF_PORTA_UP: case EF_PORTA_DOWN: case EF_SLIDE_UP: case EF_SLIDE_DOWN:
 		case EF_VOLUME_SLIDE: case EF_DELAYED_VOLUME: case EF_TRANSPOSE: case EF_TARGET_VOLUME_SLIDE:
-			return (m_iChannelID != CHANID_DPCM && m_iChannelID != CHANID_5E01_DPCM); // Taken from E-FamiTracker by Euly
+			return (
+				m_iChannelID != CHANID_2A03_DPCM && 
+				m_iChannelID != CHANID_5E01_DPCM && 
+				m_iChannelID != CHANID_7E02_DPCM
+			);
 		case EF_PORTAOFF:
 			return false;
 		case EF_SWEEPUP: case EF_SWEEPDOWN:
-			return m_iChannelID == CHANID_FWG1 || m_iChannelID == CHANID_FWG2 || m_iChannelID == CHANID_5E01_SQUARE1 || m_iChannelID == CHANID_5E01_SQUARE2; // Taken from E-FamiTracker by Euly
+			return (
+				m_iChannelID == CHANID_2A03_SQUARE1 || m_iChannelID == CHANID_2A03_SQUARE2 ||
+				m_iChannelID == CHANID_5E01_SQUARE1 || m_iChannelID == CHANID_5E01_SQUARE2 ||
+				m_iChannelID == CHANID_7E02_SQUARE1 || m_iChannelID == CHANID_7E02_SQUARE2
+			);
 
 		// Taken from E-FamiTracker by Euly
 		case EF_DAC: case EF_SAMPLE_OFFSET: case EF_RETRIGGER: case EF_DPCM_PITCH: {
 			// TODO move to virtual method of Effect subclasses.
-			if (m_iChannelID != CHANID_DPCM && m_iChannelID != CHANID_5E01_DPCM && m_iChannelID != CHANID_MMC5_VOICE) return false; // Taken from E-FamiTracker by Euly
+			if (
+				m_iChannelID != CHANID_2A03_DPCM &&
+				m_iChannelID != CHANID_5E01_DPCM && 
+				m_iChannelID != CHANID_7E02_DPCM &&
+				m_iChannelID != CHANID_MMC5_VOICE
+			) return false; // Taken from E-FamiTracker by Euly
 
 			int limit;
 			switch (EffNumber) {
@@ -233,7 +251,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_FDS;
 		case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE:
 		case EF_SUNSOFT_NOISE:		// // // 050B
-			return m_iChip == SNDCHIP_SY1202;
+			return m_iChip == SNDCHIP_5B;
 		case EF_N163_WAVE_BUFFER:
 			return m_iChip == SNDCHIP_N163 && EffParam <= 0x7F;
 		case EF_FDS_VOLUME:
@@ -242,18 +260,27 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_VRC7;
 		case EF_PHASE_RESET:
 			// Triangle and noise can't reset phase during runtime.
-			if (m_iChannelID == CHANID_WAVEFORM) return false;
-			if (m_iChannelID == CHANID_NOISE) return false;
-			if (m_iChannelID == CHANID_MMC5_VOICE) return false;
+			if (m_iChannelID == CHANID_2A03_TRIANGLE) return false;
+			if (m_iChannelID == CHANID_2A03_NOISE) return false;
+
+			if (m_iChannelID == CHANID_5E01_WAVEFORM) return false;
+			if (m_iChannelID == CHANID_5E01_NOISE) return false;
+
+			if (m_iChannelID == CHANID_7E02_WAVEFORM) return false;
+			if (m_iChannelID == CHANID_7E02_NOISE) return false;
+
+			if (m_iChannelID == CHANID_MMC5_VOICE) return false; // neither this PCM channel
 			// VRC7 and S5B is not supported yet.
 			if (m_iChip == SNDCHIP_VRC7) return false;
-			if (m_iChip == SNDCHIP_SY1202) return false;
+			if (m_iChip == SNDCHIP_5B) return false;
 			return EffParam == 0x00;
 		case EF_HARMONIC:
 			// VRC7 is not supported yet.
 			if (m_iChip == SNDCHIP_VRC7) return false;
 			// 2A03 noise behaves strangely with Kxx.
-			if (m_iChannelID == CHANID_NOISE) return false;
+			if (m_iChannelID == CHANID_2A03_NOISE) return false;
+			if (m_iChannelID == CHANID_5E01_NOISE) return false;
+			if (m_iChannelID == CHANID_7E02_NOISE) return false;
 			// K00 (frequency *= 0) is invalid/undefined behavior,
 			// and not guaranteed to behave properly/consistently in the tracker or NSF.
 			if (EffParam <= 0) return false;

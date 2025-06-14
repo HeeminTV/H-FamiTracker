@@ -18,7 +18,7 @@
 ** along with this program. If not, see https://www.gnu.org/licenses/.
 */
 
-// This file handles playing of 2A03 channels
+// This file handles playing of 7E02 channels
 
 #include "stdafx.h"
 #include "FamiTracker.h"
@@ -28,13 +28,13 @@
 #include "DSample.h"		// // //
 #include "Instrument.h"
 #include "ChannelHandler.h"
-#include "Channels2A03.h"
+#include "Channels7E02.h"
 #include "Settings.h"
 #include "InstHandler.h"		// // //
 #include "SeqInstHandler.h"		// // //
 #include "InstHandlerDPCM.h"		// // //
 
-CChannelHandler2A03::CChannelHandler2A03() :
+CChannelHandler7E02::CChannelHandler7E02() :
 	CChannelHandler(0x7FF, 0x0F),
 	m_bHardwareEnvelope(false),
 	m_bEnvelopeLoop(true),
@@ -43,7 +43,7 @@ CChannelHandler2A03::CChannelHandler2A03() :
 {
 }
 
-void CChannelHandler2A03::HandleNoteData(stChanNote *pNoteData, int EffColumns)
+void CChannelHandler7E02::HandleNoteData(stChanNote* pNoteData, int EffColumns)
 {
 	// // //
 	CChannelHandler::HandleNoteData(pNoteData, EffColumns);
@@ -54,7 +54,7 @@ void CChannelHandler2A03::HandleNoteData(stChanNote *pNoteData, int EffColumns)
 	}
 }
 
-bool CChannelHandler2A03::HandleEffect(effect_t EffNum, unsigned char EffParam)
+bool CChannelHandler7E02::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_VOLUME:
@@ -79,34 +79,34 @@ bool CChannelHandler2A03::HandleEffect(effect_t EffNum, unsigned char EffParam)
 	return true;
 }
 
-void CChannelHandler2A03::HandleEmptyNote()
+void CChannelHandler7E02::HandleEmptyNote()
 {
 	// // //
 }
 
-void CChannelHandler2A03::HandleCut()
+void CChannelHandler7E02::HandleCut()
 {
 	CutNote();
 }
 
-void CChannelHandler2A03::HandleRelease()
+void CChannelHandler7E02::HandleRelease()
 {
 	if (!m_bRelease)
 		ReleaseNote();
-/*
-	if (!m_bSweeping && (m_cSweep != 0 || m_iSweep != 0)) {
-		m_iSweep = 0;
-		m_cSweep = 0;
-		m_iLastPeriod = 0xFFFF;
-	}
-	else if (m_bSweeping) {
-		m_cSweep = m_iSweep;
-		m_iLastPeriod = 0xFFFF;
-	}
-	*/
+	/*
+		if (!m_bSweeping && (m_cSweep != 0 || m_iSweep != 0)) {
+			m_iSweep = 0;
+			m_cSweep = 0;
+			m_iLastPeriod = 0xFFFF;
+		}
+		else if (m_bSweeping) {
+			m_cSweep = m_iSweep;
+			m_iLastPeriod = 0xFFFF;
+		}
+		*/
 }
 
-bool CChannelHandler2A03::CreateInstHandler(inst_type_t Type)
+bool CChannelHandler7E02::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
 	case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS:
@@ -120,7 +120,7 @@ bool CChannelHandler2A03::CreateInstHandler(inst_type_t Type)
 	return false;
 }
 
-void CChannelHandler2A03::ResetChannel()
+void CChannelHandler7E02::ResetChannel()
 {
 	CChannelHandler::ResetChannel();
 	m_bEnvelopeLoop = true;		// // //
@@ -129,24 +129,24 @@ void CChannelHandler2A03::ResetChannel()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // // 2A03 Square
+// // // 7E02 Square
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-C2A03Square::C2A03Square() :
-	CChannelHandler2A03(),
+C7E02Square::C7E02Square() :
+	CChannelHandler7E02(),
 	m_cSweep(0),
 	m_bSweeping(0),
 	m_iSweep(0)
 {
 }
 
-const char C2A03Square::MAX_DUTY = 0x03;
+const char C7E02Square::MAX_DUTY = 0x03;
 
-int C2A03Square::getDutyMax() const {
+int C7E02Square::getDutyMax() const {
 	return static_cast<int>(MAX_DUTY);
 }
 
-void C2A03Square::RefreshChannel()
+void C7E02Square::RefreshChannel()
 {
 	int Period = CalculatePeriod();
 	int Volume = CalculateVolume();
@@ -154,8 +154,8 @@ void C2A03Square::RefreshChannel()
 
 	unsigned char HiFreq = (Period & 0xFF);
 	unsigned char LoFreq = (Period >> 8);
-	
-	int Address = 0x4000 + m_iChannel * 4;		// // //
+
+	int Address = 0x4200 + m_iChannel * 4;		// // //
 	if (m_bGate)		// // //
 		WriteRegister(Address, (DutyCycle << 6) | (m_bEnvelopeLoop << 5) | (!m_bHardwareEnvelope << 4) | Volume);		// // //
 	else {
@@ -168,8 +168,8 @@ void C2A03Square::RefreshChannel()
 		if (m_cSweep & 0x80) {
 			WriteRegister(Address + 1, m_cSweep);
 			m_cSweep &= 0x7F;
-			WriteRegister(0x4017, 0x80);	// Clear sweep unit
-			WriteRegister(0x4017, 0x00);
+			WriteRegister(0x4217, 0x80);	// Clear sweep unit
+			WriteRegister(0x4217, 0x00);
 			WriteRegister(Address + 2, HiFreq);
 			WriteRegister(Address + 3, LoFreq + (m_iLengthCounter << 3));		// // //
 			m_iLastPeriod = 0xFFFF;
@@ -177,10 +177,10 @@ void C2A03Square::RefreshChannel()
 	}
 	else {
 		WriteRegister(Address + 1, 0x08);
-		//WriteRegister(0x4017, 0x80);	// Manually execute one APU frame sequence to kill the sweep unit
-		//WriteRegister(0x4017, 0x00);
+		//WriteRegister(0x4217, 0x80);	// Manually execute one APU frame sequence to kill the sweep unit
+		//WriteRegister(0x4217, 0x00);
 		WriteRegister(Address + 2, HiFreq);
-		
+
 		if (LoFreq != (m_iLastPeriod >> 8) || m_bResetEnvelope)		// // //
 			WriteRegister(Address + 3, LoFreq + (m_iLengthCounter << 3));
 	}
@@ -189,24 +189,24 @@ void C2A03Square::RefreshChannel()
 	m_bResetEnvelope = false;		// // //
 }
 
-void C2A03Square::SetChannelID(int ID)		// // //
+void C7E02Square::SetChannelID(int ID)		// // //
 {
 	CChannelHandler::SetChannelID(ID);
-	m_iChannel = ID - CHANID_2A03_SQUARE1;
+	m_iChannel = ID - CHANID_7E02_SQUARE1;
 }
 
-int C2A03Square::ConvertDuty(int Duty) const		// // //
+int C7E02Square::ConvertDuty(int Duty) const		// // //
 {
 	switch (m_iInstTypeCurrent) {
-	case INST_VRC6:	return DUTY_2A03_FROM_VRC6[Duty & 0x07];
+	case INST_VRC6:	return DUTY_7E02_FROM_VRC6[Duty & 0x07];
 	case INST_S5B:	return 0x02;
 	default:		return Duty;
 	}
 }
 
-void C2A03Square::ClearRegisters()
+void C7E02Square::ClearRegisters()
 {
-	int Address = 0x4000 + m_iChannel * 4;		// // //
+	int Address = 0x4200 + m_iChannel * 4;		// // //
 	WriteRegister(Address + 0, 0x30);
 	WriteRegister(Address + 1, 0x08);
 	WriteRegister(Address + 2, 0x00);
@@ -214,14 +214,14 @@ void C2A03Square::ClearRegisters()
 	m_iLastPeriod = 0xFFFF;
 }
 
-void C2A03Square::HandleNoteData(stChanNote *pNoteData, int EffColumns)
+void C7E02Square::HandleNoteData(stChanNote* pNoteData, int EffColumns)
 {
 	m_iSweep = 0;
 	m_bSweeping = false;
-	CChannelHandler2A03::HandleNoteData(pNoteData, EffColumns);
+	CChannelHandler7E02::HandleNoteData(pNoteData, EffColumns);
 }
 
-bool C2A03Square::HandleEffect(effect_t EffNum, unsigned char EffParam)
+bool C7E02Square::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_SWEEPUP:
@@ -239,21 +239,21 @@ bool C2A03Square::HandleEffect(effect_t EffNum, unsigned char EffParam)
 			resetPhase();
 		}
 		break;
-	default: return CChannelHandler2A03::HandleEffect(EffNum, EffParam);
+	default: return CChannelHandler7E02::HandleEffect(EffNum, EffParam);
 	}
 
 	return true;
 }
 
-void C2A03Square::HandleEmptyNote()
+void C7E02Square::HandleEmptyNote()
 {
 	if (m_bSweeping)
 		m_cSweep = m_iSweep;
 }
 
-void C2A03Square::HandleNote(int Note, int Octave)		// // //
+void C7E02Square::HandleNote(int Note, int Octave)		// // //
 {
-	CChannelHandler2A03::HandleNote(Note, Octave);
+	CChannelHandler7E02::HandleNote(Note, Octave);
 
 	if (!m_bSweeping && (m_cSweep != 0 || m_iSweep != 0)) {
 		m_iSweep = 0;
@@ -266,10 +266,10 @@ void C2A03Square::HandleNote(int Note, int Octave)		// // //
 	}
 }
 
-CString C2A03Square::GetCustomEffectString() const		// // //
+CString C7E02Square::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
-	
+
 	if (!m_bEnvelopeLoop)
 		str.AppendFormat(_T(" E%02X"), m_iLengthCounter);
 	if (!m_bEnvelopeLoop || m_bHardwareEnvelope)
@@ -278,9 +278,9 @@ CString C2A03Square::GetCustomEffectString() const		// // //
 	return str;
 }
 
-void C2A03Square::resetPhase()
+void C7E02Square::resetPhase()
 {
-	int Address = 0x4000 + m_iChannel * 4;
+	int Address = 0x4200 + m_iChannel * 4;
 	int LoPeriod = CalculatePeriod() >> 8;
 	WriteRegister(Address + 3, LoPeriod + (m_iLengthCounter << 3));
 }
@@ -289,43 +289,63 @@ void C2A03Square::resetPhase()
 // Triangle 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CTriangleChan::CTriangleChan() :		// // //
-	CChannelHandler2A03(),
+C7E02WaveformChan::C7E02WaveformChan() :		// // //
+	CChannelHandler7E02(),
 	m_iLinearCounter(-1)
 {
 }
 
-void CTriangleChan::RefreshChannel()
+void C7E02WaveformChan::RefreshChannel()
 {
 	int Freq = CalculatePeriod();
+
+	char WaveHighBytes = (m_iTremoloSpeed * 16) + (m_iTremoloDepth / 16); // EFT 
+	char WaveLowBytes = m_iDefaultDuty;
+
+	// char WaveType = m_iInstrument & 1;
+	char Volume = (((m_iVolume >> 3) + 1) * m_iInstVolume + 1) - 1 >> 4; // EFT 
 
 	unsigned char HiFreq = (Freq & 0xFF);
 	unsigned char LoFreq = (Freq >> 8);
 
+	int WaveType = (m_iInstrument < 1) ? true : false; // Wave mode of the wave channel
+
 	if (m_iInstVolume > 0 && m_iVolume > 0 && m_bGate) {
-		WriteRegister(0x4008, (m_bEnvelopeLoop << 7) | (m_iLinearCounter & 0x7F));		// // //
-		WriteRegister(0x400A, HiFreq);
+		WriteRegister(0x4208, (m_bEnvelopeLoop << 7) | (m_iLinearCounter & 0x7F));		// // //
+
+		WriteRegister(0x4209, WaveHighBytes);		// EFT
+		WriteRegister(0x420D, WaveLowBytes);		// EFT
+		// WriteRegister(0x420C, WaveType);
+		WriteRegister(0x4216, Volume + (WaveType << 4)); // $4016, (x,y). y = 4-bit volume, x = wave mode (0 = wave, 1 = triangle) 
+
+		WriteRegister(0x420A, HiFreq);
 		if (m_bEnvelopeLoop || m_bResetEnvelope)		// // //
-			WriteRegister(0x400B, LoFreq + (m_iLengthCounter << 3));
+			WriteRegister(0x420B, LoFreq + (m_iLengthCounter << 3));
 	}
 	else
-		WriteRegister(0x4008, 0);
+		WriteRegister(0x4208, 0);
 
 	m_bResetEnvelope = false;		// // //
 }
 
-void CTriangleChan::ResetChannel()
+void C7E02WaveformChan::ResetChannel()
 {
-	CChannelHandler2A03::ResetChannel();
+	CChannelHandler7E02::ResetChannel();
 	m_iLinearCounter = -1;
 }
 
-int CTriangleChan::GetChannelVolume() const
+int C7E02WaveformChan::GetChannelVolume() const
 {
 	return m_iVolume ? VOL_COLUMN_MAX : 0;
 }
 
-bool CTriangleChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
+//const char C7E02WaveformChan::MAX_DUTY = 0x03;
+
+int C7E02WaveformChan::getDutyMax() const {
+	return static_cast<int>(255);
+}
+
+bool C7E02WaveformChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_VOLUME:
@@ -349,23 +369,24 @@ bool CTriangleChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		}
 		else {
 			m_bEnvelopeLoop = true;
-			return CChannelHandler2A03::HandleEffect(EffNum, EffParam); // true
+			return CChannelHandler7E02::HandleEffect(EffNum, EffParam); // true
 		}
 		break;
-	default: return CChannelHandler2A03::HandleEffect(EffNum, EffParam);
+	default: return CChannelHandler7E02::HandleEffect(EffNum, EffParam);
 	}
 
 	return true;
 }
 
-void CTriangleChan::ClearRegisters()
+void C7E02WaveformChan::ClearRegisters()
 {
-	WriteRegister(0x4008, 0);
-	WriteRegister(0x400A, 0);
-	WriteRegister(0x400B, 0);
+	WriteRegister(0x4208, 0);
+	WriteRegister(0x420A, 0);
+	WriteRegister(0x420B, 0);
+	WriteRegister(0x410B, 0); // EFT
 }
 
-CString CTriangleChan::GetCustomEffectString() const		// // //
+CString C7E02WaveformChan::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
 
@@ -383,9 +404,9 @@ CString CTriangleChan::GetCustomEffectString() const		// // //
 // Noise
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CNoiseChan::HandleNote(int Note, int Octave)
+void C7E02NoiseChan::HandleNote(int Note, int Octave)
 {
-	CChannelHandler2A03::HandleNote(Note, Octave);		// // //
+	CChannelHandler7E02::HandleNote(Note, Octave);		// // //
 
 	int NewNote = (MIDI_NOTE(Octave, Note) & 0x0F) | 0x100;
 	int NesFreq = TriggerNote(NewNote);
@@ -404,12 +425,12 @@ void CNoiseChan::HandleNote(int Note, int Octave)
 
 	m_bGate = true;
 
-	m_iNote			= NewNote;
+	m_iNote = NewNote;
 }
 
-void CNoiseChan::SetupSlide()		// // //
+void C7E02NoiseChan::SetupSlide()		// // //
 {
-	#define GET_SLIDE_SPEED(x) (((x & 0xF0) >> 3) + 1)
+#define GET_SLIDE_SPEED(x) (((x & 0xF0) >> 3) + 1)
 
 	switch (m_iEffect) {
 	case EF_PORTAMENTO:
@@ -425,29 +446,29 @@ void CNoiseChan::SetupSlide()		// // //
 		break;
 	}
 
-	#undef GET_SLIDE_SPEED
+#undef GET_SLIDE_SPEED
 
 	RegisterKeyState(m_iNote);
 	m_iPortaTo = m_iNote;
 }
 
-int CNoiseChan::LimitPeriod(int Period) const		// // //
+int C7E02NoiseChan::LimitPeriod(int Period) const		// // //
 {
 	return Period; // no limit
 }
 
-int CNoiseChan::LimitRawPeriod(int Period) const		// // //
+int C7E02NoiseChan::LimitRawPeriod(int Period) const		// // //
 {
 	return Period; // no limit
 }
 
-const char CNoiseChan::MAX_DUTY = 0x01;
+const char C7E02NoiseChan::MAX_DUTY = 0x01;
 
-int CNoiseChan::getDutyMax() const {
+int C7E02NoiseChan::getDutyMax() const {
 	return MAX_DUTY;
 }
 
-void CNoiseChan::RefreshChannel()
+void C7E02NoiseChan::RefreshChannel()
 {
 	int Period = CalculatePeriod();
 	int Volume = CalculateVolume();
@@ -457,29 +478,29 @@ void CNoiseChan::RefreshChannel()
 
 	Period = Period & 0x0F;
 	Period ^= 0x0F;
-	
+
 	if (m_bGate)		// // //
-		WriteRegister(0x400C, (m_bEnvelopeLoop << 5) | (!m_bHardwareEnvelope << 4) | Volume);		// // //
+		WriteRegister(0x420C, (m_bEnvelopeLoop << 5) | (!m_bHardwareEnvelope << 4) | Volume);		// // //
 	else {
-		WriteRegister(0x400C, 48);
+		WriteRegister(0x420C, 48);
 		return;
 	}
-	WriteRegister(0x400E, NoiseMode | Period);
+	WriteRegister(0x420E, NoiseMode | Period);
 	if (m_bEnvelopeLoop || m_bResetEnvelope)		// // //
-		WriteRegister(0x400F, m_iLengthCounter << 3);
+		WriteRegister(0x420F, m_iLengthCounter << 3);
 
 	m_bResetEnvelope = false;		// // //
 }
 
-void CNoiseChan::ClearRegisters()
+void C7E02NoiseChan::ClearRegisters()
 {
-	WriteRegister(0x400C, 0x30);
-	WriteRegister(0x400D, 0);
-	WriteRegister(0x400E, 0);
-	WriteRegister(0x400F, 0);
+	WriteRegister(0x420C, 0x30);
+	WriteRegister(0x420D, 0);
+	WriteRegister(0x420E, 0);
+	WriteRegister(0x420F, 0);
 }
 
-CString CNoiseChan::GetCustomEffectString() const		// // //
+CString C7E02NoiseChan::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
 
@@ -491,7 +512,7 @@ CString CNoiseChan::GetCustomEffectString() const		// // //
 	return str;
 }
 
-int CNoiseChan::TriggerNote(int Note)
+int C7E02NoiseChan::TriggerNote(int Note)
 {
 	RegisterKeyState(Note);
 	return Note | 0x100;		// // //
@@ -501,18 +522,18 @@ int CNoiseChan::TriggerNote(int Note)
 // DPCM
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CDPCMChan::CDPCMChan() :		// // //
+C7E02DPCMChan::C7E02DPCMChan() :		// // //
 	CChannelHandler(0xF, 0x3F),		// // // does not use these anyway
 	mEnabled(false),
 	mTriggerSample(false),
 	m_cDAC(255),
 	mRetriggerPeriod(0),
 	mRetriggerCtr(0)
-{ 
+{
 }
 
 
-void CDPCMChan::HandleNoteData(stChanNote *pNoteData, int EffColumns)
+void C7E02DPCMChan::HandleNoteData(stChanNote* pNoteData, int EffColumns)
 {
 	m_iCustomPitch = -1;
 	mRetriggerPeriod = 0;
@@ -528,7 +549,7 @@ void CDPCMChan::HandleNoteData(stChanNote *pNoteData, int EffColumns)
 
 
 // Called once per row.
-bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
+bool C7E02DPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_DAC:
@@ -552,12 +573,12 @@ bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 
 		If new row:
 			mRetriggerPeriod = 0.
-			
+
 			If xx = (Xxx, HandleEffect.EF_RETRIGGER):
 				mRetriggerPeriod = xx
 				if mRetriggerCtr == 0:	// Most recent row contains note without Xxx
 					queueSample()
-			
+
 			if note: PlaySample():
 				triggerSample()
 
@@ -574,7 +595,7 @@ bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 			queueSample()
 		}
 
-		Each frame: RefreshChannel():	// renders channel (pushes registers to 2a03)
+		Each frame: RefreshChannel():	// renders channel (pushes registers to 7E02)
 			// Optionally retrigger sample
 			If mRetriggerPeriod:
 				mRetriggerCtr--
@@ -582,7 +603,7 @@ bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 					mRetriggerCtr = mRetriggerPeriod.
 					mEnabled = true
 					mTriggerSample = true
-			
+
 			if mTriggerSample:
 				play DPCM.
 		*/
@@ -606,22 +627,22 @@ bool CDPCMChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
 	return true;
 }
 
-void CDPCMChan::HandleEmptyNote()
+void C7E02DPCMChan::HandleEmptyNote()
 {
 }
 
-void CDPCMChan::HandleCut()
+void C7E02DPCMChan::HandleCut()
 {
-//	KillChannel();
+	//	KillChannel();
 	CutNote();
 }
 
-void CDPCMChan::HandleRelease()
+void C7E02DPCMChan::HandleRelease()
 {
 	m_bRelease = true;
 }
 
-void CDPCMChan::HandleNote(int Note, int Octave)
+void C7E02DPCMChan::HandleNote(int Note, int Octave)
 {
 	CChannelHandler::HandleNote(Note, Octave);		// // //
 	m_iNote = MIDI_NOTE(Octave, Note);		// // //
@@ -629,7 +650,7 @@ void CDPCMChan::HandleNote(int Note, int Octave)
 	m_bGate = true;
 }
 
-bool CDPCMChan::CreateInstHandler(inst_type_t Type)
+bool C7E02DPCMChan::CreateInstHandler(inst_type_t Type)
 {
 	switch (Type) {
 	case INST_2A03:
@@ -643,7 +664,7 @@ bool CDPCMChan::CreateInstHandler(inst_type_t Type)
 	return false;
 }
 
-void CDPCMChan::resetPhase()
+void C7E02DPCMChan::resetPhase()
 {
 	// Trigger the sample again
 	triggerSample();
@@ -651,7 +672,7 @@ void CDPCMChan::resetPhase()
 
 
 // Called once per row.
-void CDPCMChan::PlaySample(const CDSample *pSamp, int Pitch)		// // //
+void C7E02DPCMChan::PlaySample(const CDSample* pSamp, int Pitch)		// // //
 {
 	int SampleSize = pSamp->GetSize();
 	m_pAPU->WriteSample(pSamp->GetData(), SampleSize);		// // //
@@ -663,7 +684,7 @@ void CDPCMChan::PlaySample(const CDSample *pSamp, int Pitch)		// // //
 }
 
 
-void CDPCMChan::triggerSample() {
+void C7E02DPCMChan::triggerSample() {
 	// Trigger sample.
 	mEnabled = true;
 	mTriggerSample = true;
@@ -672,11 +693,12 @@ void CDPCMChan::triggerSample() {
 	queueSample();
 }
 
-void CDPCMChan::queueSample() {
+void C7E02DPCMChan::queueSample() {
 	if (mRetriggerPeriod == 0) {
 		// Not retriggering, reset mRetriggerCtr.
 		mRetriggerCtr = 0;
-	} else {
+	}
+	else {
 		// mRetriggerCtr gets decremented this frame, and reaches 0 in mRetriggerPeriod frames.
 		mRetriggerCtr = mRetriggerPeriod + 1;
 	}
@@ -684,10 +706,10 @@ void CDPCMChan::queueSample() {
 
 
 // Called once per frame. Renders note to registers. Initializes playback.
-void CDPCMChan::RefreshChannel()
+void C7E02DPCMChan::RefreshChannel()
 {
 	if (m_cDAC != 255) {
-		WriteRegister(0x4011, m_cDAC);
+		WriteRegister(0x4211, m_cDAC);
 		m_cDAC = 255;
 	}
 
@@ -703,45 +725,45 @@ void CDPCMChan::RefreshChannel()
 
 	if (m_bRelease) {
 		// Release command
-		WriteRegister(0x4015, 0x0F);
+		WriteRegister(0x4215, 0x0F);
 		mEnabled = false;
 		m_bRelease = false;
 	}
 
-/*	
-	if (m_bRelease) {
-		// Release loop flag
-		m_bRelease = false;
-		WriteRegister(0x4010, 0x00 | (m_iPeriod & 0x0F));
-		return;
-	}
-*/	
+	/*
+		if (m_bRelease) {
+			// Release loop flag
+			m_bRelease = false;
+			WriteRegister(0x4210, 0x00 | (m_iPeriod & 0x0F));
+			return;
+		}
+	*/
 
 	if (!mEnabled)
 		return;
 
 	if (!m_bGate) {
 		// Cut sample
-		WriteRegister(0x4015, 0x0F);
+		WriteRegister(0x4215, 0x0F);
 
 		if (!theApp.GetSettings()->General.bNoDPCMReset || theApp.IsPlaying()) {
-			WriteRegister(0x4011, 0);	// regain full volume for TN
+			WriteRegister(0x4211, 0);	// regain full volume for TN
 		}
 
 		mEnabled = false;		// don't write to this channel anymore
 	}
 	else if (mTriggerSample) {
 		// Start playing the sample
-		WriteRegister(0x4010, (m_iPeriod & 0x0F) | m_iLoop);
-		WriteRegister(0x4012, m_iOffset);							// load address, start at $C000
-		WriteRegister(0x4013, m_iSampleLength);						// length
-		WriteRegister(0x4015, 0x0F);
-		WriteRegister(0x4015, 0x1F);								// fire sample
+		WriteRegister(0x4210, (m_iPeriod & 0x0F) | m_iLoop);
+		WriteRegister(0x4212, m_iOffset);							// load address, start at $C000
+		WriteRegister(0x4213, m_iSampleLength);						// length
+		WriteRegister(0x4215, 0x0F);
+		WriteRegister(0x4215, 0x1F);								// fire sample
 
 		// Loop offset
 		if (m_iLoopOffset > 0) {
-			WriteRegister(0x4012, m_iLoopOffset);
-			WriteRegister(0x4013, m_iLoopLength);
+			WriteRegister(0x4212, m_iLoopOffset);
+			WriteRegister(0x4213, m_iLoopLength);
 		}
 
 		mTriggerSample = false;
@@ -749,37 +771,37 @@ void CDPCMChan::RefreshChannel()
 }
 
 
-int CDPCMChan::GetChannelVolume() const
+int C7E02DPCMChan::GetChannelVolume() const
 {
 	return VOL_COLUMN_MAX;
 }
 
-void CDPCMChan::WriteDCOffset(unsigned char Delta)		// // //
+void C7E02DPCMChan::WriteDCOffset(unsigned char Delta)		// // //
 {
 	// Initial delta counter value
 	if (Delta != 255 && m_cDAC == 255)
 		m_cDAC = Delta;
 }
 
-void CDPCMChan::SetLoopOffset(unsigned char Loop)		// // //
+void C7E02DPCMChan::SetLoopOffset(unsigned char Loop)		// // //
 {
 	m_iLoopOffset = Loop;
 }
 
-void CDPCMChan::ClearRegisters()
+void C7E02DPCMChan::ClearRegisters()
 {
-	WriteRegister(0x4015, 0x0F);
+	WriteRegister(0x4215, 0x0F);
 
-	WriteRegister(0x4010, 0);
-	WriteRegister(0x4011, 0);
-	WriteRegister(0x4012, 0);
-	WriteRegister(0x4013, 0);
+	WriteRegister(0x4210, 0);
+	WriteRegister(0x4211, 0);
+	WriteRegister(0x4212, 0);
+	WriteRegister(0x4213, 0);
 
 	m_iOffset = 0;
 	m_cDAC = 255;
 }
 
-CString CDPCMChan::GetCustomEffectString() const		// // //
+CString C7E02DPCMChan::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
 

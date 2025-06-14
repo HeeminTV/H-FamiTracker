@@ -229,15 +229,15 @@ void CSoundGen::CreateChannels()
 
 #ifdef _DUAL_CH		// // //
 	CSquare1Chan *PU1 = new C2A03Square();
-	AssignChannel(new CTrackerChannel(_T("7E02 FWG 1"), _T("FW1"), SNDCHIP_NONE, CHANID_FWG1));
-	AssignChannel(new CTrackerChannel(_T("7E02 FWG 1 SFX"), _T("FW1*"), SNDCHIP_NONE, CHANID_FWG1)); // what's even this. is it for the SFX driver?
+	AssignChannel(new CTrackerChannel(_T("2A03 Pulse 1"), _T("PU1"), SNDCHIP_NONE, CHANID_2A03_SQUARE1));
+	AssignChannel(new CTrackerChannel(_T("2A03 Pulse 1 SFX"), _T("PU1*"), SNDCHIP_NONE, CHANID_2A03_SQUARE1)); // what's even this. is it for the SFX driver?
 #else
-	AssignChannel(new CTrackerChannel(_T("7E02 FWG 1"), _T("FW1"), SNDCHIP_NONE, CHANID_FWG1));
-	AssignChannel(new CTrackerChannel(_T("7E02 FWG 2"), _T("FW2"), SNDCHIP_NONE, CHANID_FWG2));
+	AssignChannel(new CTrackerChannel(_T("2A03 Pulse 1"), _T("PU1"), SNDCHIP_NONE, CHANID_2A03_SQUARE1));
+	AssignChannel(new CTrackerChannel(_T("2A03 Pulse 2"), _T("PU2"), SNDCHIP_NONE, CHANID_2A03_SQUARE2));
 #endif
-	AssignChannel(new CTrackerChannel(_T("7E02 Waveform"), _T("WAV"), SNDCHIP_NONE, CHANID_WAVEFORM));
-	AssignChannel(new CTrackerChannel(_T("7E02 Noise"), _T("NOI"), SNDCHIP_NONE, CHANID_NOISE));
-	AssignChannel(new CTrackerChannel(_T("7E02 DPCM"), _T("DMC"), SNDCHIP_NONE, CHANID_DPCM));
+	AssignChannel(new CTrackerChannel(_T("2A03 Triangle"), _T("TRI"), SNDCHIP_NONE, CHANID_2A03_TRIANGLE));
+	AssignChannel(new CTrackerChannel(_T("2A03 Noise"), _T("NOI"), SNDCHIP_NONE, CHANID_2A03_NOISE));
+	AssignChannel(new CTrackerChannel(_T("2A03 DPCM"), _T("DMC"), SNDCHIP_NONE, CHANID_2A03_DPCM));
 
 	// Konami VRC6
 	AssignChannel(new CTrackerChannel(_T("VRC6 Pulse 1"), _T("PU1"), SNDCHIP_VRC6, CHANID_VRC6_PULSE1));
@@ -245,23 +245,21 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("VRC6 Sawtooth"), _T("SAW"), SNDCHIP_VRC6, CHANID_VRC6_SAWTOOTH));
 
 	// // // Nintendo MMC5
-	AssignChannel(new CTrackerChannel(_T("MMC5 Pulse 1"), _T("PU3"), SNDCHIP_MMC5, CHANID_MMC5_SQUARE1));
-	AssignChannel(new CTrackerChannel(_T("MMC5 Pulse 2"), _T("PU4"), SNDCHIP_MMC5, CHANID_MMC5_SQUARE2));
+	AssignChannel(new CTrackerChannel(_T("MMC5 Pulse 1"), _T("PU1"), SNDCHIP_MMC5, CHANID_MMC5_SQUARE1));
+	AssignChannel(new CTrackerChannel(_T("MMC5 Pulse 2"), _T("PU2"), SNDCHIP_MMC5, CHANID_MMC5_SQUARE2));
 	AssignChannel(new CTrackerChannel(_T("MMC5 PCM"), _T("PCM"), SNDCHIP_MMC5, CHANID_MMC5_VOICE));
 
-	// Namco N163
+	// Namco N163 it's technically C163 
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 1"), _T("NA1"), SNDCHIP_N163, CHANID_N163_CH1));
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 2"), _T("NA2"), SNDCHIP_N163, CHANID_N163_CH2));
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 3"), _T("NA3"), SNDCHIP_N163, CHANID_N163_CH3));
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 4"), _T("NA4"), SNDCHIP_N163, CHANID_N163_CH4));
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 5"), _T("NA5"), SNDCHIP_N163, CHANID_N163_CH5));
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 6"), _T("NA6"), SNDCHIP_N163, CHANID_N163_CH6));
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 7"), _T("NA7"), SNDCHIP_N163, CHANID_N163_CH7));
+	AssignChannel(new CTrackerChannel(_T("N163 Waveform 8"), _T("NA8"), SNDCHIP_N163, CHANID_N163_CH8));
 
-	// it's technically C163 
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 1"), _T("NA1"), SNDCHIP_N163, CHANID_N163_CH1));
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 2"), _T("NA2"), SNDCHIP_N163, CHANID_N163_CH2));
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 3"), _T("NA3"), SNDCHIP_N163, CHANID_N163_CH3));
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 4"), _T("NA4"), SNDCHIP_N163, CHANID_N163_CH4));
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 5"), _T("NA5"), SNDCHIP_N163, CHANID_N163_CH5));
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 6"), _T("NA6"), SNDCHIP_N163, CHANID_N163_CH6));
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 7"), _T("NA7"), SNDCHIP_N163, CHANID_N163_CH7));
-	AssignChannel(new CTrackerChannel(_T("163 Waveform 8"), _T("NA8"), SNDCHIP_N163, CHANID_N163_CH8));
-
-	// Nintendo FDS
+	// Nintendo 2C33
 	AssignChannel(new CTrackerChannel(_T("2C33 Waveform"), _T("FDS"), SNDCHIP_FDS, CHANID_FDS));
 
 	// Konami VRC7
@@ -272,18 +270,25 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("VRC7 FM 5"), _T("FM5"), SNDCHIP_VRC7, CHANID_VRC7_CH5));
 	AssignChannel(new CTrackerChannel(_T("VRC7 FM 6"), _T("FM6"), SNDCHIP_VRC7, CHANID_VRC7_CH6));
 
-	// // // Saeyahn SY1202
-	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 1"), _T("SY1"), SNDCHIP_SY1202, CHANID_SY1202_CH1));
-	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 2"), _T("SY2"), SNDCHIP_SY1202, CHANID_SY1202_CH2));
-	AssignChannel(new CTrackerChannel(_T("SY1202 PSG 3"), _T("SY3"), SNDCHIP_SY1202, CHANID_SY1202_CH3));
+	// // // Sunsoft 5B
+	AssignChannel(new CTrackerChannel(_T("5B PSG 1"), _T("5B1"), SNDCHIP_5B, CHANID_5B_CH1));
+	AssignChannel(new CTrackerChannel(_T("5B PSG 2"), _T("5B2"), SNDCHIP_5B, CHANID_5B_CH2));
+	AssignChannel(new CTrackerChannel(_T("5B PSG 3"), _T("5B3"), SNDCHIP_5B, CHANID_5B_CH3));
 
 	// Taken from E-FamiTracker by Euly
 	// // // Eulous 5E01
-	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 1"), _T("5E1"), SNDCHIP_5E01, CHANID_5E01_SQUARE1));
-	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 2"), _T("5E2"), SNDCHIP_5E01, CHANID_5E01_SQUARE2));
-	AssignChannel(new CTrackerChannel(_T("5E01 Waveform"), _T("5EW"), SNDCHIP_5E01, CHANID_5E01_WAVEFORM));
-	AssignChannel(new CTrackerChannel(_T("5E01 Noise"), _T("5EN"), SNDCHIP_5E01, CHANID_5E01_NOISE));
-	AssignChannel(new CTrackerChannel(_T("5E01 DPCM"), _T("5ED"), SNDCHIP_5E01, CHANID_5E01_DPCM));
+	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 1"), _T("PU1"), SNDCHIP_5E01, CHANID_5E01_SQUARE1));
+	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 2"), _T("PU2"), SNDCHIP_5E01, CHANID_5E01_SQUARE2));
+	AssignChannel(new CTrackerChannel(_T("5E01 Waveform"), _T("WAV"), SNDCHIP_5E01, CHANID_5E01_WAVEFORM));
+	AssignChannel(new CTrackerChannel(_T("5E01 Noise"), _T("NOI"), SNDCHIP_5E01, CHANID_5E01_NOISE));
+	AssignChannel(new CTrackerChannel(_T("5E01 DPCM"), _T("DMC"), SNDCHIP_5E01, CHANID_5E01_DPCM));
+
+	// Saeyahn 7E02
+	AssignChannel(new CTrackerChannel(_T("7E02 FWG 1"), _T("FW1"), SNDCHIP_7E02, CHANID_7E02_SQUARE1));
+	AssignChannel(new CTrackerChannel(_T("7E02 FWG 2"), _T("FW2"), SNDCHIP_7E02, CHANID_7E02_SQUARE2));
+	AssignChannel(new CTrackerChannel(_T("7E02 Waveform"), _T("WAV"), SNDCHIP_7E02, CHANID_7E02_WAVEFORM));
+	AssignChannel(new CTrackerChannel(_T("7E02 Noise"), _T("NOI"), SNDCHIP_7E02, CHANID_7E02_NOISE));
+	AssignChannel(new CTrackerChannel(_T("7E02 DPCM"), _T("DMC"), SNDCHIP_7E02, CHANID_7E02_DPCM));
 }
 
 void CSoundGen::AssignChannel(CTrackerChannel *pTrackerChannel)		// // //
@@ -575,8 +580,9 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		if (!m_pChannels[i]) continue;
 		const unsigned int *Table = nullptr;
 		switch (m_pTrackerChannels[i]->GetID()) {
-		case CHANID_FWG1: case CHANID_FWG2: case CHANID_WAVEFORM:
+		case CHANID_2A03_SQUARE1: case CHANID_2A03_SQUARE2: case CHANID_2A03_TRIANGLE:
 		case CHANID_5E01_SQUARE1: case CHANID_5E01_SQUARE2: case CHANID_5E01_WAVEFORM: // Taken from E-FamiTracker by Euly
+		case CHANID_7E02_SQUARE1: case CHANID_7E02_SQUARE2: case CHANID_7E02_WAVEFORM:
 			Table = Machine == PAL ? m_iNoteLookupTablePAL : m_iNoteLookupTableNTSC; break;
 		case CHANID_VRC6_PULSE1: case CHANID_VRC6_PULSE2:
 		case CHANID_MMC5_SQUARE1: case CHANID_MMC5_SQUARE2:
@@ -591,9 +597,8 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		case CHANID_N163_CH1: case CHANID_N163_CH2: case CHANID_N163_CH3: case CHANID_N163_CH4:
 		case CHANID_N163_CH5: case CHANID_N163_CH6: case CHANID_N163_CH7: case CHANID_N163_CH8:
 			Table = m_iNoteLookupTableN163; break;
-		case CHANID_SY1202_CH1: case CHANID_SY1202_CH2: case CHANID_SY1202_CH3:
+		case CHANID_5B_CH1: case CHANID_5B_CH2: case CHANID_5B_CH3:
 			Table = m_iNoteLookupTableS5B; break;
-
 		case CHANID_MMC5_VOICE: // Taken from E-FamiTracker by Euly
 			Table = m_iNoteLookupTablePCM; break;
 
@@ -623,9 +628,11 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 	SurveyMixLevels.at(CHIP_LEVEL_FDS) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixFDS);
 	SurveyMixLevels.at(CHIP_LEVEL_MMC5) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixMMC5);
 	SurveyMixLevels.at(CHIP_LEVEL_N163) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixN163);
-	SurveyMixLevels.at(CHIP_LEVEL_SY1202) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixS5B);
+	SurveyMixLevels.at(CHIP_LEVEL_5B) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixS5B);
 	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU1);
 	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU2) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU2);
+	SurveyMixLevels.at(CHIP_LEVEL_7E02_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix7E02_APU1);
+	SurveyMixLevels.at(CHIP_LEVEL_7E02_APU2) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix7E02_APU2);
 
 	bool refreshsettings = false;
 
@@ -1005,7 +1012,7 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_FDS, float(pSettings->ChipLevels.iLevelFDS / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_MMC5, float(pSettings->ChipLevels.iLevelMMC5 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_N163, float(pSettings->ChipLevels.iLevelN163 / 10.0f));
-			config.SetChipLevel(CHIP_LEVEL_SY1202, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_5B, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU1, float(pSettings->ChipLevels.iLevel5E01_APU1 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU2, float(pSettings->ChipLevels.iLevel5E01_APU2 / 10.0f));
 		}
@@ -1495,8 +1502,8 @@ static CString GetStateString(const stChannelState &State)
 
 	// Taken from E-FamiTracker by Euly
 	if (
-			(State.ChannelIndex >= CHANID_FWG1 && State.ChannelIndex <= CHANID_FWG2) ||
-				State.ChannelIndex == CHANID_NOISE ||
+			(State.ChannelIndex >= CHANID_2A03_SQUARE1 && State.ChannelIndex <= CHANID_2A03_SQUARE2) ||
+				State.ChannelIndex == CHANID_2A03_NOISE ||
 			(State.ChannelIndex >= CHANID_5E01_SQUARE1 && State.ChannelIndex <= CHANID_5E01_SQUARE2) ||
 			State.ChannelIndex == CHANID_5E01_NOISE ||
 			(State.ChannelIndex >= CHANID_MMC5_SQUARE1 && State.ChannelIndex <= CHANID_MMC5_SQUARE2) ||
@@ -1507,13 +1514,13 @@ static CString GetStateString(const stChannelState &State)
 			if (p < 0) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex == CHANID_WAVEFORM)
+	else if (State.ChannelIndex == CHANID_2A03_TRIANGLE)
 		for (const auto &x : {EF_VOLUME, EF_NOTE_CUT}) {
 			int p = State.Effect[x];
 			if (p < 0) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex == CHANID_DPCM || State.ChannelIndex == CHANID_5E01_DPCM)
+	else if (State.ChannelIndex == CHANID_2A03_DPCM || State.ChannelIndex == CHANID_5E01_DPCM)
 		for (const auto &x : {EF_SAMPLE_OFFSET, /*EF_DPCM_PITCH*/}) {
 			int p = State.Effect[x];
 			if (p <= 0) continue;
@@ -1534,7 +1541,7 @@ static CString GetStateString(const stChannelState &State)
 			if (p == effects[x].initial) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex >= CHANID_SY1202_CH1 && State.ChannelIndex <= CHANID_SY1202_CH3)
+	else if (State.ChannelIndex >= CHANID_5B_CH1 && State.ChannelIndex <= CHANID_5B_CH3)
 		for (const auto &x : S5B_EFFECTS) {
 			int p = State.Effect[x];
 			if (p < 0) continue;
@@ -1671,7 +1678,7 @@ void CSoundGen::HaltPlayer()
 	if (m_pDocument) { // TODO: do this in BeginPlayer
 		if (m_pDocument->ExpansionEnabled(SNDCHIP_FDS))
 			*reinterpret_cast<int*>(Header + 0x84) |= 0x80000000;
-		if (m_pDocument->ExpansionEnabled(SNDCHIP_SY1202)) {
+		if (m_pDocument->ExpansionEnabled(SNDCHIP_5B)) {
 			*reinterpret_cast<int*>(Header + 0x74) = CAPU::BASE_FREQ_NTSC / 2;
 			*reinterpret_cast<int*>(Header + 0x78) = 0x0110;
 		}

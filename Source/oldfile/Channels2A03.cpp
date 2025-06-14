@@ -299,11 +299,25 @@ void CTriangleChan::RefreshChannel()
 {
 	int Freq = CalculatePeriod();
 
+	char WaveHighBytes = (m_iTremoloSpeed * 16) + (m_iTremoloDepth / 16); // EFT 
+	char WaveLowBytes = m_iDefaultDuty;
+
+	// char WaveType = m_iInstrument & 1;
+	char Volume = (((m_iVolume >> 3) + 1) * m_iInstVolume + 1) - 1 >> 4; // EFT 
+
 	unsigned char HiFreq = (Freq & 0xFF);
 	unsigned char LoFreq = (Freq >> 8);
 
+	int WaveType = (m_iInstrument < 1) ? true : false; // Wave mode of the wave channel
+	
 	if (m_iInstVolume > 0 && m_iVolume > 0 && m_bGate) {
 		WriteRegister(0x4008, (m_bEnvelopeLoop << 7) | (m_iLinearCounter & 0x7F));		// // //
+
+		WriteRegister(0x4009, WaveHighBytes);		// EFT
+		WriteRegister(0x400D, WaveLowBytes);		// EFT
+		// WriteRegister(0x400C, WaveType);
+		WriteRegister(0x4016, Volume + (WaveType << 4)); // $4016, (x,y). y = 4-bit volume, x = wave mode (0 = wave, 1 = triangle) 
+
 		WriteRegister(0x400A, HiFreq);
 		if (m_bEnvelopeLoop || m_bResetEnvelope)		// // //
 			WriteRegister(0x400B, LoFreq + (m_iLengthCounter << 3));
@@ -323,6 +337,12 @@ void CTriangleChan::ResetChannel()
 int CTriangleChan::GetChannelVolume() const
 {
 	return m_iVolume ? VOL_COLUMN_MAX : 0;
+}
+
+//const char CTriangleChan::MAX_DUTY = 0x03;
+
+int CTriangleChan::getDutyMax() const {
+	return static_cast<int>(255);
 }
 
 bool CTriangleChan::HandleEffect(effect_t EffNum, unsigned char EffParam)
@@ -363,12 +383,13 @@ void CTriangleChan::ClearRegisters()
 	WriteRegister(0x4008, 0);
 	WriteRegister(0x400A, 0);
 	WriteRegister(0x400B, 0);
+	WriteRegister(0x410B, 0); // EFT
 }
 
 CString CTriangleChan::GetCustomEffectString() const		// // //
 {
 	CString str = _T("");
-
+	
 	if (m_iLinearCounter > -1)
 		str.AppendFormat(_T(" S%02X"), m_iLinearCounter | 0x80);
 	if (!m_bEnvelopeLoop)

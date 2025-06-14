@@ -48,6 +48,8 @@ private:
 	int m_iLevelS5B;
 	int m_iLevel5E01_APU1;
 	int m_iLevel5E01_APU2;
+	int m_iLevel7E02_APU1;
+	int m_iLevel7E02_APU2;
 
 protected:
 	void SetupSlider(int nID) const;

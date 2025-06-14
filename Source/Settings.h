@@ -251,6 +251,8 @@ public:
 		int		iLevelS5B;
 		int		iLevel5E01_APU1;
 		int		iLevel5E01_APU2;
+		int		iLevel7E02_APU1;
+		int		iLevel7E02_APU2;
 
 		int		iSurveyMixAPU1;
 		int		iSurveyMixAPU2;
@@ -262,6 +264,8 @@ public:
 		int		iSurveyMixS5B;
 		int		iSurveyMix5E01_APU1;
 		int		iSurveyMix5E01_APU2;
+		int		iSurveyMix7E02_APU1;
+		int		iSurveyMix7E02_APU2;
 	} ChipLevels;
 
 	struct {

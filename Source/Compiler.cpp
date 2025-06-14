@@ -1801,7 +1801,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 			m_iVibratoTableLocation = VIBRATO_TABLE_LOCATION_N163;
 			Print(" * N163 expansion enabled\n");
 			break;
-		case SNDCHIP_SY1202:
+		case SNDCHIP_5B:
 			m_pDriverData = &DRIVER_PACK_S5B;
 			m_iVibratoTableLocation = VIBRATO_TABLE_LOCATION_S5B;
 			Print(" * S5B expansion enabled\n");
@@ -1821,7 +1821,7 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 	const int Chip = m_pDocument->GetExpansionChip(); // 0CC: use m_iActualChip once cc65 is embedded
 	int Channel = 0;
 	for (int i = 0; i < 4; i++) {
-		int Channel = m_pDocument->GetChannelIndex(CHANID_FWG1 + i);
+		int Channel = m_pDocument->GetChannelIndex(CHANID_2A03_SQUARE1 + i);
 		m_vChanOrder.push_back(Channel);
 	}
 	if (Chip & SNDCHIP_MMC5) for (int i = 0; i < 3; i++) {
@@ -1844,15 +1844,15 @@ bool CCompiler::CompileData(bool bUseNSFDRV, bool bUseAllExp)
 		int Channel = m_pDocument->GetChannelIndex(CHANID_FDS);
 		m_vChanOrder.push_back(Channel);
 	}
-	if (Chip & SNDCHIP_SY1202) for (int i = 0; i < 3; i++) {
-		int Channel = m_pDocument->GetChannelIndex(CHANID_SY1202_CH1 + i);
+	if (Chip & SNDCHIP_5B) for (int i = 0; i < 3; i++) {
+		int Channel = m_pDocument->GetChannelIndex(CHANID_5B_CH1 + i);
 		m_vChanOrder.push_back(Channel);
 	}
 	if (Chip & SNDCHIP_VRC7) for (int i = 0; i < 6; i++) {
 		int Channel = m_pDocument->GetChannelIndex(CHANID_VRC7_CH1 + i);
 		m_vChanOrder.push_back(Channel);
 	}
-	m_vChanOrder.push_back(CHANID_DPCM);
+	m_vChanOrder.push_back(CHANID_2A03_DPCM);
 
 	// set NSFDRV header offset, if used
 	SetNSFDRVHeaderSize(bUseNSFDRV);
@@ -2034,7 +2034,7 @@ void CCompiler::ScanSong()
 	memset(m_bSamplesAccessed, 0, MAX_INSTRUMENTS * OCTAVE_RANGE * NOTE_RANGE * sizeof(bool));
 
 	// Get DPCM channel index
-	const int DpcmChannel = m_pDocument->GetChannelIndex(CHANID_DPCM);
+	const int DpcmChannel = m_pDocument->GetChannelIndex(CHANID_2A03_DPCM);
 	const int TrackCount = m_pDocument->GetTrackCount();
 	unsigned int Instrument = 0;
 
@@ -2945,10 +2945,10 @@ void CCompiler::WriteChannelMap()
 {
 	CChunk *pChunk = CreateChunk(CHUNK_CHANNEL_MAP, "");
 
-	pChunk->StoreByte(CHANID_FWG1 + 1);
-	pChunk->StoreByte(CHANID_FWG2 + 1);
-	pChunk->StoreByte(CHANID_WAVEFORM + 1);
-	pChunk->StoreByte(CHANID_NOISE + 1);
+	pChunk->StoreByte(CHANID_2A03_SQUARE1 + 1);
+	pChunk->StoreByte(CHANID_2A03_SQUARE2 + 1);
+	pChunk->StoreByte(CHANID_2A03_TRIANGLE + 1);
+	pChunk->StoreByte(CHANID_2A03_NOISE + 1);
 
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_VRC6)) {
 		pChunk->StoreByte(CHANID_VRC6_PULSE1 + 1);
@@ -2980,7 +2980,7 @@ void CCompiler::WriteChannelMap()
 		}
 	}
 
-	pChunk->StoreByte(CHANID_DPCM + 1);
+	pChunk->StoreByte(CHANID_2A03_DPCM + 1);
 }
 
 void CCompiler::WriteChannelTypes()

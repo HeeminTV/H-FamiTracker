@@ -30,10 +30,9 @@
 #include "ChannelsMMC5.h"
 #include "ChannelsN163.h"
 #include "ChannelsS5B.h"
-
-// Taken from E-FamiTracker by Euly
 // #include "Channels5E01.cpp" WHO TF LET A CODE BE INCLUDED HERE
-#include "Channels5E01.h"
+#include "Channels5E01.h" // Taken from E-FamiTracker by Euly
+#include "Channels7E02.h"
 
 // // // Default implementation for channel factory
 
@@ -42,11 +41,11 @@ CChannelFactory::CChannelFactory() : CFactory()
 	FuncType Func;
 
 	Func = MakeCtor<C2A03Square>();
-	m_pMakeFunc[CHANID_FWG1] = Func;
-	m_pMakeFunc[CHANID_FWG2] = Func;
-	AddProduct<CTriangleChan>(CHANID_WAVEFORM);
-	AddProduct<CNoiseChan>(CHANID_NOISE);
-	AddProduct<CDPCMChan>(CHANID_DPCM);
+	m_pMakeFunc[CHANID_2A03_SQUARE1] = Func;
+	m_pMakeFunc[CHANID_2A03_SQUARE2] = Func;
+	AddProduct<CTriangleChan>(CHANID_2A03_TRIANGLE);
+	AddProduct<CNoiseChan>(CHANID_2A03_NOISE);
+	AddProduct<CDPCMChan>(CHANID_2A03_DPCM);
 	
 	Func = MakeCtor<CVRC6Square>();
 	m_pMakeFunc[CHANID_VRC6_PULSE1] = Func;
@@ -80,9 +79,9 @@ CChannelFactory::CChannelFactory() : CFactory()
 	m_pMakeFunc[CHANID_N163_CH8] = Func;
 	
 	Func = MakeCtor<CChannelHandlerS5B>();
-	m_pMakeFunc[CHANID_SY1202_CH1] = Func;
-	m_pMakeFunc[CHANID_SY1202_CH2] = Func;
-	m_pMakeFunc[CHANID_SY1202_CH3] = Func;
+	m_pMakeFunc[CHANID_5B_CH1] = Func;
+	m_pMakeFunc[CHANID_5B_CH2] = Func;
+	m_pMakeFunc[CHANID_5B_CH3] = Func;
 
 	// Taken from E-FamiTracker by Euly
 	Func = MakeCtor<C5E01Square>();
@@ -91,5 +90,12 @@ CChannelFactory::CChannelFactory() : CFactory()
 	AddProduct<C5E01WaveformChan>(CHANID_5E01_WAVEFORM);
 	AddProduct<C5E01NoiseChan>(CHANID_5E01_NOISE);
 	AddProduct<C5E01DPCMChan>(CHANID_5E01_DPCM);
+
+	Func = MakeCtor<C7E02Square>();
+	m_pMakeFunc[CHANID_7E02_SQUARE1] = Func;
+	m_pMakeFunc[CHANID_7E02_SQUARE2] = Func;
+	AddProduct<C7E02WaveformChan>(CHANID_7E02_WAVEFORM);
+	AddProduct<C7E02NoiseChan>(CHANID_7E02_NOISE);
+	AddProduct<C7E02DPCMChan>(CHANID_7E02_DPCM);
 
 }

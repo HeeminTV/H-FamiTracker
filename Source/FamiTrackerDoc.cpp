@@ -192,6 +192,8 @@ const char* S5B_OFFSET = "sy-offset";
 const char* USE_SURVEY_MIX = "use-survey-mix";
 const char* _5E01_APU1_OFFSET = "5e01_apu1-offset";
 const char* _5E01_APU2_OFFSET = "5e01_apu2-offset";
+const char* _7E02_APU1_OFFSET = "7E02_apu1-offset";
+const char* _7E02_APU2_OFFSET = "7E02_apu2-offset";
 
 void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(APU1_OFFSET).get_to(d.APU1_OFFSET);
@@ -204,6 +206,8 @@ void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(S5B_OFFSET).get_to(d.S5B_OFFSET);
 	j.at(_5E01_APU1_OFFSET).get_to(d._5E01_APU1_OFFSET);
 	j.at(_5E01_APU2_OFFSET).get_to(d._5E01_APU2_OFFSET);
+	j.at(_7E02_APU1_OFFSET).get_to(d._7E02_APU1_OFFSET);
+	j.at(_7E02_APU2_OFFSET).get_to(d._7E02_APU2_OFFSET);
 	j.at(USE_SURVEY_MIX).get_to(d.USE_SURVEY_MIX);
 };
 
@@ -219,6 +223,8 @@ void to_json(json& j, const stJSONOptionalData& d) {
 		{ S5B_OFFSET, d.S5B_OFFSET },
 		{ _5E01_APU1_OFFSET, d._5E01_APU1_OFFSET },
 		{ _5E01_APU2_OFFSET, d._5E01_APU2_OFFSET },
+		{ _7E02_APU1_OFFSET, d._7E02_APU1_OFFSET },
+		{ _7E02_APU2_OFFSET, d._7E02_APU2_OFFSET },
 		{ USE_SURVEY_MIX, d.USE_SURVEY_MIX }
 	};
 };
@@ -2460,7 +2466,7 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 				/*
 				if (Version < 6) {
 					// Noise pitch slide fix
-					if (GetChannelType(Channel) == CHANID_NOISE) {
+					if (GetChannelType(Channel) == CHANID_2A03_NOISE) {
 						for (int n = 0; n < MAX_EFFECT_COLUMNS; ++n) {
 							switch (Note->EffNumber[n]) {
 								case EF_PORTA_DOWN:
@@ -2847,7 +2853,7 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 	}
 
 	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B};		// // //
-	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_SY1202};
+	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B};
 	int (*seqTable[])[SEQ_COUNT] = {SequenceTable2A03, SequenceTableVRC6, SequenceTableN163, SequenceTableS5B};
 
 	// Copy sequences
@@ -4422,9 +4428,9 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 	unsigned int pos = Channel;
 	//if (pos == CHANID_MMC5_VOICE) return -1;
 
-	if (!(Chip & SNDCHIP_SY1202)) {
-		if (pos > CHANID_SY1202_CH3) pos -= 3;
-		else if (pos >= CHANID_SY1202_CH1) return -1;
+	if (!(Chip & SNDCHIP_5B)) {
+		if (pos > CHANID_5B_CH3) pos -= 3;
+		else if (pos >= CHANID_5B_CH1) return -1;
 	}
 	if (!(Chip & SNDCHIP_VRC7)) {
 		if (pos > CHANID_VRC7_CH6) pos -= 6;
@@ -4450,6 +4456,11 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 	if (!(Chip & SNDCHIP_5E01)) {
 		if (pos > CHANID_5E01_DPCM) pos -= 5;
 		else if (pos >= CHANID_5E01_SQUARE1) return -1;
+	}
+
+	if (!(Chip & SNDCHIP_7E02)) {
+		if (pos > CHANID_7E02_DPCM) pos -= 5;
+		else if (pos >= CHANID_7E02_SQUARE1) return -1;
 	}
 
 	return pos;
@@ -4639,6 +4650,8 @@ json CFamiTrackerDoc::InterfaceToOptionalJSON() const
 	if (GetLevelOffset(7) != DEFAULT.S5B_OFFSET) json[S5B_OFFSET] = GetLevelOffset(7);
 	if (GetLevelOffset(8) != DEFAULT._5E01_APU1_OFFSET) json[_5E01_APU1_OFFSET] = GetLevelOffset(8);
 	if (GetLevelOffset(9) != DEFAULT._5E01_APU2_OFFSET) json[_5E01_APU2_OFFSET] = GetLevelOffset(9);
+	if (GetLevelOffset(8) != DEFAULT._7E02_APU1_OFFSET) json[_7E02_APU1_OFFSET] = GetLevelOffset(10);
+	if (GetLevelOffset(9) != DEFAULT._7E02_APU2_OFFSET) json[_7E02_APU2_OFFSET] = GetLevelOffset(11);
 
 	if (GetSurveyMixCheck() != DEFAULT.USE_SURVEY_MIX) json[USE_SURVEY_MIX] = GetSurveyMixCheck();
 
@@ -4658,6 +4671,8 @@ void CFamiTrackerDoc::OptionalJSONToInterface(json& j)
 	if (j.find(S5B_OFFSET) != j.end()) SetLevelOffset(7, j.at(S5B_OFFSET));
 	if (j.find(_5E01_APU1_OFFSET) != j.end()) SetLevelOffset(8, j.at(_5E01_APU1_OFFSET));
 	if (j.find(_5E01_APU2_OFFSET) != j.end()) SetLevelOffset(9, j.at(_5E01_APU2_OFFSET));
+	if (j.find(_7E02_APU1_OFFSET) != j.end()) SetLevelOffset(10, j.at(_7E02_APU1_OFFSET));
+	if (j.find(_7E02_APU2_OFFSET) != j.end()) SetLevelOffset(11, j.at(_7E02_APU2_OFFSET));
 
 	if (j.find(USE_SURVEY_MIX) != j.end()) SetSurveyMixCheck(j.at(USE_SURVEY_MIX));
 }
@@ -5047,7 +5062,7 @@ void CFamiTrackerDoc::RemoveUnusedInstruments()
 	}
 
 	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B};
-	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_SY1202};
+	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B};
 
 	// Also remove unused sequences
 	for (unsigned int i = 0; i < MAX_SEQUENCES; ++i) for (int j = 0; j < SEQ_COUNT; ++j) {
@@ -5097,9 +5112,9 @@ void CFamiTrackerDoc::RemoveUnusedSamples()		// // //
 			bool Used = false;
 			for (unsigned int j = 0; j < m_iTrackCount; ++j) {
 				for (unsigned int Frame = 0; Frame < m_pTracks[j]->GetFrameCount(); ++Frame) {
-					unsigned int Pattern = m_pTracks[j]->GetFramePattern(Frame, CHANID_DPCM);
+					unsigned int Pattern = m_pTracks[j]->GetFramePattern(Frame, CHANID_2A03_DPCM);
 					for (unsigned int Row = 0; Row < m_pTracks[j]->GetPatternLength(); ++Row) {
-						stChanNote *pNote = m_pTracks[j]->GetPatternData(CHANID_DPCM, Pattern, Row);
+						stChanNote *pNote = m_pTracks[j]->GetPatternData(CHANID_2A03_DPCM, Pattern, Row);
 						int Index = pNote->Instrument;
 						if (pNote->Note < NOTE_C || pNote->Note > NOTE_B || Index == MAX_INSTRUMENTS) continue;		// // //
 						if (GetInstrumentType(Index) != INST_2A03) continue;
@@ -5314,12 +5329,12 @@ stFullState *CFamiTrackerDoc::RetrieveSoundState(unsigned int Track, unsigned in
 					else if (State->Effect[fx] == -1 && xy <= 0x1F) {
 						State->Effect[fx] = xy;
 						if (State->Effect_LengthCounter == -1)
-							State->Effect_LengthCounter = ch->GetID() == CHANID_WAVEFORM ? 0xE1 : 0xE2;
+							State->Effect_LengthCounter = ch->GetID() == CHANID_2A03_TRIANGLE ? 0xE1 : 0xE2;
 					}
 					continue;
 				case EF_NOTE_CUT:
 					if (!ch->IsEffectCompatible(fx, xy)) continue;
-					if (ch->GetID() != CHANID_WAVEFORM) continue;
+					if (ch->GetID() != CHANID_2A03_TRIANGLE) continue;
 					if (State->Effect[fx] == -1) {
 						if (xy <= 0x7F) {
 							if (State->Effect_LengthCounter == -1)

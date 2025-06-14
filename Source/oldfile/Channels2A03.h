@@ -1,36 +1,38 @@
 /*
-** Dn-FamiTracker - NES/Famicom sound tracker
-** Copyright (C) 2020-2025 D.P.C.M.
-** FamiTracker Copyright (C) 2005-2020 Jonathan Liss
-** 0CC-FamiTracker Copyright (C) 2014-2018 HertzDevil
+** FamiTracker - NES/Famicom sound tracker
+** Copyright (C) 2005-2014  Jonathan Liss
 **
-** This program is free software: you can redistribute it and/or modify
+** 0CC-FamiTracker is (C) 2014-2015 HertzDevil
+**
+** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation, either version 3 of the License, or
+** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-** GNU General Public License for more details.
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+** Library General Public License for more details.  To obtain a
+** copy of the GNU Library General Public License, write to the Free
+** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
-** You should have received a copy of the GNU General Public License
-** along with this program. If not, see https://www.gnu.org/licenses/.
+** Any permitted reproduction of these routines, in whole or in part,
+** must bear this legend.
 */
 
 #pragma once
 
 //
-// Derived channels, 2A03
+// Derived channels, 7E02
 //
 
-class CChannelHandler2A03 : public CChannelHandler {
+class CChannelHandler7E02 : public CChannelHandler {
 public:
-	CChannelHandler2A03();
+	CChannelHandler7E02();
 	virtual void ResetChannel();
 
 protected:
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleCut() override;
@@ -45,26 +47,24 @@ protected:
 	int		m_iLengthCounter;		// // //
 };
 
-// // // 2A03 Square
-class C2A03Square : public CChannelHandler2A03 {
+// // // 7E02 Square
+class C7E02Square : public CChannelHandler7E02 {
 public:
-	C2A03Square();
+	C7E02Square();
 	void	RefreshChannel() override;
 	void	SetChannelID(int ID) override;		// // //
 	int getDutyMax() const override;
 protected:
 	static const char MAX_DUTY;
 
-	int		ConvertDuty(int Duty) const override;		// // //
+	int		ConvertDuty(int Duty);		// // //
 	void	ClearRegisters() override;
 
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleNote(int Note, int Octave) override;
 	CString	GetCustomEffectString() const override;		// // //
-
-	void	resetPhase();
 
 	unsigned char m_iChannel;		// // //
 	unsigned char m_cSweep;
@@ -74,23 +74,26 @@ protected:
 };
 
 // Triangle
-class CTriangleChan : public CChannelHandler2A03 {
+class C7E02WaveformChan : public CChannelHandler7E02 {
 public:
-	CTriangleChan();
+	C7E02WaveformChan();
 	void	RefreshChannel() override;
 	void	ResetChannel() override;		// // //
 	int		GetChannelVolume() const override;		// // //
+	int   getDutyMax() const override;
 protected:
+	static const char MAX_DUTY;
 
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	ClearRegisters() override;
 	CString	GetCustomEffectString() const override;		// // //
 private:
 	int m_iLinearCounter;
+
 };
 
 // Noise
-class CNoiseChan : public CChannelHandler2A03 {
+class C7E02NoiseChan : public CChannelHandler7E02 {
 public:
 	void	RefreshChannel();
 	int getDutyMax() const override;
@@ -111,25 +114,23 @@ protected:
 class CDSample;		// // //
 
 // DPCM
-class CDPCMChan : public CChannelHandler, public CChannelHandlerInterfaceDPCM {		// // //
+class C7E02DPCMChan : public CChannelHandler, public CChannelHandlerInterfaceDPCM {		// // //
 public:
-	CDPCMChan();		// // //
+	C7E02DPCMChan();		// // //
 	void	RefreshChannel() override;
 	int		GetChannelVolume() const override;		// // //
 
 	void WriteDCOffset(unsigned char Delta);		// // //
 	void SetLoopOffset(unsigned char Loop);		// // //
-	void PlaySample(const CDSample *pSamp, int Pitch);		// // //
+	void PlaySample(const CDSample* pSamp, int Pitch);		// // //
 protected:
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleCut() override;
 	void	HandleRelease() override;
 	void	HandleNote(int Note, int Octave) override;
 	bool	CreateInstHandler(inst_type_t Type) override;		// // //
-
-	void	resetPhase();
 
 	void triggerSample();
 	void queueSample();

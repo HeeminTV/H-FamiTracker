@@ -34,7 +34,7 @@
 
 LPCTSTR TRACK_FORMAT = _T("#%02i %s");
 
-int TotalMixerCount = 10; // ah fuck i hate hardcoding
+int TotalMixerCount = 12; // ah fuck i hate hardcoding
 
 // CModulePropertiesDlg dialog
 
@@ -80,6 +80,7 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_BN_CLICKED(IDC_EXPANSION_S5B, OnBnClickedExpansionS5B)
 	ON_BN_CLICKED(IDC_EXPANSION_N163, OnBnClickedExpansionN163)
 	ON_BN_CLICKED(IDC_EXPANSION_5E01, OnBnClickedExpansion5E01) // Taken from E-FamiTracker by Euly
+	ON_BN_CLICKED(IDC_EXPANSION_7E02, OnBnClickedExpansion7E02)
 
 	ON_WM_VSCROLL()
 	ON_EN_CHANGE(IDC_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeApu1OffsetEdit)
@@ -92,6 +93,8 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_EN_CHANGE(IDC_S5B_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeS5bOffsetEdit)
 	ON_EN_CHANGE(IDC_5E01_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange5E01_Apu1OffsetEdit)
 	ON_EN_CHANGE(IDC_5E01_APU2_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange5E01_Apu2OffsetEdit)
+	ON_EN_CHANGE(IDC_7E02_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange7E02_Apu1OffsetEdit)
+	ON_EN_CHANGE(IDC_7E02_APU2_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange7E02_Apu2OffsetEdit)
 
 
 	ON_BN_CLICKED(IDC_EXTERNAL_OPLL, &CModulePropertiesDlg::OnBnClickedExternalOpll)
@@ -210,7 +213,7 @@ constexpr std::array<unsigned int, 19> IDC_OPLL_PATCHNAME = {
 	IDC_OPLL_PATCHNAME18
 };
 
-constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_EDIT = {
+constexpr std::array<unsigned int, 12> IDC_DEVICE_OFFSET_EDIT = {
 	IDC_APU1_OFFSET_EDIT,
 	IDC_APU2_OFFSET_EDIT,
 	IDC_VRC6_OFFSET_EDIT,
@@ -220,11 +223,13 @@ constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_EDIT = {
 	IDC_N163_OFFSET_EDIT,
 	IDC_S5B_OFFSET_EDIT,
 	IDC_5E01_APU1_OFFSET_EDIT,
-	IDC_5E01_APU2_OFFSET_EDIT
+	IDC_5E01_APU2_OFFSET_EDIT,
+	IDC_7E02_APU1_OFFSET_EDIT,
+	IDC_7E02_APU2_OFFSET_EDIT,
 
 };
 
-constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_SLIDER = {
+constexpr std::array<unsigned int, 12> IDC_DEVICE_OFFSET_SLIDER = {
 	IDC_APU1_OFFSET_SLIDER,
 	IDC_APU2_OFFSET_SLIDER,
 	IDC_VRC6_OFFSET_SLIDER,
@@ -234,10 +239,12 @@ constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_SLIDER = {
 	IDC_N163_OFFSET_SLIDER,
 	IDC_S5B_OFFSET_SLIDER,
 	IDC_5E01_APU1_OFFSET_SLIDER,
-	IDC_5E01_APU2_OFFSET_SLIDER
+	IDC_5E01_APU2_OFFSET_SLIDER,
+	IDC_7E02_APU1_OFFSET_SLIDER,
+	IDC_7E02_APU2_OFFSET_SLIDER,
 };
 
-constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_DB = {
+constexpr std::array<unsigned int, 12> IDC_DEVICE_OFFSET_DB = {
 	IDC_APU1_OFFSET_DB,
 	IDC_APU2_OFFSET_DB,
 	IDC_VRC6_OFFSET_DB,
@@ -247,10 +254,14 @@ constexpr std::array<unsigned int, 10> IDC_DEVICE_OFFSET_DB = {
 	IDC_N163_OFFSET_DB,
 	IDC_S5B_OFFSET_DB,
 	IDC_5E01_APU1_OFFSET_DB,
-	IDC_5E01_APU2_OFFSET_DB
+	IDC_5E01_APU2_OFFSET_DB,
+	IDC_7E02_APU1_OFFSET_DB,
+	IDC_7E02_APU2_OFFSET_DB,
+	// #savedevelopersfromhardcording
+	// just kidding :}
 };
 
-constexpr std::array<unsigned int, 10> IDC_STATIC_DEVICE = {
+constexpr std::array<unsigned int, 12> IDC_STATIC_DEVICE = {
 	IDC_STATIC_APU1,
 	IDC_STATIC_APU2,
 	IDC_STATIC_VRC6,
@@ -260,7 +271,9 @@ constexpr std::array<unsigned int, 10> IDC_STATIC_DEVICE = {
 	IDC_STATIC_N163,
 	IDC_STATIC_S5B,
 	IDC_STATIC_5E01_APU1,
-	IDC_STATIC_5E01_APU2
+	IDC_STATIC_5E01_APU2,
+	IDC_STATIC_7E02_APU1,
+	IDC_STATIC_7E02_APU2,
 };
 
 // CModulePropertiesDlg message handlers
@@ -286,8 +299,9 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_EXPANSION_FDS))->SetCheck((m_iExpansions & SNDCHIP_FDS) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_MMC5))->SetCheck((m_iExpansions & SNDCHIP_MMC5) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_N163))->SetCheck((m_iExpansions & SNDCHIP_N163) != 0);
-	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_SY1202) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_5B) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_5E01))->SetCheck((m_iExpansions & SNDCHIP_5E01) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_7E02))->SetCheck((m_iExpansions & SNDCHIP_7E02) != 0);
 
 	// N163 channel count UI
 	m_cChannelsLabel.SubclassDlgItem(IDC_CHANNELS_NR, this);
@@ -378,7 +392,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 	{
 		CString str;
 		unsigned int Gone = m_pDocument->GetExpansionChip() & ~m_iExpansions;
-		for (int i = 0; i < 7; i++) { // HFT modifiactions
+		for (int i = 0; i < 8; i++) { // HFT modifiactions
 			if (Gone & (1 << i)) switch (i) {
 			case 0: str += _T("VRC6 "); break;
 			case 1: str += _T("VRC7 "); break;
@@ -387,6 +401,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 			case 4: str += _T("N163 "); break;
 			case 5: str += _T("5B ");   break;
 			case 6: str += _T("5E01 ");   break;
+			case 7: str += _T("7E02 ");   break;
 			}
 			if (i == 4 && m_pDocument->ExpansionEnabled(SNDCHIP_N163)
 				&& (m_iExpansions & SNDCHIP_N163) && m_iN163Channels < m_pDocument->GetNamcoChannels()) {
@@ -481,6 +496,10 @@ void CModulePropertiesDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrol
 		OffsetSlider(8, pos); break;
 	case IDC_5E01_APU2_OFFSET_SLIDER:
 		OffsetSlider(9, pos); break;
+	case IDC_7E02_APU1_OFFSET_SLIDER:
+		OffsetSlider(10, pos); break;
+	case IDC_7E02_APU2_OFFSET_SLIDER:
+		OffsetSlider(11, pos); break;
 	}
 
 	UpdateData(TRUE);
@@ -671,7 +690,7 @@ void CModulePropertiesDlg::OnBnClickedSongImport()
 	CModuleImportDlg importDlg(m_pDocument);
 
 	// TODO use string table
-	CFileDialog OpenFileDlg(TRUE, _T("dnm"), 0, OFN_HIDEREADONLY,
+	CFileDialog OpenFileDlg(TRUE, _T("hnm"), 0, OFN_HIDEREADONLY,
 							_T(APP_NAME " modules (*.hnm;*.0cc;*.ftm)|*.hnm; *.0cc; *.ftm|All files (*.*)|*.*||"),		// // //
 							theApp.GetMainWnd(), 0);
 
@@ -694,8 +713,9 @@ void CModulePropertiesDlg::OnBnClickedSongImport()
 	((CButton*)GetDlgItem(IDC_EXPANSION_FDS))->SetCheck((m_iExpansions & SNDCHIP_FDS) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_MMC5))->SetCheck((m_iExpansions & SNDCHIP_MMC5) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_N163))->SetCheck((m_iExpansions & SNDCHIP_N163) != 0);
-	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_SY1202) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_5B) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_5E01))->SetCheck((m_iExpansions & SNDCHIP_5E01) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_7E02))->SetCheck((m_iExpansions & SNDCHIP_7E02) != 0);
 
 
 	for (int i = 0; i < TotalMixerCount; i++) // HFT modifiaction
@@ -816,9 +836,9 @@ void CModulePropertiesDlg::OnBnClickedExpansionS5B()
 	CButton *pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_S5B);
 
 	if (pCheckBox->GetCheck() == BST_CHECKED)
-		m_iExpansions |= SNDCHIP_SY1202;
+		m_iExpansions |= SNDCHIP_5B;
 	else
-		m_iExpansions &= ~SNDCHIP_SY1202;		// // //
+		m_iExpansions &= ~SNDCHIP_5B;		// // //
 
 	updateDeviceMixOffsetUI(7);
 }
@@ -860,6 +880,18 @@ void CModulePropertiesDlg::OnBnClickedExpansion5E01()
 	updateDeviceMixOffsetUI(9);
 }
 
+void CModulePropertiesDlg::OnBnClickedExpansion7E02()
+{
+	CButton* pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_7E02);
+
+	if (pCheckBox->GetCheck() == BST_CHECKED)
+		m_iExpansions |= SNDCHIP_7E02;
+	else
+		m_iExpansions &= ~SNDCHIP_7E02;
+	updateDeviceMixOffsetUI(10);
+	updateDeviceMixOffsetUI(11);
+}
+
 // Device mix offset GUI
 void CModulePropertiesDlg::strFromLevel(CString &target, int16_t Level)
 {
@@ -894,7 +926,7 @@ void CModulePropertiesDlg::updateN163ChannelCountUI()
 
 void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 {
-	int const chipenable[10] = {
+	int const chipenable[12] = {
 		255,
 		255,
 		SNDCHIP_VRC6,
@@ -902,9 +934,11 @@ void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 		SNDCHIP_FDS,
 		SNDCHIP_MMC5,
 		SNDCHIP_N163,
-		SNDCHIP_SY1202,
+		SNDCHIP_5B,
 		SNDCHIP_5E01,
-		SNDCHIP_5E01
+		SNDCHIP_5E01,
+		SNDCHIP_7E02,
+		SNDCHIP_7E02
 	};
 
 	std::array<CWnd*, 4> DeviceMixOffsetUI = {
@@ -1014,6 +1048,16 @@ void CModulePropertiesDlg::OnEnChange5E01_Apu1OffsetEdit()
 void CModulePropertiesDlg::OnEnChange5E01_Apu2OffsetEdit()
 {
 	DeviceOffsetEdit(9);
+}
+
+void CModulePropertiesDlg::OnEnChange7E02_Apu1OffsetEdit()
+{
+	DeviceOffsetEdit(10);
+}
+
+void CModulePropertiesDlg::OnEnChange7E02_Apu2OffsetEdit()
+{
+	DeviceOffsetEdit(11);
 }
 
 // Externall OPLL UI

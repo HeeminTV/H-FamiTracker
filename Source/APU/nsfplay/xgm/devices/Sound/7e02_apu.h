@@ -1,12 +1,12 @@
-#ifndef _NES_APU_H_
-#define _NES_APU_H_
+﻿#ifndef _I7e02_APU_H_
+#define _I7e02_APU_H_
 #include "../device.h"
-#include "nes_dmc.h"
+#include "7e02_dmc.h"
 
 namespace xgm
 {
   /** Upper half of APU **/
-  class NES_APU : public ISoundChip
+  class I7e02_APU : public ISoundChip
   {
   public:
     enum
@@ -22,7 +22,7 @@ namespace xgm
     { SQR0_MASK = 1, SQR1_MASK = 2, };
 
   public:
-    int option[OPT_END];        
+    int option[OPT_END];       
     int mask;
     INT32 sm[2][2];
 
@@ -65,8 +65,8 @@ namespace xgm
     TrackInfoBasic trkinfo[2];
 
   public:
-      NES_APU ();
-     ~NES_APU ();
+      I7e02_APU ();
+     ~I7e02_APU ();
 
     // // !! fetch frequency directly instead of through GetTrackInfo()
     double GetFrequencyPulse1() const;

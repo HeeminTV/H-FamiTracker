@@ -48,7 +48,7 @@ const int32_t ENV_WAVEFORM[32] = {
 	  223, 223, 247, 247
 };
 
-CS5BChannel::CS5BChannel(CMixer *pMixer, uint8_t ID) : CChannel(pMixer, SNDCHIP_SY1202, ID),
+CS5BChannel::CS5BChannel(CMixer *pMixer, uint8_t ID) : CChannel(pMixer, SNDCHIP_5B, ID),
 	m_iVolume(0),
 	m_iPeriod(0),
 	m_iPeriodClock(0),
@@ -113,9 +113,9 @@ CS5B::CS5B(CMixer *pMixer) : CSoundChip(pMixer),
 {
 	m_pRegisterLogger->AddRegisterRange(0x00, 0x0F);		// // //
 
-	m_pChannel[0] = new CS5BChannel(pMixer, CHANID_SY1202_CH1);
-	m_pChannel[1] = new CS5BChannel(pMixer, CHANID_SY1202_CH2);
-	m_pChannel[2] = new CS5BChannel(pMixer, CHANID_SY1202_CH3);
+	m_pChannel[0] = new CS5BChannel(pMixer, CHANID_5B_CH1);
+	m_pChannel[1] = new CS5BChannel(pMixer, CHANID_5B_CH2);
+	m_pChannel[2] = new CS5BChannel(pMixer, CHANID_5B_CH3);
 	Reset();
 }
 

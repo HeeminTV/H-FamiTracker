@@ -25,6 +25,7 @@ class CAPU;
 static const int DUTY_2A03_FROM_VRC6[] = {0, 0, 1, 1, 1, 1, 2, 2};		// // //
 static const int DUTY_VRC6_FROM_2A03[] = {1, 3, 7, 3};		// // //
 static const int DUTY_5E01_FROM_VRC6[] = { 0, 0, 1, 1, 2, 2, 3, 3 };		// Taken from E-FamiTracker by Euly
+static const int DUTY_7E02_FROM_VRC6[] = { 1, 1, 1, 1, 2, 2, 2, 2 };
 
 class CInstHandler;
 class stChannelState;

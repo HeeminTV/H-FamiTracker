@@ -24,6 +24,8 @@
 
 // This is also shared with MMC5
 
+// Heemin note: they are only used in MMC5 because now 2A03 / 5E01 / 7E02 core use NSFPlay driver.
+
 const uint8_t CSquare::DUTY_TABLE[4][16] = {
 	{0, 0, 1, 1,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0},
 	{0, 0, 1, 1,  1, 1, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0},

@@ -62,7 +62,7 @@ void CTransposeDlg::Transpose(int Trsp, unsigned int Track)
 	stChanNote Note;
 	for (int c = m_pDocument->GetChannelCount() - 1; c >= 0; --c) {
 		int Type = m_pDocument->GetChannelType(c);
-		if(Type == CHANID_NOISE || Type == CHANID_5E01_NOISE || Type == CHANID_5E01_DPCM || Type == CHANID_DPCM) continue; // Taken from E-FamiTracker by Euly
+		if(Type == CHANID_2A03_NOISE || Type == CHANID_5E01_NOISE || Type == CHANID_5E01_DPCM || Type == CHANID_2A03_DPCM) continue; // Taken from E-FamiTracker by Euly
 		for (int p = 0; p < MAX_PATTERN; ++p) for (int r = 0; r < MAX_PATTERN_LENGTH; ++r) {
 			m_pDocument->GetDataAtPattern(Track, p, c, r, &Note);
 			if (Note.Note >= NOTE_C && Note.Note <= NOTE_B && !s_bDisableInst[Note.Instrument]) {

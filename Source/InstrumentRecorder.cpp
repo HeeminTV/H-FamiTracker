@@ -96,8 +96,8 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 
 	switch (Chip) {
 	case SNDCHIP_NONE:
-		ID -= CHANID_FWG1;
-		PitchReg = m_iRecordChannel == CHANID_NOISE ? (0x0F & REG(0x400E)) :
+		ID -= CHANID_2A03_SQUARE1;
+		PitchReg = m_iRecordChannel == CHANID_2A03_NOISE ? (0x0F & REG(0x400E)) :
 					(REG(0x4002 | (ID << 2)) | (0x07 & REG(0x4003 | (ID << 2))) << 8); break;
 	case SNDCHIP_VRC6:
 		ID -= CHANID_VRC6_PULSE1;
@@ -114,23 +114,23 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 					| (REG(0x7A - (ID << 3))) << 8
 					| (0x03 & REG(0x7C - (ID << 3))) << 16) >> 2; // N163_PITCH_SLIDE_SHIFT;
 		break;
-	case SNDCHIP_SY1202:
-		ID -= CHANID_SY1202_CH1;
+	case SNDCHIP_5B:
+		ID -= CHANID_5B_CH1;
 		PitchReg = (REG(ID << 1) | (0x0F & REG(1 + (ID << 1))) << 8); break;
 	}
 
 	CDetuneTable::type_t Table;
 	switch (Chip) {
-	case SNDCHIP_NONE: Table = m_pDocument->GetMachine() == PAL ? CDetuneTable::DETUNE_PAL : CDetuneTable::DETUNE_NTSC; break;
+	case SNDCHIP_NONE: case SNDCHIP_5E01: case SNDCHIP_7E02: Table = m_pDocument->GetMachine() == PAL ? CDetuneTable::DETUNE_PAL : CDetuneTable::DETUNE_NTSC; break;
 	case SNDCHIP_VRC6: Table = m_iRecordChannel == CHANID_VRC6_SAWTOOTH ? CDetuneTable::DETUNE_SAW : CDetuneTable::DETUNE_NTSC; break;
 	case SNDCHIP_VRC7: Table = CDetuneTable::DETUNE_VRC7; break;
 	case SNDCHIP_FDS:  Table = CDetuneTable::DETUNE_FDS; break;
 	case SNDCHIP_MMC5: Table = CDetuneTable::DETUNE_NTSC; break;
 	case SNDCHIP_N163: Table = CDetuneTable::DETUNE_N163; break;
-	case SNDCHIP_SY1202:  Table = CDetuneTable::DETUNE_S5B; break;
+	case SNDCHIP_5B:  Table = CDetuneTable::DETUNE_S5B; break;
 	}
 	int Note = 0;
-	if (m_iRecordChannel == CHANID_NOISE) {
+	if (m_iRecordChannel == CHANID_2A03_NOISE) {
 		Note = PitchReg ^ 0xF; Detune = 0;
 	}
 	else for (int i = 0; i < NOTE_COUNT; i++) {
@@ -142,12 +142,12 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 
 	inst_type_t InstType = INST_NONE; // optimize this
 	switch (Chip) {
-	case SNDCHIP_NONE: case SNDCHIP_MMC5: case SNDCHIP_5E01: InstType = INST_2A03; break; // Taken from E-FamiTracker by Euly
+	case SNDCHIP_NONE: case SNDCHIP_MMC5: case SNDCHIP_5E01: case SNDCHIP_7E02: InstType = INST_2A03; break;
 	case SNDCHIP_VRC6: InstType = INST_VRC6; break;
 	// case SNDCHIP_VRC7: Type = INST_VRC7; break; what
 	case SNDCHIP_FDS:  InstType = INST_FDS; break;
 	case SNDCHIP_N163: InstType = INST_N163; break;
-	case SNDCHIP_SY1202:  InstType = INST_S5B; break;
+	case SNDCHIP_5B:  InstType = INST_S5B; break;
 	}
 
 	switch (InstType) {
@@ -158,14 +158,14 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 			case SEQ_VOLUME:
 				switch (Chip) {
 				case SNDCHIP_NONE:
-					Val = m_iRecordChannel == CHANID_WAVEFORM ? ((0x7F & REG(0x4008)) ? 15 : 0) : (0x0F & REG(0x4000 | (ID << 2))); break;
+					Val = m_iRecordChannel == CHANID_2A03_TRIANGLE ? ((0x7F & REG(0x4008)) ? 15 : 0) : (0x0F & REG(0x4000 | (ID << 2))); break;
 				case SNDCHIP_VRC6:
 					Val = m_iRecordChannel == CHANID_VRC6_SAWTOOTH ? (0x0F & REG(0xB000) >> 1) : (0x0F & REG(0x9000 | (ID << 12))); break;
 				case SNDCHIP_MMC5:
 					Val = 0x0F & REG(0x5000 | (ID << 2)); break;
 				case SNDCHIP_N163:
 					Val = 0x0F & REG(0x7F - (ID << 3)); break;
-				case SNDCHIP_SY1202:
+				case SNDCHIP_5B:
 					Val = 0x0F & REG(0x08 + ID); break;
 				}
 				break;
@@ -175,8 +175,8 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 			case SEQ_DUTYCYCLE:
 				switch (Chip) {
 				case SNDCHIP_NONE:
-					Val = m_iRecordChannel == CHANID_WAVEFORM ? 0 :
-						m_iRecordChannel == CHANID_NOISE ? (0x01 & REG(0x400E) >> 7) : (0x03 & REG(0x4000 | (ID << 2)) >> 6); break;
+					Val = m_iRecordChannel == CHANID_2A03_TRIANGLE ? 0 :
+						m_iRecordChannel == CHANID_2A03_NOISE ? (0x01 & REG(0x400E) >> 7) : (0x03 & REG(0x4000 | (ID << 2)) >> 6); break;
 				case SNDCHIP_VRC6:
 					Val = m_iRecordChannel == CHANID_VRC6_SAWTOOTH ? (0x01 & REG(0xB000) >> 5) : (0x07 & REG(0x9000 | (ID << 12)) >> 4); break;
 				case SNDCHIP_MMC5:
@@ -214,7 +214,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 						}
 					}
 					break;
-				case SNDCHIP_SY1202:
+				case SNDCHIP_5B:
 					//0x1F accounts for inverted noise period value
 					Val = 0x1F - (0x1F & REG(0x06)) | (0x10 & REG(0x08 + ID)) << 1
 						| (0x01 << ID & ~REG(0x07)) << (6 - ID) | (0x08 << ID & ~REG(0x07)) << (4 - ID); break;
@@ -321,7 +321,7 @@ void CInstrumentRecorder::InitRecordInstrument()
 	// case SNDCHIP_VRC7: Type = INST_VRC7; break;
 	case SNDCHIP_FDS:  Type = INST_FDS; break;
 	case SNDCHIP_N163: Type = INST_N163; break;
-	case SNDCHIP_SY1202:  Type = INST_S5B; break;
+	case SNDCHIP_5B:  Type = INST_S5B; break;
 	}
 	*m_pDumpInstrument = CInstrumentFactory::CreateNew(Type);		// // //
 	if (!*m_pDumpInstrument) return;
@@ -346,7 +346,7 @@ void CInstrumentRecorder::InitRecordInstrument()
 		// m_pSequenceCache[SEQ_PITCH]->SetSetting(SETTING_PITCH_ABSOLUTE);
 		// m_pSequenceCache[SEQ_HIPITCH]->SetSetting(SETTING_PITCH_ABSOLUTE);
 		// VRC6 sawtooth 64-step volume
-		if (m_iRecordChannel == CHANID_WAVEFORM)
+		if (m_iRecordChannel == CHANID_2A03_TRIANGLE)
 			Inst->SetSeqEnable(SEQ_DUTYCYCLE, 0);
 		break;
 	}

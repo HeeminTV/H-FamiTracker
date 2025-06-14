@@ -21,16 +21,16 @@
 #pragma once
 
 //
-// Derived channels, 2A03
+// Derived channels, 7E02
 //
 
-class CChannelHandler2A03 : public CChannelHandler {
+class CChannelHandler7E02 : public CChannelHandler {
 public:
-	CChannelHandler2A03();
+	CChannelHandler7E02();
 	virtual void ResetChannel();
 
 protected:
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleCut() override;
@@ -45,10 +45,10 @@ protected:
 	int		m_iLengthCounter;		// // //
 };
 
-// // // 2A03 Square
-class C2A03Square : public CChannelHandler2A03 {
+// // // 7E02 Square
+class C7E02Square : public CChannelHandler7E02 {
 public:
-	C2A03Square();
+	C7E02Square();
 	void	RefreshChannel() override;
 	void	SetChannelID(int ID) override;		// // //
 	int getDutyMax() const override;
@@ -58,7 +58,7 @@ protected:
 	int		ConvertDuty(int Duty) const override;		// // //
 	void	ClearRegisters() override;
 
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleNote(int Note, int Octave) override;
@@ -74,13 +74,15 @@ protected:
 };
 
 // Triangle
-class CTriangleChan : public CChannelHandler2A03 {
+class C7E02WaveformChan : public CChannelHandler7E02 {
 public:
-	CTriangleChan();
+	C7E02WaveformChan();
 	void	RefreshChannel() override;
 	void	ResetChannel() override;		// // //
 	int		GetChannelVolume() const override;		// // //
+	int   getDutyMax() const override; // EFT
 protected:
+	static const char MAX_DUTY; // EFT
 
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	ClearRegisters() override;
@@ -90,7 +92,7 @@ private:
 };
 
 // Noise
-class CNoiseChan : public CChannelHandler2A03 {
+class C7E02NoiseChan : public CChannelHandler7E02 {
 public:
 	void	RefreshChannel();
 	int getDutyMax() const override;
@@ -111,17 +113,17 @@ protected:
 class CDSample;		// // //
 
 // DPCM
-class CDPCMChan : public CChannelHandler, public CChannelHandlerInterfaceDPCM {		// // //
+class C7E02DPCMChan : public CChannelHandler, public CChannelHandlerInterfaceDPCM {		// // //
 public:
-	CDPCMChan();		// // //
+	C7E02DPCMChan();		// // //
 	void	RefreshChannel() override;
 	int		GetChannelVolume() const override;		// // //
 
 	void WriteDCOffset(unsigned char Delta);		// // //
 	void SetLoopOffset(unsigned char Loop);		// // //
-	void PlaySample(const CDSample *pSamp, int Pitch);		// // //
+	void PlaySample(const CDSample* pSamp, int Pitch);		// // //
 protected:
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleCut() override;

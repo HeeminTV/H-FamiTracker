@@ -199,6 +199,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 
 	ON_COMMAND(ID_INSTRUMENT_ADD_5E01, OnAddInstrument5E01) // Taken from E-FamiTracker by Euly
 
+	ON_COMMAND(ID_INSTRUMENT_ADD_7E02, OnAddInstrument7E02)
 	ON_COMMAND(ID_MODULE_MODULEPROPERTIES, OnModuleModuleproperties)
 	ON_COMMAND(ID_MODULE_CHANNELS, OnModuleChannels)
 	ON_COMMAND(ID_MODULE_COMMENTS, OnModuleComments)
@@ -1205,13 +1206,18 @@ void CMainFrame::OnAddInstrumentN163()
 
 void CMainFrame::OnAddInstrumentS5B()
 {
-	NewInstrument(SNDCHIP_SY1202);
+	NewInstrument(SNDCHIP_5B);
 }
 
 // Taken from E-FamiTracker by Euly
 void CMainFrame::OnAddInstrument5E01()
 {
 	NewInstrument(SNDCHIP_5E01);
+}
+
+void CMainFrame::OnAddInstrument7E02()
+{
+	NewInstrument(SNDCHIP_7E02);
 }
 
 void CMainFrame::OnAddInstrument()
@@ -1675,17 +1681,20 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 			case SNDCHIP_N163:
 				String = _T(" Namco 163");
 				break;
-			case SNDCHIP_SY1202:
-				String = _T(" SY1202");
+			case SNDCHIP_5B:
+				String = _T(" 5B");
 				break;
 			// Taken from E-FamiTracker by Euly
 			case SNDCHIP_5E01:
 				String = _T(" Eulous 5E01");
 				break;
+			case SNDCHIP_7E02:
+				String = _T(" Saeyahn 7E02");
+				break;
 
 		}
 	else {
-		for (int i = 0; i < 6; i++)	if (Chip & (1 << i)) switch (i) {
+		for (int i = 0; i < 7; i++)	if (Chip & (1 << i)) switch (i) {
 			case 0:
 				String += _T(" + VRC6");
 				break;
@@ -1702,12 +1711,16 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 				String += _T(" + N163");
 				break;
 			case 5:
-				String += _T(" + SY1202");
+				String += _T(" + 5B");
 				break;
 
 			// Taken from E-FamiTracker by Euly
 			case 6:
 				String += _T(" + 5E01");
+				break;
+
+			case 7:
+				String += _T(" + 7E02");
 				break;
 		}
 		String.Delete(0, 3);
@@ -2700,7 +2713,7 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 	int Chip = pDoc->GetExpansionChip();
 	int SelectedChip = pDoc->GetChannel(pView->GetSelectedChannel())->GetChip();	// where the cursor is located
 
-	menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_2A03, _T("New 7E02 instrument"));
+	menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_2A03, _T("New 2A03 instrument"));
 
 	if (Chip & SNDCHIP_VRC6)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_VRC6, _T("New VRC6 instrument"));
@@ -2711,13 +2724,16 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 	if (Chip & SNDCHIP_MMC5)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_MMC5, _T("New MMC5 instrument"));
 	if (Chip & SNDCHIP_N163)
-		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_N163, _T("New 163 instrument"));
-	if (Chip & SNDCHIP_SY1202)
-		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_S5B, _T("New SY1202 instrument"));
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_N163, _T("New N163 instrument"));
+	if (Chip & SNDCHIP_5B)
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_S5B, _T("New 5B instrument"));
 
 	// Taken from E-FamiTracker by Euly
 	if (Chip & SNDCHIP_5E01)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_5E01, _T("New 5E01 instrument"));
+
+	if (Chip & SNDCHIP_7E02)
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_7E02, _T("New 7E02 instrument"));
 
 	switch (SelectedChip) {
 		case SNDCHIP_NONE:
@@ -2738,13 +2754,16 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 		case SNDCHIP_N163:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_N163);
 			break;
-		case SNDCHIP_SY1202:
+		case SNDCHIP_5B:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_S5B);
 			break;
 
 		// Taken from E-FamiTracker by Euly
 		case SNDCHIP_5E01:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_5E01);
+			break;
+		case SNDCHIP_7E02:
+			menu.SetDefaultItem(ID_INSTRUMENT_ADD_7E02);
 			break;
 	}
 

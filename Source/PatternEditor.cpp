@@ -1517,7 +1517,7 @@ void CPatternEditor::DrawCell(CDC *pDC, int PosX, cursor_column_t Column, int Ch
 					DrawChar(pDC, PosX + m_iCharWidth * 2, PosY, NOTES_C[pNoteData->Octave], pColorInfo->Note);
 					break;
 				default:
-					if (pTrackerChannel->GetID() == CHANID_NOISE) {
+					if (pTrackerChannel->GetID() == CHANID_2A03_NOISE || pTrackerChannel->GetID() == CHANID_7E02_NOISE) {
 						// Noise
 						char NoiseFreq = (pNoteData->Note - 1 + pNoteData->Octave * 12) & 0x0F;
 						DrawChar(pDC, PosX + m_iCharWidth / 2, PosY, HEX[NoiseFreq], pColorInfo->Note);		// // //
@@ -1537,18 +1537,18 @@ void CPatternEditor::DrawCell(CDC *pDC, int PosX, cursor_column_t Column, int Ch
 						// // // Check valid note
 						const int N163limits[] = { 95, 95, 95, 94, 90, 87, 84, 82 };
 						COLORREF noteCol = pColorInfo->Note;
-						if (((pTrackerChannel->GetID() <= CHANID_WAVEFORM || pTrackerChannel->GetChip() == SNDCHIP_MMC5) && (pNoteData->Note-1+pNoteData->Octave*12 < 9-m_pDocument->GetMachine())) ||
+						if (((pTrackerChannel->GetID() <= CHANID_2A03_TRIANGLE || pTrackerChannel->GetChip() == SNDCHIP_MMC5) && (pNoteData->Note-1+pNoteData->Octave*12 < 9-m_pDocument->GetMachine())) ||
 							(pTrackerChannel->GetChip() == SNDCHIP_FDS && pNoteData->Note-1+pNoteData->Octave*12 > 92) ||
 							(pTrackerChannel->GetChip() == SNDCHIP_N163 && pNoteData->Note-1+pNoteData->Octave*12 > N163limits[m_pDocument->GetNamcoChannels()-1]))
 							noteCol = WarningColor;
-						if (pNoteData->Instrument != MAX_INSTRUMENTS && pNoteData->Instrument != HOLD_INSTRUMENT && pTrackerChannel->GetID() == CHANID_DPCM) {
+						if (pNoteData->Instrument != MAX_INSTRUMENTS && pNoteData->Instrument != HOLD_INSTRUMENT && pTrackerChannel->GetID() == CHANID_2A03_DPCM) {
 							if (auto pDPCMInst = std::dynamic_pointer_cast<const CInstrument2A03>(m_pDocument->GetInstrument(pNoteData->Instrument))) {
 								if (pDPCMInst->GetDSample(pNoteData->Octave, pNoteData->Note - 1) == nullptr)
 									noteCol = WarningColor;
 							}
 							else if (m_pDocument->GetInstrument(pNoteData->Instrument) == nullptr || m_pDocument->GetInstrument(pNoteData->Instrument)->GetType() != INST_2A03)
 								noteCol = WarningColor;
-						} else if (pNoteData->Instrument == HOLD_INSTRUMENT && pTrackerChannel->GetID() == CHANID_DPCM)
+						} else if (pNoteData->Instrument == HOLD_INSTRUMENT && pTrackerChannel->GetID() == CHANID_2A03_DPCM)
 							noteCol = WarningColor;
 					
 						
@@ -1579,7 +1579,7 @@ void CPatternEditor::DrawCell(CDC *pDC, int PosX, cursor_column_t Column, int Ch
 			break;
 		case C_VOLUME: 
 			// Volume
-			if (pNoteData->Vol == MAX_VOLUME || pTrackerChannel->GetID() == CHANID_DPCM)
+			if (pNoteData->Vol == MAX_VOLUME || pTrackerChannel->GetID() == CHANID_2A03_DPCM || pTrackerChannel->GetID() == CHANID_5E01_DPCM || pTrackerChannel->GetID() == CHANID_7E02_DPCM)
 				BAR(PosX);
 			else 
 				DrawChar(pDC, PosX + m_iCharWidth / 2, PosY, HEX[pNoteData->Vol & 0x0F], pColorInfo->Volume);		// // //
@@ -1846,14 +1846,16 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	int line = -1;		// // //
 	CString text;
 
-	const int BAR_OFFSET = LINE_HEIGHT * (3 + 9 +
+	const int BAR_OFFSET = LINE_HEIGHT * (3 + 8 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC6) * 5 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_MMC5) * 5 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_N163) * 18 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_FDS) * 13 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_SY1202) * 8 +		// // //
-		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 8);
+		m_pDocument->ExpansionEnabled(SNDCHIP_5B) * 8 +		// // //
+		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 8 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 9
+	);
 	int vis_line = 0;
 
 	const auto DrawHeaderFunc = [&] (CString Text) {
@@ -2052,26 +2054,10 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	};
 
 	// 2A03
-	DrawHeaderFunc(_T("7E02"));		// // //
+	DrawHeaderFunc(_T("2A03"));		// // //
 
-	for (int i = 0; i < 6; ++i) {
-		switch (i) {
-			case 2:
-				GetRegsFunc(SNDCHIP_NONE, [&](int x) { return 0x4000 + i * 4 + x; }, 8);
-				break;
-			default:
-				GetRegsFunc(SNDCHIP_NONE, [&](int x) { return 0x4000 + i * 4 + x; }, 4);
-				break;
-		}
-
-		// Get wave channel's register
-		auto pState = pSoundGen->GetRegState(SNDCHIP_NONE, 0x4016);
-		reg[7] = pState->GetValue();
-		update[7] = pState->GetLastUpdatedTime() | (pState->GetNewValueTime() << 4);
-
-		// End
-
-
+	for (int i = 0; i < 5; ++i) {
+		GetRegsFunc(SNDCHIP_NONE, [&](int x) { return 0x4000 + i * 4 + x; }, 4);
 		text.Format(_T("$%04X:"), 0x4000 + i * 4);		// // //
 		DrawRegFunc(text, 4);
 
@@ -2079,50 +2065,31 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_NONE, i);		// // //
 //		pDC->FillSolidRect(x + 200, y, x + 400, y + 18, m_colEmptyBg);
 
-		LPCTSTR FWGwave[4] = { _T("square"),_T("pulse"),_T("triangle"),_T("sawtooth") };
-		// LPCTSTR WaveMode[2] = { _T("custom"),_T("muffled-square") };
-		LPCTSTR WaveShape[4] = { _T("_"),_T("-"),_T("="),_T("^") };
-		LPCTSTR visshape[8];
-
 		switch (i) {
-			case 0: case 1:
-				period = reg[2] | ((reg[3] & 7) << 8);
-				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
-				text.Format(_T("%s, vol = %02i, wave = %i (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6, FWGwave[reg[0] >> 6]); break;
-			case 2:
-				period = reg[2] | ((reg[3] & 7) << 8);
-				if (!(reg[7] >> 4)) {
-					for (int i = 0; i < 8; ++i) {
-						int shift = (7 - i) * 2;
-						uint32_t value = (((reg[1] << 8) + reg[5]) >> shift) & 0x3;
-						visshape[i] = WaveShape[value];
-					}
-
-					text.Format(_T("%s, vol = %02i, mode = 0 [ %s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
-						visshape[0], visshape[1], visshape[2], visshape[3],
-						visshape[4], visshape[5], visshape[6], visshape[7]
-					);
-				} else {
-					text.Format(_T("%s, vol = %02i, mode = 1 (muffled-square)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
-				}
-				break;
-			case 3:
-				period = reg[2] & 0x0F;
-				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
-				text.Format(_T("%s, vol = %02i, mode = %i"), GetPitchTextFuncLong(1, period, freq, !(reg[2] >> 7)), vol, reg[2] >> 7);
-				break;
-			case 4:
-				period = reg[0] & 0x0F;
-				vol = 15 * !pSoundGen->PreviewDone();
-				text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
-					(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
-				text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);
-				break;
-			case 5:
-				text.Format(_T(""), 0, 0); // Clear
-				break;	
+		case 0: case 1:
+			period = reg[2] | ((reg[3] & 7) << 8);
+			vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+			text.Format(_T("%s, vol = %02i, duty = %i"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6); break;
+		case 2:
+			period = reg[2] | ((reg[3] & 7) << 8);
+			vol = reg[0] ? 15 : 0;
+			text.Format(_T("%s"), GetPitchTextFunc(3, period, freq)); break;
+		case 3:
+			period = reg[2] & 0x0F;
+			vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+			text.Format(_T("%s, vol = %02i, mode = %i"), GetPitchTextFuncLong(1, period, freq, !(reg[2] >> 7)), vol, reg[2] >> 7);
+			break;
+		case 4:
+			period = reg[0] & 0x0F;
+			vol = 15 * !pSoundGen->PreviewDone();
+			text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
+				(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
+			break;
 		}
-
+		/*
+				pDC->FillSolidRect(250 + i * 30, 0, 20, m_iWinHeight - HEADER_CHAN_HEIGHT, 0);
+				pDC->FillSolidRect(250 + i * 30, (pitch >> 1), 20, 5, RGB(vol << 4, vol << 4, vol << 4));
+		*/
 		DrawTextFunc(180, text);
 		switch (i) {
 		case 0: case 1: case 2:
@@ -2131,13 +2098,11 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			DrawVolFuncRate(period, vol << 4, 0x0F); break;
 		case 4:
 			DrawVolFuncRate(period, vol << 4, 0x0F, false); break;
-		case 5:
-			break;
 		}
 
 	}
 
-	// text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);	dawg	// // //
+	text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);		// // //
 	++line; y += LINE_HEIGHT;		// // //
 	DrawTextFunc(180, text);
 
@@ -2343,23 +2308,23 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		}
 	}
 
-	if (m_pDocument->ExpansionEnabled(SNDCHIP_SY1202)) {		// // //
-		DrawHeaderFunc(_T("SY1202"));		// // //
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_5B)) {		// // //
+		DrawHeaderFunc(_T("5B"));		// // //
 
 		// S5B
 		for (int i = 0; i < 4; ++i) {
-			GetRegsFunc(SNDCHIP_SY1202, [&] (int x) { return i * 2 + x; }, 2);
+			GetRegsFunc(SNDCHIP_5B, [&] (int x) { return i * 2 + x; }, 2);
 			text.Format(_T("$%02X:"), i * 2);
 			DrawRegFunc(text, 2);
 
 			int period = reg[0] | ((reg[1] & 0x0F) << 8);
-			int period_noise = pSoundGen->GetReg(SNDCHIP_SY1202, 0x06) & 0x1F;
-			int vol = pSoundGen->GetReg(SNDCHIP_SY1202, 8 + i) & 0x0F;
-			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SY1202, i);		// // //
-			double freq_env = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SY1202, 3);		// // //
-			bool enable_tone = !(pSoundGen->GetReg(SNDCHIP_SY1202, 7) & (1 << i));
-			bool enable_noise = !(pSoundGen->GetReg(SNDCHIP_SY1202, 7) & (8 << i));
-			bool enable_env = pSoundGen->GetReg(SNDCHIP_SY1202, 8 + i) & 0x10;
+			int period_noise = pSoundGen->GetReg(SNDCHIP_5B, 0x06) & 0x1F;
+			int vol = pSoundGen->GetReg(SNDCHIP_5B, 8 + i) & 0x0F;
+			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_5B, i);		// // //
+			double freq_env = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_5B, 3);		// // //
+			bool enable_tone = !(pSoundGen->GetReg(SNDCHIP_5B, 7) & (1 << i));
+			bool enable_noise = !(pSoundGen->GetReg(SNDCHIP_5B, 7) & (8 << i));
+			bool enable_env = pSoundGen->GetReg(SNDCHIP_5B, 8 + i) & 0x10;
 			if (i < 3)
 				text.Format(_T("%s, vol = %02i, mode = %c%c%c"), GetPitchTextFunc(3, period, freq), vol,
 					enable_tone ? _T('T') : _T('-'),
@@ -2374,13 +2339,13 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		}
 
 		for (int i = 0; i < 2; ++i) {
-			GetRegsFunc(SNDCHIP_SY1202, [&] (int x) { return i * 3 + x + 8; }, 3);
+			GetRegsFunc(SNDCHIP_5B, [&] (int x) { return i * 3 + x + 8; }, 3);
 			text.Format(_T("$%02X:"), i * 3 + 8);
 			DrawRegFunc(text, 3);
 			
 			if (i == 1) {
 				int period = (reg[0] | (reg[1] << 8));
-				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SY1202, 3);		// // //
+				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_5B, 3);		// // //
 				if (freq != 0. && reg[1] == 0)
 					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq, "pitch "), reg[2]);
 				else
@@ -2389,6 +2354,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			}
 		}
 	}
+
+	// 5E01
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_5E01)) {		// // //
 		DrawHeaderFunc(_T("5E01"));		// // //
 		for (int i = 0; i < 5; ++i) {
@@ -2429,6 +2396,98 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 
 	}
 
+	// 7E02
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_7E02)) {
+		DrawHeaderFunc(_T("7E02"));		// // //
+
+		for (int i = 0; i < 6; ++i) {
+			switch (i) {
+			case 2:
+				GetRegsFunc(SNDCHIP_7E02, [&](int x) { return 0x4200 + i * 4 + x; }, 8);
+				break;
+			default:
+				GetRegsFunc(SNDCHIP_7E02, [&](int x) { return 0x4200 + i * 4 + x; }, 4);
+				break;
+			}
+
+			// Get wave channel's register
+			auto pState = pSoundGen->GetRegState(SNDCHIP_7E02, 0x4216);
+			reg[7] = pState->GetValue();
+			update[7] = pState->GetLastUpdatedTime() | (pState->GetNewValueTime() << 4);
+
+			// End
+
+
+			text.Format(_T("$%04X:"), 0x4200 + i * 4);		// // //
+			DrawRegFunc(text, 4);
+
+			unsigned int period, vol;
+			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_7E02, i);		// // //
+	//		pDC->FillSolidRect(x + 200, y, x + 400, y + 18, m_colEmptyBg);
+
+			LPCTSTR FWGwave[4] = { _T("square"),_T("pulse"),_T("triangle"),_T("sawtooth") };
+			// LPCTSTR WaveMode[2] = { _T("custom"),_T("muffled-square") };
+			LPCTSTR WaveShape[4] = { _T("_"),_T("-"),_T("="),_T("^") };
+			LPCTSTR visshape[8];
+
+			switch (i) {
+			case 0: case 1:
+				period = reg[2] | ((reg[3] & 7) << 8);
+				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+				text.Format(_T("%s, vol = %02i, wave = %i (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6, FWGwave[reg[0] >> 6]); break;
+			case 2:
+				period = reg[2] | ((reg[3] & 7) << 8);
+				if (!(reg[7] >> 4)) {
+					for (int i = 0; i < 8; ++i) {
+						int shift = (7 - i) * 2;
+						uint32_t value = (((reg[1] << 8) + reg[5]) >> shift) & 0x3;
+						visshape[i] = WaveShape[value];
+					}
+
+					text.Format(_T("%s, vol = %02i, mode = 0 [ %s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
+						visshape[0], visshape[1], visshape[2], visshape[3],
+						visshape[4], visshape[5], visshape[6], visshape[7]
+					);
+				}
+				else {
+					text.Format(_T("%s, vol = %02i, mode = 1 (muffled-square)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
+				}
+				break;
+			case 3:
+				period = reg[2] & 0x0F;
+				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+				text.Format(_T("%s, vol = %02i, mode = %i"), GetPitchTextFuncLong(1, period, freq, !(reg[2] >> 7)), vol, reg[2] >> 7);
+				break;
+			case 4:
+				period = reg[0] & 0x0F;
+				vol = 15 * !pSoundGen->PreviewDone();
+				text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
+					(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
+				text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);
+				break;
+			case 5:
+				text.Format(_T(""), 0, 0); // Clear
+				break;
+			}
+
+			DrawTextFunc(180, text);
+			switch (i) {
+			case 0: case 1: case 2:
+				DrawVolFunc(freq, vol << 4); break;
+			case 3:
+				DrawVolFuncRate(period, vol << 4, 0x0F); break;
+			case 4:
+				DrawVolFuncRate(period, vol << 4, 0x0F, false); break;
+			case 5:
+				break;
+			}
+
+		}
+
+		// text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);	dawg	// // //
+		++line; y += LINE_HEIGHT;		// // //
+		DrawTextFunc(180, text);
+	}
 	pDC->SelectObject(pOldFont);
 
 	// Surrounding frame
@@ -4302,7 +4361,7 @@ void CPatternEditor::GetSelectionAsText(CString &str) const		// // //
 		line.AppendFormat(_T("ROW %0*X"), HexLength, Row++);
 		for (int i = it.first.m_iChannel; i <= it.second.m_iChannel; ++i) {
 			it.first.Get(i, &NoteData);
-			CString Row = CTextExport::ExportCellText(NoteData, m_pDocument->GetEffColumns(Track, i) + 1, i == CHANID_NOISE);
+			CString Row = CTextExport::ExportCellText(NoteData, m_pDocument->GetEffColumns(Track, i) + 1, i == CHANID_2A03_NOISE);
 			if (i == it.first.m_iChannel) for (unsigned c = 0; c < BegCol; ++c)
 				for (int j = 0; j < COLUMN_CHAR_LEN[c]; ++j) Row.SetAt(COLUMN_CHAR_POS[c] + j, ' ');
 			if (i == it.second.m_iChannel && EndCol < COLUMN_EFF4)
@@ -4326,13 +4385,13 @@ void CPatternEditor::GetSelectionAsPPMCK(CString &str) const		// // //
 	for (int c = it.first.m_iChannel; c <= it.second.m_iChannel; ++c) {
 		int Type = m_pDocument->GetChannelType(c);
 		switch (m_pDocument->GetChipType(c)) {
-		case SNDCHIP_NONE: Type += 'A' - CHANID_FWG1; break;
+		case SNDCHIP_NONE: Type += 'A' - CHANID_2A03_SQUARE1; break;
 		case SNDCHIP_VRC6: Type += 'M' - CHANID_VRC6_PULSE1; break;
 		case SNDCHIP_VRC7: Type += 'G' - CHANID_VRC7_CH1; break;
 		case SNDCHIP_FDS:  Type += 'F' - CHANID_FDS; break;
 		case SNDCHIP_MMC5: Type += 'a' - CHANID_MMC5_SQUARE1; break;
 		case SNDCHIP_N163: Type += 'P' - CHANID_N163_CH1; break;
-		case SNDCHIP_SY1202:  Type += 'X' - CHANID_SY1202_CH1; break;
+		case SNDCHIP_5B:  Type += 'X' - CHANID_5B_CH1; break;
 		}
 		str.AppendFormat(_T("%c\t"), Type);
 

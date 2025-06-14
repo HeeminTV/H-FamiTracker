@@ -66,7 +66,7 @@ BOOL CGotoDlg::OnInitDialog()
 	CFamiTrackerView *pView = static_cast<CFamiTrackerView*>(((CFrameWnd*)AfxGetMainWnd())->GetActiveView());
 	CPatternEditor *pEditor = pView->GetPatternEditor();
 
-	m_cChipEdit->AddString(_T("7E02"));
+	m_cChipEdit->AddString(_T("2A03"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC6))
 		m_cChipEdit->AddString(_T("VRC6"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
@@ -77,12 +77,13 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->AddString(_T("MMC5"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_N163))
 		m_cChipEdit->AddString(_T("N163"));
-	if (pDoc->ExpansionEnabled(SNDCHIP_SY1202))
-		m_cChipEdit->AddString(_T("SY1202"));
-
+	if (pDoc->ExpansionEnabled(SNDCHIP_5B))
+		m_cChipEdit->AddString(_T("5B"));
 	// Taken from E-FamiTracker by Euly
 	if (pDoc->ExpansionEnabled(SNDCHIP_5E01))
 		m_cChipEdit->AddString(_T("5E01"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
+		m_cChipEdit->AddString(_T("7E02"));
 		
 	int Channel = pDoc->GetChannelType(pEditor->GetChannel());
 
@@ -92,9 +93,14 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->SelectString(-1, _T("5E01"));
 	}
 
-	if (Channel >= CHANID_SY1202_CH1) {
-		Channel -= CHANID_SY1202_CH1;
-		m_cChipEdit->SelectString(-1, _T("SY1202"));
+	if (Channel >= CHANID_7E02_SQUARE1) {
+		Channel -= CHANID_7E02_SQUARE1;
+		m_cChipEdit->SelectString(-1, _T("7E02"));
+	}
+
+	if (Channel >= CHANID_5B_CH1) {
+		Channel -= CHANID_5B_CH1;
+		m_cChipEdit->SelectString(-1, _T("5B"));
 	}
 	else if (Channel >= CHANID_VRC7_CH1) {
 		Channel -= CHANID_VRC7_CH1;
@@ -117,7 +123,7 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->SelectString(-1, _T("VRC6"));
 	}
 	else
-		m_cChipEdit->SelectString(-1, _T("7E02"));
+		m_cChipEdit->SelectString(-1, _T("2A03"));
 
 	SetDlgItemInt(IDC_EDIT_GOTO_FRAME, pEditor->GetFrame());
 	SetDlgItemInt(IDC_EDIT_GOTO_ROW, pEditor->GetRow());
@@ -152,7 +158,7 @@ void CGotoDlg::CheckDestination() const
 
 int CGotoDlg::GetChipFromString(const CString str)
 {
-	if (str == _T("7E02"))
+	if (str == _T("2A03"))
 		return SNDCHIP_NONE;
 	else if (str == _T("VRC6"))
 		return SNDCHIP_VRC6;
@@ -164,12 +170,13 @@ int CGotoDlg::GetChipFromString(const CString str)
 		return SNDCHIP_MMC5;
 	else if (str == _T("N163"))
 		return SNDCHIP_N163;
-	else if (str == _T("SY1202"))
-		return SNDCHIP_SY1202;
-
+	else if (str == _T("5B"))
+		return SNDCHIP_5B;
 	// Taken from E-FamiTracker by Euly
 	else if (str == _T("5E01"))
 		return SNDCHIP_5E01;
+	else if (str == _T("7E02"))
+		return SNDCHIP_7E02;
 
 	else
 		return SNDCHIP_NONE;
@@ -181,13 +188,14 @@ int CGotoDlg::GetFinalChannel() const
 
 	int Channel = m_iDestChannel;
 	switch (m_iDestChip) {
-	case SNDCHIP_VRC6: Channel += CHANID_VRC6_PULSE1; break;
-	case SNDCHIP_VRC7: Channel += CHANID_VRC7_CH1; break;
-	case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
-	case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
-	case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
-	case SNDCHIP_SY1202:  Channel += CHANID_SY1202_CH1; break;
-	case SNDCHIP_5E01:  Channel += CHANID_5E01_SQUARE1; break; // Taken from E-FamiTracker by Euly
+		case SNDCHIP_VRC6: Channel += CHANID_VRC6_PULSE1; break;
+		case SNDCHIP_VRC7: Channel += CHANID_VRC7_CH1; break;
+		case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
+		case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
+		case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
+		case SNDCHIP_5B:  Channel += CHANID_5B_CH1; break;
+		case SNDCHIP_5E01:  Channel += CHANID_5E01_SQUARE1; break; // Taken from E-FamiTracker by Euly
+		case SNDCHIP_7E02:  Channel += CHANID_7E02_SQUARE1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);

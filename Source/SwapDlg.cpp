@@ -75,7 +75,7 @@ BOOL CSwapDlg::OnInitDialog()
 	m_cChipSecond->SubclassDlgItem(IDC_COMBO_SWAP_CHIP2, this);
 	
 	CFamiTrackerDoc *pDoc = CFamiTrackerDoc::GetDoc();
-	m_cChipFirst->AddString(_T("7E02"));
+	m_cChipFirst->AddString(_T("2A03"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC6))
 		m_cChipFirst->AddString(_T("VRC6"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
@@ -86,8 +86,8 @@ BOOL CSwapDlg::OnInitDialog()
 		m_cChipFirst->AddString(_T("MMC5"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_N163))
 		m_cChipFirst->AddString(_T("N163"));
-	if (pDoc->ExpansionEnabled(SNDCHIP_SY1202))
-		m_cChipFirst->AddString(_T("SY1202"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_5B))
+		m_cChipFirst->AddString(_T("5B"));
 
 	CString str;
 	for (int i = 0; i < m_cChipFirst->GetCount(); i++)
@@ -115,7 +115,7 @@ void CSwapDlg::CheckDestination() const
 
 int CSwapDlg::GetChipFromString(const CString str)
 {
-	if (str == _T("7E02"))
+	if (str == _T("2A03"))
 		return SNDCHIP_NONE;
 	else if (str == _T("VRC6"))
 		return SNDCHIP_VRC6;
@@ -127,8 +127,8 @@ int CSwapDlg::GetChipFromString(const CString str)
 		return SNDCHIP_MMC5;
 	else if (str == _T("N163"))
 		return SNDCHIP_N163;
-	else if (str == _T("SY1202"))
-		return SNDCHIP_SY1202;
+	else if (str == _T("5B"))
+		return SNDCHIP_5B;
 	else
 		return SNDCHIP_NONE;
 }
@@ -143,7 +143,7 @@ int CSwapDlg::GetFinalChannel(unsigned int Channel, unsigned int Chip) const
 	case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
 	case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
 	case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
-	case SNDCHIP_SY1202:  Channel += CHANID_SY1202_CH1; break;
+	case SNDCHIP_5B:  Channel += CHANID_5B_CH1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);

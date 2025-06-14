@@ -96,9 +96,9 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("W0x - DPCM pitch, F = highest"),
 	_T("H0y - 5B envelope shape, bit 3 = Continue, bit 2 = Attack, bit 1 = Alternate, bit 0 = Hold"),
 	_T("Hxy - Auto 5B envelope, X - 8 = shift amount, Y = shape"),
-	_T("Ixx - SY1202 envelope rate, high byte"),
-	_T("Jxx - SY1202 envelope rate, low byte"),
-	_T("Wxx - SY1202 noise pitch, 1F = highest"),
+	_T("Ixx - 5B envelope rate, high byte"),
+	_T("Jxx - 5B envelope rate, low byte"),
+	_T("Wxx - 5B noise pitch, 1F = highest"),
 	_T("Hxx - VRC7 custom patch port, XX = register address"),
 	_T("Ixx - VRC7 custom patch write, XX = register value"),
 	_T("Lxx - Note release, XX = frames to wait"),
@@ -1248,7 +1248,7 @@ void CFamiTrackerView::OnTrackerPlayrow()
 		pDoc->GetNoteData(Track, Frame, i, Row, &Note);
 		if (m_bMuteChannels[i]) // E-FT Experiment
 			Note.Vol = 0;
-		if (!(m_bMuteChannels[i] && (i == CHANID_DPCM || i == pDoc->GetChannelIndex(CHANID_5E01_DPCM))))
+		if (!(m_bMuteChannels[i] && (i == CHANID_2A03_DPCM || i == CHANID_5E01_DPCM || i == CHANID_7E02_DPCM)))
 			theApp.GetSoundGenerator()->QueueNote(i, Note, NOTE_PRIO_1);
 	}
 
@@ -2135,7 +2135,11 @@ void CFamiTrackerView::InsertNote(int Note, int Octave, int Channel, int Velocit
 
 		// Taken from E-FamiTracker by Euly
 		if (Note != NONE && Note != ECHO) {		// // //
-			if (GetDocument()->GetChannelType(Channel) == CHANID_NOISE || GetDocument()->GetChannelType(Channel) == CHANID_5E01_NOISE) {		// // //
+			if (
+				GetDocument()->GetChannelType(Channel) == CHANID_2A03_NOISE		 || 
+				GetDocument()->GetChannelType(Channel) == CHANID_5E01_NOISE	 ||
+				GetDocument()->GetChannelType(Channel) == CHANID_7E02_NOISE
+			) {		// // //
 				unsigned int MidiNote = (MIDI_NOTE(Octave, Note) % 32) + 32;
 				Cell.Octave = Octave = GET_OCTAVE(MidiNote);
 				Cell.Note = Note = GET_NOTE(MidiNote);
@@ -2332,7 +2336,7 @@ void CFamiTrackerView::TriggerMIDINote(unsigned int Channel, unsigned int MidiNo
 	// Play a MIDI note
 	unsigned int Octave = GET_OCTAVE(MidiNote);
 	unsigned int Note = GET_NOTE(MidiNote);
-//	if (pDoc->GetChannel(Channel)->GetID() == CHANID_NOISE)
+//	if (pDoc->GetChannel(Channel)->GetID() == CHANID_2A03_NOISE)
 //		FixNoise(MidiNote, Octave, Note);
 
 	m_iActiveNotes[Channel] = MidiNote;
@@ -2379,7 +2383,7 @@ void CFamiTrackerView::CutMIDINote(unsigned int Channel, unsigned int MidiNote, 
 	// Cut a MIDI note
 	unsigned int Octave = GET_OCTAVE(MidiNote);
 	unsigned int Note = GET_NOTE(MidiNote);
-//	if (pDoc->GetChannel(Channel)->GetID() == CHANID_NOISE)
+//	if (pDoc->GetChannel(Channel)->GetID() == CHANID_2A03_NOISE)
 //		FixNoise(MidiNote, Octave, Note);
 
 	m_iActiveNotes[Channel] = 0;
@@ -2416,7 +2420,7 @@ void CFamiTrackerView::ReleaseMIDINote(unsigned int Channel, unsigned int MidiNo
 	// Release a MIDI note
 	unsigned int Octave = GET_OCTAVE(MidiNote);
 	unsigned int Note = GET_NOTE(MidiNote);
-//	if (pDoc->GetChannel(Channel)->GetID() == CHANID_NOISE)
+//	if (pDoc->GetChannel(Channel)->GetID() == CHANID_2A03_NOISE)
 //		FixNoise(MidiNote, Octave, Note);
 
 	m_iActiveNotes[Channel] = 0;
@@ -2477,9 +2481,9 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 				m_pNoteQueue->AddMap({ID});
 		}
 	else {
-		m_pNoteQueue->AddMap({CHANID_WAVEFORM});
-		m_pNoteQueue->AddMap({CHANID_NOISE});
-		m_pNoteQueue->AddMap({CHANID_DPCM});
+		m_pNoteQueue->AddMap({CHANID_2A03_TRIANGLE});
+		m_pNoteQueue->AddMap({CHANID_2A03_NOISE});
+		m_pNoteQueue->AddMap({CHANID_2A03_DPCM});
 
 		if (pDoc->ExpansionEnabled(SNDCHIP_VRC6)) {
 			m_pNoteQueue->AddMap({CHANID_VRC6_PULSE1, CHANID_VRC6_PULSE2});
@@ -2491,9 +2495,9 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 		if (pDoc->ExpansionEnabled(SNDCHIP_FDS))
 			m_pNoteQueue->AddMap({CHANID_FDS});
 		if (pDoc->ExpansionEnabled(SNDCHIP_MMC5))
-			m_pNoteQueue->AddMap({CHANID_FWG1, CHANID_FWG2, CHANID_MMC5_SQUARE1, CHANID_MMC5_SQUARE2});
+			m_pNoteQueue->AddMap({CHANID_2A03_SQUARE1, CHANID_2A03_SQUARE2, CHANID_MMC5_SQUARE1, CHANID_MMC5_SQUARE2});
 		else
-			m_pNoteQueue->AddMap({CHANID_FWG1, CHANID_FWG2});
+			m_pNoteQueue->AddMap({CHANID_2A03_SQUARE1, CHANID_2A03_SQUARE2});
 		if (pDoc->ExpansionEnabled(SNDCHIP_N163)) {
 			std::vector<unsigned> n;
 			int Channels = pDoc->GetNamcoChannels();
@@ -2501,12 +2505,15 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 				n.push_back(CHANID_N163_CH1 + i);
 			m_pNoteQueue->AddMap(n);
 		}
-		if (pDoc->ExpansionEnabled(SNDCHIP_SY1202))
-			m_pNoteQueue->AddMap({CHANID_SY1202_CH1, CHANID_SY1202_CH2, CHANID_SY1202_CH3});
+		if (pDoc->ExpansionEnabled(SNDCHIP_5B))
+			m_pNoteQueue->AddMap({CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3});
 
 		// Taken from E-FamiTracker by Euly
 		if (pDoc->ExpansionEnabled(SNDCHIP_5E01))
 			m_pNoteQueue->AddMap({ CHANID_5E01_SQUARE1, CHANID_5E01_SQUARE2, CHANID_5E01_WAVEFORM, CHANID_5E01_NOISE, CHANID_5E01_DPCM });
+
+		if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
+			m_pNoteQueue->AddMap({ CHANID_7E02_SQUARE1, CHANID_7E02_SQUARE2, CHANID_7E02_WAVEFORM, CHANID_7E02_NOISE, CHANID_7E02_DPCM });
 
 	}
 
@@ -3348,7 +3355,7 @@ bool CFamiTrackerView::IsSplitEnabled(int MidiNote, int Channel) const
 	if (m_iSplitNote == -1)
 		return false;
 	if (const auto Chan = GetDocument()->GetChannel(Channel)) {
-		if (Chan->GetID() == CHANID_NOISE || Chan->GetID() == CHANID_5E01_NOISE) // Taken from E-FamiTracker by Euly
+		if (Chan->GetID() == CHANID_2A03_NOISE || Chan->GetID() == CHANID_5E01_NOISE || Chan->GetID() == CHANID_7E02_NOISE)
 			return false;
 		return MidiNote <= m_iSplitNote;
 	}
@@ -3801,7 +3808,7 @@ void CFamiTrackerView::OnTrackerRecordToInst()		// // //
 	int Chip = pDoc->GetChipType(m_iMenuChannel);
 	m_iMenuChannel = -1;
 
-	if (Channel == CHANID_DPCM || Chip == SNDCHIP_VRC7) {
+	if (Channel == CHANID_2A03_DPCM || Chip == SNDCHIP_VRC7) {
 		AfxMessageBox(IDS_DUMP_NOT_SUPPORTED, MB_ICONERROR); return;
 	}
 	if (pDoc->GetInstrumentCount() >= MAX_INSTRUMENTS) {
@@ -3810,10 +3817,10 @@ void CFamiTrackerView::OnTrackerRecordToInst()		// // //
 	if (Chip != SNDCHIP_FDS) {
 		inst_type_t Type = INST_NONE;
 		switch (Chip) {
-		case SNDCHIP_NONE: case SNDCHIP_MMC5: case SNDCHIP_5E01: Type = INST_2A03; break; // Taken from E-FamiTracker by Euly
+		case SNDCHIP_NONE: case SNDCHIP_MMC5: case SNDCHIP_5E01: case SNDCHIP_7E02: Type = INST_2A03; break;
 		case SNDCHIP_VRC6: Type = INST_VRC6; break;
 		case SNDCHIP_N163: Type = INST_N163; break;
-		case SNDCHIP_SY1202:  Type = INST_S5B; break;
+		case SNDCHIP_5B:  Type = INST_S5B; break;
 		}
 		if (Type != INST_NONE) for (int i = 0; i < SEQ_COUNT; i++)
 			if (pDoc->GetFreeSequence(Type, i) == -1) {
@@ -4193,7 +4200,7 @@ CString	CFamiTrackerView::GetEffectHint(const stChanNote &Note, int Column) cons
 	if (Index > EF_SUNSOFT_ENV_TYPE || (Index == EF_SUNSOFT_ENV_TYPE && Param >= 0x10)) ++Index;
 	if (Index > EF_FDS_MOD_SPEED_HI || (Index == EF_FDS_MOD_SPEED_HI && Param >= 0x10)) ++Index;
 	if (Index > EF_FDS_MOD_DEPTH || (Index == EF_FDS_MOD_DEPTH && Param >= 0x80)) ++Index;
-	if (Index > EF_NOTE_CUT || (Index == EF_NOTE_CUT && Param >= 0x80 && Channel == CHANID_WAVEFORM)) ++Index;
+	if (Index > EF_NOTE_CUT || (Index == EF_NOTE_CUT && Param >= 0x80 && Channel == CHANID_2A03_TRIANGLE)) ++Index;
 	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && (Chip == SNDCHIP_VRC7 || Chip == SNDCHIP_N163))) ++Index;
 	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && Chip == SNDCHIP_N163)) ++Index;
 	if (Index > EF_VOLUME || (Index == EF_VOLUME && Param >= 0xE0)) ++Index;

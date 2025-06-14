@@ -233,7 +233,7 @@ void CSettings::SetupSettings()
 	SETTING_INT("Mixer", "2C33", 0, &ChipLevels.iLevelFDS);
 	SETTING_INT("Mixer", "MMC5", 0, &ChipLevels.iLevelMMC5);
 	SETTING_INT("Mixer", "N163", 0, &ChipLevels.iLevelN163);
-	SETTING_INT("Mixer", "SY1202", 0, &ChipLevels.iLevelS5B);
+	SETTING_INT("Mixer", "5B", 0, &ChipLevels.iLevelS5B);
 
 	// SETTING_INT("Mixer", "5E01", 0, &ChipLevels.iLevel5E01); // Taken from E-FamiTracker by Euly
 
@@ -247,7 +247,7 @@ void CSettings::SetupSettings()
 	SETTING_INT("Mixer", "2C33 survey level", 690, &ChipLevels.iSurveyMixFDS);
 	SETTING_INT("Mixer", "MMC5 survey level", 0, &ChipLevels.iSurveyMixMMC5);
 	SETTING_INT("Mixer", "N163 survey level", 1540, &ChipLevels.iSurveyMixN163);
-	SETTING_INT("Mixer", "SY1202 survey level", -250, &ChipLevels.iSurveyMixS5B);
+	SETTING_INT("Mixer", "5B survey level", -250, &ChipLevels.iSurveyMixS5B);
 
 	// Emulation
 		// VRC7
