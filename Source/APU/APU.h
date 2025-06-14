@@ -121,7 +121,7 @@ public:
 #endif
 
 public:
-	static const int		OPLL_TONE_NUM = 9;
+	static const int		OPLL_TONE_NUM = 10;
 	static const uint8_t	LENGTH_TABLE[];
 	static const uint32_t	BASE_FREQ_NTSC;
 	static const uint32_t	BASE_FREQ_PAL;

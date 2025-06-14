@@ -49,8 +49,6 @@ const uint8_t	CAPU::FRAME_RATE_PAL		= 50;
 const uint16_t	CAPU::NSF_RATE_NTSC			= 16639;
 const uint16_t	CAPU::NSF_RATE_PAL			= 19997;
 
-const int OPLL_TONE_NUM = 9;
-
 // based off NSFPlay emu2413's hardware patch scheme
 const uint8_t CAPU::OPLL_DEFAULT_PATCHES[OPLL_TONE_NUM][19 * 8] =
 {
@@ -80,6 +78,9 @@ const uint8_t CAPU::OPLL_DEFAULT_PATCHES[OPLL_TONE_NUM][19 * 8] =
 	},
 	{
 #include "digital-sound-antiques/281btone.h"
+	},
+	{
+#include "digital-sound-antiques/vrc7tone_hm.h"
 	},
 };
 
