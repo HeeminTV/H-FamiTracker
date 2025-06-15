@@ -4650,8 +4650,8 @@ json CFamiTrackerDoc::InterfaceToOptionalJSON() const
 	if (GetLevelOffset(7) != DEFAULT.S5B_OFFSET) json[S5B_OFFSET] = GetLevelOffset(7);
 	if (GetLevelOffset(8) != DEFAULT._5E01_APU1_OFFSET) json[_5E01_APU1_OFFSET] = GetLevelOffset(8);
 	if (GetLevelOffset(9) != DEFAULT._5E01_APU2_OFFSET) json[_5E01_APU2_OFFSET] = GetLevelOffset(9);
-	if (GetLevelOffset(8) != DEFAULT._7E02_APU1_OFFSET) json[_7E02_APU1_OFFSET] = GetLevelOffset(10);
-	if (GetLevelOffset(9) != DEFAULT._7E02_APU2_OFFSET) json[_7E02_APU2_OFFSET] = GetLevelOffset(11);
+	if (GetLevelOffset(10) != DEFAULT._7E02_APU1_OFFSET) json[_7E02_APU1_OFFSET] = GetLevelOffset(10);
+	if (GetLevelOffset(11) != DEFAULT._7E02_APU2_OFFSET) json[_7E02_APU2_OFFSET] = GetLevelOffset(11);
 
 	if (GetSurveyMixCheck() != DEFAULT.USE_SURVEY_MIX) json[USE_SURVEY_MIX] = GetSurveyMixCheck();
 

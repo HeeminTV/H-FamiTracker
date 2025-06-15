@@ -45,6 +45,7 @@ private:
 
 private:
 	short *m_pWindowBuf;
+	int m_iWindowBufPtr;
 	bool m_bBlur;
 
 #ifdef _DEBUG

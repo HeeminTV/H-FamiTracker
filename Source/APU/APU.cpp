@@ -566,7 +566,7 @@ void CAPU::Log()
 			str.AppendFormat("%02X ", GetReg(SNDCHIP_N163, i));
 	}
 	if (m_iExternalSoundChips & SNDCHIP_FDS) {
-		str.Append("FDS ");
+		str.Append("2C33 ");
 		for (int i = 0; i < 0x0B; ++i)
 			str.AppendFormat("%02X ", GetReg(SNDCHIP_FDS, 0x4080 + i));
 	}

@@ -18,6 +18,8 @@ This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https:/
 
 - MMC5 PCM
 
+- Scope Edge Trigger
+
 ### [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) presented features
 
 This fork ***DO NOT OWN*** the codes that are taken from [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) by @HertzDevil

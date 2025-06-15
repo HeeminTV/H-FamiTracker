@@ -110,10 +110,10 @@ namespace xgm
         )
     {
         int v = envelope_disable[i] ? volume[i] : envelope_counter[i];
-        ret = (sqrtbl[duty[i]][sphase[i]] + 1) * v;
+        ret = sqrtbl[duty[i]][sphase[i]] * v;
     }
     
-    return ret / 16;
+    return ret;
   }
 
   bool I7e02_APU::Read (UINT32 adr, UINT32 & val, UINT32 id)
@@ -184,12 +184,13 @@ namespace xgm
   // s
   UINT32 I7e02_APU::Render (INT32 b[2])
   {
-    out[0] = (mask & 1) ? 0 : out[0];
-    out[1] = (mask & 2) ? 0 : out[1];
-
     INT32 m[2];
+    m[0] = (mask & 1) ? 0 : out[0] << 3;
+    m[1] = (mask & 2) ? 0 : out[1] << 3;
 
-    if(option[OPT_NONLINEAR_MIXER])
+
+
+    /*if (option[OPT_NONLINEAR_MIXER])
     {
         INT32 voltage = square_table[out[0] + out[1]];
         m[0] = out[0] << 6;
@@ -211,6 +212,7 @@ namespace xgm
         m[0] = (out[0] * square_linear) / 15;
         m[1] = (out[1] * square_linear) / 15;
     }
+    */
 
     b[0]  = m[0] * sm[0][0];
     b[0] += m[1] * sm[0][1];

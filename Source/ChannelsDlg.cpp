@@ -71,8 +71,8 @@ const TCHAR *CHILD_ITEMS[ROOT_ITEM_COUNT][9] = {
 	{_T("MMC5 Pulse 1"), _T("MMC5 Pulse 2"), _T("MMC5 PCM")},
 	// N163
 	{
-		_T("163 Waveform 1"), _T("163 Waveform 2"), _T("163 Waveform 3"), _T("163 Waveform 4"), 
-		 _T("163 Waveform 5"), _T("163 Waveform 6"), _T("163 Waveform 7"), _T("163 Waveform 8")
+		_T("N163 Waveform 1"), _T("N163 Waveform 2"), _T("N163 Waveform 3"), _T("N163 Waveform 4"), 
+		 _T("N163 Waveform 5"), _T("N163 Waveform 6"), _T("N163 Waveform 7"), _T("N163 Waveform 8")
 	},
 	 // S5B
 	{_T("5B PSG 1"), _T("5B PSG 2"), _T("5B PSG 3")}

@@ -40,14 +40,14 @@ using namespace std::string_literals;
 
 const TCHAR *CConfigAppearance::COLOR_ITEMS[] = {
 	_T("Background"), 
-	_T("Highlighted background"),
-	_T("Highlighted background 2"),
+	_T("Highlight 1"),
+	_T("Highlight 2"),
 	_T("Pattern text"), 
-	_T("Highlighted pattern text"),
+	_T("Highlighted pattern text 1"),
 	_T("Highlighted pattern text 2"),
 	_T("Instrument column"),
 	_T("Volume column"),
-	_T("Effect number column"),
+	_T("Effect type column"),
 	_T("Selection"),
 	_T("Cursor"),
 	_T("Current row (normal mode)"),		// // //
@@ -65,7 +65,8 @@ const COLOR_SCHEME *CConfigAppearance::COLOR_SCHEMES[] = {
 	&MONOCHROME_COLOR_SCHEME,
 	&RENOISE_COLOR_SCHEME,
 	&WHITE_COLOR_SCHEME,
-	&SATURDAY_COLOR_SCHEME		// // //
+	&SATURDAY_COLOR_SCHEME,
+	&TILDEARROW_COLOR_SCHEME
 };
 
 const int CConfigAppearance::NUM_COLOR_SCHEMES = sizeof(COLOR_SCHEMES) / sizeof(COLOR_SCHEME*);

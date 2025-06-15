@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <bitset>
 #include <array>
+#include <iostream>
 
 namespace xgm
 {
@@ -212,7 +213,7 @@ namespace xgm
         if (s == 0 && (frame_sequence_steps == 4))
         {
             if (frame_irq_enable) frame_irq = true;
-            cpu->UpdateIRQ(I7e02_CPU::IRQD_FRAME, frame_irq & frame_irq_enable);
+            cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, frame_irq & frame_irq_enable);
         }
 
         // 240hz clock
@@ -270,28 +271,72 @@ namespace xgm
         }
 
     }
-
+    //using namespace std;
     // s
     UINT32 I7e02_DMC::calc_tri(UINT32 clocks) {
-      static UINT32 muffledsquaretbl[4][32] = {
-            { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 },
-            { 6, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 7 },
-            { 5, 4, 3, 3, 3, 3, 3, 4, 4, 3, 3, 3, 3, 3, 4, 5, 7, 9, 10, 10, 10, 10, 10, 9, 9, 10, 10, 10, 10, 10, 9, 7 },
-            { 5, 2, 1, 1, 0, 0, 1, 2, 2, 1, 0, 0, 1, 1, 2, 5, 9, 13, 14, 14, 15, 15, 14, 13, 13, 14, 15, 15, 14, 14, 13, 9 },
-      };
-
-      static UINT32 tritbl[1][32];
-      UINT16 fullWave = ((UINT16)twaveH << 8) | twaveL;  // .
+      UINT16 fullbits = (twaveH << 8) | twaveL;
+      // Mode 0 (2-bit waveform)
+      static UINT32 wavetbl[32];
       std::array<UINT32, 8> bits2;
 
       int index = 0;
       for (int i = 0; i < 8; ++i) {
-          int shift = (7 - i) * 2;
-          uint32_t value = (fullWave >> shift) & 0x3;
+          uint32_t value = (fullbits >> ((7 - i) * 2)) & 0x3;
           for (int j = 0; j < 4; ++j) {
-              tritbl[0][index++] = value;
+              wavetbl[index++] = value;
           }
       }
+
+      // Mode 1 (Triangle)
+      static UINT32 tritbl[32] = {
+            15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+      };
+
+      // Mode 2 (5-bit PWM)
+      static UINT32 pwmtbl[32];
+      for (int i = 0; i < 32; ++i) {
+          if (i > twaveL) {
+              pwmtbl[i] = 15;
+          } else {
+              pwmtbl[i] = 0;
+          }
+      }
+
+      // Mode 3 (Delta-Modulated-Waveform mode)
+      static UINT32 dmwtbl[32];
+      int deltacounter = 0; // not DMC counter
+      std::bitset<16> bitsarray(fullbits);
+      for (int i = 0; i < 16; ++i) {
+          if (bitsarray[15 - i]) {
+              if (deltacounter != 7) deltacounter++;
+          } else {
+              if (deltacounter != 0) deltacounter--;
+          }
+
+          dmwtbl[i * 2] = deltacounter;
+          dmwtbl[i * 2 + 1] = deltacounter;
+      }
+      /*std::printf(
+          "%d,%d,%d,%d,%d,%d,%d,%d, %d,%d,%d,%d,%d,%d,%d,%d\r\n",
+          (bitsarray[0] ? 1 : 0), 
+          (bitsarray[1] ? 1 : 0),
+          (bitsarray[2] ? 1 : 0),
+          (bitsarray[3] ? 1 : 0),
+          (bitsarray[4] ? 1 : 0),
+          (bitsarray[5] ? 1 : 0),
+          (bitsarray[6] ? 1 : 0),
+          (bitsarray[7] ? 1 : 0),
+
+          (bitsarray[8] ? 1 : 0),
+          (bitsarray[9] ? 1 : 0),
+          (bitsarray[10] ? 1 : 0),
+          (bitsarray[11] ? 1 : 0),
+          (bitsarray[12] ? 1 : 0),
+          (bitsarray[13] ? 1 : 0),
+          (bitsarray[14] ? 1 : 0),
+          (bitsarray[15] ? 1 : 0)
+      );
+      */
     if (linear_counter > 0 && length_counter[0] > 0
         && (!option[OPT_TRI_MUTE] || tri_freq > 0))
     {
@@ -303,8 +348,18 @@ namespace xgm
       }
     }
 
-    UINT32 ret = twaveT ? muffledsquaretbl[3][tphase] : tritbl[0][tphase] << 2 ; //0011, 0110, 1100
-    return (ret * tvol) / 15;
+    UINT32 ret;
+    switch (twaveT) {
+        case 0: ret = wavetbl[tphase] << 2; 
+            break;
+        case 1: ret = tritbl[tphase];
+            break;
+        case 2: ret = pwmtbl[tphase];
+            break;
+        case 3: ret = dmwtbl[tphase] * 3;
+            break;
+    }
+    return ret * tvol;
   }
 
     UINT32 I7e02_DMC::calc_noise(UINT32 clocks)
@@ -403,7 +458,7 @@ namespace xgm
                         else if (mode & 2) // IRQ and not looped
                         {
                             irq = true;
-                            cpu->UpdateIRQ(I7e02_CPU::IRQD_DMC, true);
+                            cpu->UpdateIRQ(NES_CPU::IRQD_DMC, true);
                         }
                     }
                 }
@@ -490,54 +545,10 @@ namespace xgm
 
   UINT32 I7e02_DMC::Render (INT32 b[2])
   {
-    out[0] = (mask & 1) ? 0 : out[0];
-    out[1] = (mask & 2) ? 0 : out[1];
-    out[2] = (mask & 4) ? 0 : out[2];
-
     INT32 m[3];
-    m[0] = tnd_table[0][out[0]][0][0];
+    m[0] = out[0] << 3;
     m[1] = tnd_table[0][0][out[1]][0];
     m[2] = tnd_table[0][0][0][out[2]];
-
-    if (option[OPT_NONLINEAR_MIXER])
-    {
-        INT32 ref = m[0] + m[1] + m[2];
-        INT32 voltage = tnd_table[1][out[0]][out[1]][out[2]];
-        if (ref)
-        {
-            for (int i=0; i < 3; ++i)
-                m[i] = (m[i] * voltage) / ref;
-        }
-        else
-        {
-            for (int i=0; i < 3; ++i)
-                m[i] = voltage;
-        }
-    }
-
-    // anti-click nullifies any 4011 write but preserves nonlinearity
-    if (option[OPT_DPCM_ANTI_CLICK])
-    {
-        if (dmc_pop) // $4011 will cause pop this frame
-        {
-            // adjust offset to counteract pop
-            dmc_pop_offset += dmc_pop_follow - m[2];
-            dmc_pop = false;
-
-            // prevent overflow, keep headspace at edges
-            const INT32 OFFSET_MAX = (1 << 30) - (4 << 16);
-            if (dmc_pop_offset >  OFFSET_MAX) dmc_pop_offset =  OFFSET_MAX;
-            if (dmc_pop_offset < -OFFSET_MAX) dmc_pop_offset = -OFFSET_MAX;
-        }
-        dmc_pop_follow = m[2]; // remember previous position
-
-        m[2] += dmc_pop_offset; // apply offset
-
-        // TODO implement this in a better way
-        // roll off offset (not ideal, but prevents overflow)
-        if (dmc_pop_offset > 0) --dmc_pop_offset;
-        else if (dmc_pop_offset < 0) ++dmc_pop_offset;
-    }
 
     b[0]  = m[0] * sm[0][0];
     b[0] += m[1] * sm[0][1];
@@ -652,7 +663,7 @@ namespace xgm
     frame_sequence_count = 0;
     frame_sequence_steps = 4;
     frame_sequence_step = 0;
-    cpu->UpdateIRQ(I7e02_CPU::IRQD_FRAME, false);
+    cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
 
     for (i = 0; i < 0x0F; i++)
       Write (0x4208 + i, 0);
@@ -662,7 +673,7 @@ namespace xgm
     Write (0x4215, 0x00);
     if (option[OPT_UNMUTE_ON_RESET])
       Write (0x4215, 0x0f);
-    cpu->UpdateIRQ(I7e02_CPU::IRQD_DMC, false);
+    cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
 
     out[0] = out[1] = out[2] = 0;
     damp = 0;
@@ -754,7 +765,7 @@ namespace xgm
       }
 
       irq = false;
-      cpu->UpdateIRQ(I7e02_CPU::IRQD_DMC, false);
+      cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
 
       reg[adr-0x4208] = val;
       return true;
@@ -771,7 +782,7 @@ namespace xgm
       //DEBUG_OUT("4017 = %02X\n", val);
       frame_irq_enable = ((val & 0x40) != 0x40);
       if (frame_irq_enable) frame_irq = false;
-      cpu->UpdateIRQ(I7e02_CPU::IRQD_FRAME, false);
+      cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
 
       frame_sequence_count = 0;
       if (val & 0x80)
@@ -865,7 +876,7 @@ namespace xgm
       if (!(mode & 2))
       {
         irq = false;
-        cpu->UpdateIRQ(I7e02_CPU::IRQD_DMC, false);
+        cpu->UpdateIRQ(NES_CPU::IRQD_DMC, false);
       }
       dfreq = freq_table[pal][val&15];
       break;
@@ -911,7 +922,7 @@ namespace xgm
           ;
 
       frame_irq = false;
-      cpu->UpdateIRQ(I7e02_CPU::IRQD_FRAME, false);
+      cpu->UpdateIRQ(NES_CPU::IRQD_FRAME, false);
       return true;
     }
     else if (0x4208<=adr&&adr<=0x4214)
@@ -924,7 +935,7 @@ namespace xgm
   }
 
   // IRQ support requires CPU read access
-  void I7e02_DMC::SetCPU(I7e02_CPU* cpu_)
+  void I7e02_DMC::SetCPU(NES_CPU* cpu_)
   {
       cpu = cpu_;
   }

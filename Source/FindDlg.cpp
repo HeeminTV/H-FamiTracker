@@ -304,7 +304,7 @@ void CFindResultsBox::SelectItem(int Index)
 		static const CString HEADER_STR[] = {
 			_T("2A03 Pulse "), _T("2A03 Triangle"), _T("2A03 Noise"), _T("2A03 DPCM"),
 			_T("VRC6 Pulse "), _T("VRC6 Sawtooth"),
-			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("5B PSG "),
+			_T("MMC5 Pulse "), _T("N163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("5B PSG "),
 			_T("5E01 Pulse "), _T("5E01 Waveform"), _T("5E01 Noise"), _T("5E01 DPCM"),
 			_T("7E02 FWG "), _T("7E02 Waveform"), _T("7E02 Noise"), _T("7E02 DPCM"),
 			// bullshit
@@ -517,7 +517,7 @@ int CFindResultsBox::ChannelCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM l
 		static const CString HEADER_STR[] = {
 			_T("7E02 FWG "), _T("7E02 2-bit Waveform"), _T("7E02 Noise"), _T("7E02 DPCM"),
 			_T("VRC6 Pulse "), _T("VRC6 Sawtooth"),
-			_T("MMC5 Pulse "), _T("163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("5B PSG ")
+			_T("MMC5 Pulse "), _T("N163 Waveform "), _T("2C33"), _T("VRC7 FM "), _T("5B PSG ")
 		}; // Why we should have two of this?? one should be enough!!
 		int Pos = 0;
 		for (const auto &n : HEADER_STR) {

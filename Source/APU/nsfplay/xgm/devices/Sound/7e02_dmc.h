@@ -2,7 +2,7 @@
 #define _I7e02_DMC_H_
 
 #include "../device.h"
-#include "../CPU/7e02_cpu.h"
+#include "../CPU/nes_cpu.h"
 
 namespace xgm
 {
@@ -65,6 +65,7 @@ namespace xgm
     int tphase;        // triangle phase
     int twaveH;
     int twaveL;
+    int twaveT;
     int tvol;
 
     UINT32 nfreq;      // noise frequency
@@ -82,9 +83,7 @@ namespace xgm
     // noise envelope
     bool envelope_loop;
     bool envelope_disable;
-    bool envelope_write;
-
-    bool twaveT; // 
+    bool envelope_write; 
 
     int envelope_div_period;
     int envelope_div;
@@ -104,7 +103,7 @@ namespace xgm
     bool frame_irq;
     bool frame_irq_enable;
 
-    I7e02_CPU* cpu; // IRQ needs CPU access
+    NES_CPU* cpu; // IRQ needs CPU access
 
     inline UINT32 calc_tri (UINT32 clocks);
     inline UINT32 calc_dmc (UINT32 clocks);
@@ -142,7 +141,7 @@ namespace xgm
     virtual void SetStereoMix (int trk, xgm::INT16 mixl, xgm::INT16 mixr);
     virtual ITrackInfo *GetTrackInfo(int trk);
 
-    void SetCPU(I7e02_CPU* cpu_);
+    void SetCPU(NES_CPU* cpu_);
   };
 
 }

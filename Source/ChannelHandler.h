@@ -314,6 +314,7 @@ public:		// // //
 		\details The channel interface never controls the channel volume.
 		\param Volume The instrument volume level. */
 	void	SetVolume(int Volume) override;
+	void	SetInstDuty(int Duty) override; // Inst-set duty
 	/*!	\brief Obtains the current instrument volume of the channel.
 		\return The instrument volume level. */
 	int		GetVolume() const override;
@@ -393,6 +394,7 @@ protected:
 	/*!	\brief The current instrument volume of the channel.
 		\details The instrument volume is limited by the maximum volume level provided in the constructor. */
 	int				m_iInstVolume;					// // //
+	int				m_iInstDuty; // Instrument-set duty
 	/*!	\brief The current channel volume of the channel.
 		\details The channel volume is always limited by CChannelHandler::VOL_COLUMN_MAX rather than
 		the maximum volume level provided in the constructor. */

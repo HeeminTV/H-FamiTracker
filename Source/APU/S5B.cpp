@@ -38,14 +38,14 @@ const int32_t EXP_VOLUME[32] = {
 };
 
 const int32_t ENV_WAVEFORM[32] = {
-	  0,   0,   15,  15,
-	  31,  31,  47,  47,
-	  63,  63,  79,  79,
-	  95,  95, 111,  111,
-	  127, 127, 143, 143,
-	  159, 159, 175, 175,
-	  191, 191, 207, 207,
-	  223, 223, 247, 247
+	  0,   1,   1,   2,
+	  2,   3,   3,   4,
+	  5,   6,   7,   9,
+	 11,  13,  15,  18,
+	 22,  26,  31,  37,
+	 45,  53,  63,  76,
+	 90, 106, 127, 151,
+	180, 212, 255, 255
 };
 
 CS5BChannel::CS5BChannel(CMixer *pMixer, uint8_t ID) : CChannel(pMixer, SNDCHIP_5B, ID),
@@ -88,7 +88,7 @@ uint32_t CS5BChannel::GetTime()
 void CS5BChannel::Output(uint32_t Noise, uint32_t Envelope)
 {
 	int Level = ((m_iVolume & 0x20) ? Envelope : m_iVolume) & 0x1F;
-	int32_t Output = EXP_VOLUME[Level];
+	int32_t Output = ENV_WAVEFORM[Level];
 	if (!m_bSquareDisable && !m_bSquareHigh && m_iPeriod >= 2U)
 		Output = 0;
 	if (!m_bNoiseDisable && !Noise)

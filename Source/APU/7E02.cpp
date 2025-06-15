@@ -181,8 +181,11 @@ int C7E02::GetChannelLevelRange(int Channel) const
 {
 	//ASSERT(0 <= Channel && Channel < 5);
 	switch (Channel) {
-	case 0: case 1: case 2: case 3:
-		// pulse/tri/noise
+	case 0: case 1: case 2:
+		// fwg/tri
+		return 225;
+	case 3:
+		// noise
 		return 15;
 
 	case 4:

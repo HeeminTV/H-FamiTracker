@@ -72,7 +72,7 @@ BOOL CGotoDlg::OnInitDialog()
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
 		m_cChipEdit->AddString(_T("VRC7"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_FDS))
-		m_cChipEdit->AddString(_T("FDS"));
+		m_cChipEdit->AddString(_T("2C33"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_MMC5))
 		m_cChipEdit->AddString(_T("MMC5"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_N163))
@@ -108,7 +108,7 @@ BOOL CGotoDlg::OnInitDialog()
 	}
 	else if (Channel >= CHANID_FDS) {
 		Channel -= CHANID_FDS;
-		m_cChipEdit->SelectString(-1, _T("FDS"));
+		m_cChipEdit->SelectString(-1, _T("2C33"));
 	}
 	else if (Channel >= CHANID_N163_CH1) {
 		Channel -= CHANID_N163_CH1;
@@ -164,7 +164,7 @@ int CGotoDlg::GetChipFromString(const CString str)
 		return SNDCHIP_VRC6;
 	else if (str == _T("VRC7"))
 		return SNDCHIP_VRC7;
-	else if (str == _T("FDS"))
+	else if (str == _T("2C33"))
 		return SNDCHIP_FDS;
 	else if (str == _T("MMC5"))
 		return SNDCHIP_MMC5;

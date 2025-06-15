@@ -176,6 +176,27 @@ const COLOR_SCHEME SATURDAY_COLOR_SCHEME = {
 	11					// Font size
 };
 
+// Furnace
+const COLOR_SCHEME TILDEARROW_COLOR_SCHEME = {
+	_T("Furnace"),		// Name
+	0x40404,			// Background color
+	0x222222,			// Highlighted background color
+	0x362c1d,			// Highlighted background color 2
+	0xe6e5e3,			// Normal text color
+	0xe6e5e3,			// Highlighted text color
+	0xe6e5e3,			// Highlighted text color 2
+	0xe6a25d,			// Instrument color
+	0x58603,			// Volume color
+	0x5ebea,			// Effect color
+	0x332626,			// Selection color
+	0x804d14,			// Cursor color
+	0x40404,			// // // Current row
+	0x302080,			// // // Current row (edit mode)
+	0x40404,			// // // Current row (playing)
+	_T("Verdana"),		// Font
+	12					// Font size
+};
+
 
 // honestly belongs in CPatternEditor. ConfigAppearance should use
 // CPatternEditor to draw the preview.

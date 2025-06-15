@@ -96,7 +96,6 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_EN_CHANGE(IDC_7E02_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange7E02_Apu1OffsetEdit)
 	ON_EN_CHANGE(IDC_7E02_APU2_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange7E02_Apu2OffsetEdit)
 
-
 	ON_BN_CLICKED(IDC_EXTERNAL_OPLL, &CModulePropertiesDlg::OnBnClickedExternalOpll)
 	ON_EN_KILLFOCUS(IDC_OPLL_PATCHBYTE1, &CModulePropertiesDlg::OnEnKillfocusOpllPatchbyte1)
 	ON_EN_CHANGE(IDC_OPLL_PATCHNAME1, &CModulePropertiesDlg::OnEnChangeOpllPatchname1)
@@ -396,7 +395,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 			if (Gone & (1 << i)) switch (i) {
 			case 0: str += _T("VRC6 "); break;
 			case 1: str += _T("VRC7 "); break;
-			case 2: str += _T("FDS ");  break;
+			case 2: str += _T("2C33 ");  break;
 			case 3: str += _T("MMC5 "); break;
 			case 4: str += _T("N163 "); break;
 			case 5: str += _T("5B ");   break;

@@ -122,7 +122,7 @@ namespace {
 			case inst_type_t::INST_2A03: return "2A03"sv;
 			case inst_type_t::INST_VRC6: return "VRC6"sv;
 			case inst_type_t::INST_VRC7: return "VRC7"sv;
-			case inst_type_t::INST_FDS:  return "FDS"sv;
+			case inst_type_t::INST_FDS:  return "2C33"sv;
 			case inst_type_t::INST_N163: return "N163"sv;
 			case inst_type_t::INST_S5B:  return "5B"sv;
 			default: return ""sv;
@@ -134,7 +134,7 @@ namespace {
 			case SNDCHIP_NONE: return "2A03"sv;
 			case SNDCHIP_VRC6: return "VRC6"sv;
 			case SNDCHIP_VRC7: return "VRC7"sv;
-			case SNDCHIP_FDS:  return "FDS"sv;
+			case SNDCHIP_FDS:  return "2C33"sv;
 			case SNDCHIP_MMC5: return "MMC5"sv;
 			case SNDCHIP_N163: return "N163"sv;
 			case SNDCHIP_5B:  return "5B"sv;

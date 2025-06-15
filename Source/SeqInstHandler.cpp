@@ -70,6 +70,7 @@ void CSeqInstHandler::TriggerInstrument()
 
 	if (m_pInterface->IsActive()) {
 		m_pInterface->SetVolume(m_iDefaultVolume);
+		// m_pInterface->SetInstDuty(m_iDefaultDuty);
 		//		m_pInterface->SetDutyPeriod(m_iDefaultDuty); // not same
 	}
 }
@@ -198,6 +199,7 @@ bool CSeqInstHandler::ProcessSequence(int Index, unsigned Setting, int Value)
 		// Duty cycling
 	case SEQ_DUTYCYCLE:
 		m_pInterface->SetDutyPeriod(Value);
+		m_pInterface->SetInstDuty(Value);
 		return true;
 	}
 	return false;

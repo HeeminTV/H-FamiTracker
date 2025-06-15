@@ -81,7 +81,7 @@ BOOL CSwapDlg::OnInitDialog()
 	if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
 		m_cChipFirst->AddString(_T("VRC7"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_FDS))
-		m_cChipFirst->AddString(_T("FDS"));
+		m_cChipFirst->AddString(_T("2C33"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_MMC5))
 		m_cChipFirst->AddString(_T("MMC5"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_N163))
@@ -125,7 +125,7 @@ int CSwapDlg::GetChipFromString(const CString str)
 		return SNDCHIP_VRC6;
 	else if (str == _T("VRC7"))
 		return SNDCHIP_VRC7;
-	else if (str == _T("FDS"))
+	else if (str == _T("2C33"))
 		return SNDCHIP_FDS;
 	else if (str == _T("MMC5"))
 		return SNDCHIP_MMC5;

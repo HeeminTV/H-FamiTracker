@@ -54,6 +54,7 @@ CChannelHandler::CChannelHandler(int MaxPeriod, int MaxVolume) :
 	m_iPitch(0),
 	m_iNote(0),
 	m_iInstVolume(0),
+	m_iInstDuty(0),
 	m_iDefaultDuty(0),
 	m_iDutyPeriod(0),
 	m_iMaxPeriod(MaxPeriod),
@@ -141,6 +142,7 @@ void CChannelHandler::ResetChannel()
 	m_iDefaultDuty		= 0;
 	m_iDutyPeriod		= 0;		// // //
 	m_iInstVolume		= 0;
+	m_iInstDuty			= 0;
 
 	// Period
 	m_iNote				= 0;		// // //
@@ -1059,6 +1061,12 @@ void CChannelHandler::SetVolume(int Volume)
 {
 	m_iInstVolume = Volume;
 }
+
+void CChannelHandler::SetInstDuty(int Duty)
+{
+	m_iInstDuty = Duty;
+}
+
 
 int CChannelHandler::GetVolume() const
 {

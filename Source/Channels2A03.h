@@ -30,7 +30,7 @@ public:
 	virtual void ResetChannel();
 
 protected:
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleCut() override;
@@ -58,7 +58,7 @@ protected:
 	int		ConvertDuty(int Duty) const override;		// // //
 	void	ClearRegisters() override;
 
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleNote(int Note, int Octave) override;
@@ -81,7 +81,6 @@ public:
 	void	ResetChannel() override;		// // //
 	int		GetChannelVolume() const override;		// // //
 protected:
-
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	ClearRegisters() override;
 	CString	GetCustomEffectString() const override;		// // //
@@ -119,9 +118,9 @@ public:
 
 	void WriteDCOffset(unsigned char Delta);		// // //
 	void SetLoopOffset(unsigned char Loop);		// // //
-	void PlaySample(const CDSample *pSamp, int Pitch);		// // //
+	void PlaySample(const CDSample* pSamp, int Pitch);		// // //
 protected:
-	void	HandleNoteData(stChanNote *pNoteData, int EffColumns) override;
+	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleEmptyNote() override;
 	void	HandleCut() override;

@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "DPI.h"
+#include <bitset>
 
 #include <algorithm>
 #include <functional>		// // //
@@ -1846,15 +1847,15 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	int line = -1;		// // //
 	CString text;
 
-	const int BAR_OFFSET = LINE_HEIGHT * (3 + 8 +
+	const int BAR_OFFSET = LINE_HEIGHT * (3 + 7 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC6) * 5 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_MMC5) * 5 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_N163) * 18 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_FDS) * 13 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_5B) * 8 +		// // //
-		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 8 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 9
+		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8
 	);
 	int vis_line = 0;
 
@@ -2102,8 +2103,6 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 
 	}
 
-	text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);		// // //
-	++line; y += LINE_HEIGHT;		// // //
 	DrawTextFunc(180, text);
 
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_VRC6)) {
@@ -2225,7 +2224,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	}
 
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_FDS)) {
-		DrawHeaderFunc(_T("FDS"));		// // //
+		DrawHeaderFunc(_T("2C33"));		// // //
 
 		// // // FDS wave
 		const int wave_x = x + DPI::SX(300);
@@ -2415,59 +2414,114 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			reg[7] = pState->GetValue();
 			update[7] = pState->GetLastUpdatedTime() | (pState->GetNewValueTime() << 4);
 
-			// End
-
-
 			text.Format(_T("$%04X:"), 0x4200 + i * 4);		// // //
 			DrawRegFunc(text, 4);
 
 			unsigned int period, vol;
 			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_7E02, i);		// // //
-	//		pDC->FillSolidRect(x + 200, y, x + 400, y + 18, m_colEmptyBg);
 
 			LPCTSTR FWGwave[4] = { _T("square"),_T("pulse"),_T("triangle"),_T("sawtooth") };
-			// LPCTSTR WaveMode[2] = { _T("custom"),_T("muffled-square") };
-			LPCTSTR WaveShape[4] = { _T("_"),_T("-"),_T("="),_T("^") };
-			LPCTSTR visshape[8];
 
+			char WaveViewerSpace[] = "";
+
+			LPCTSTR WaveShape_deltaw[5] = { _T(" "),_T("_"),_T("-"),_T("="),_T("^") };
+			LPCTSTR WaveShape_2bitw[3] = { _T(" "),_T("_"),_T("-") };
+
+			LPCTSTR visshape_2bitw_top[8];
+			LPCTSTR visshape_2bitw_bottom[8];
+
+			LPCTSTR visshape_deltaw_top[16];
+			LPCTSTR visshape_deltaw_bottom[16];
+
+			//     _ -
+			// _ -
 			switch (i) {
-			case 0: case 1:
-				period = reg[2] | ((reg[3] & 7) << 8);
-				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
-				text.Format(_T("%s, vol = %02i, wave = %i (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6, FWGwave[reg[0] >> 6]); break;
-			case 2:
-				period = reg[2] | ((reg[3] & 7) << 8);
-				if (!(reg[7] >> 4)) {
-					for (int i = 0; i < 8; ++i) {
-						int shift = (7 - i) * 2;
-						uint32_t value = (((reg[1] << 8) + reg[5]) >> shift) & 0x3;
-						visshape[i] = WaveShape[value];
-					}
+				case 0: case 1:
+					period = reg[2] | ((reg[3] & 7) << 8);
+					vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+					text.Format(_T("%s, vol = %02i, wave = %i (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[0] >> 6, FWGwave[reg[0] >> 6]); break;
+				case 2:
+					period = reg[2] | ((reg[3] & 7) << 8);
+					switch(reg[7] >> 4) {
+						case 0:
+							for (int n = 0; n < 8; ++n) {
+								uint32_t value = (((reg[1] << 8) + reg[5]) >> ((7 - n) * 2)) & 0x3;
+								visshape_2bitw_top[n] = WaveShape_2bitw[value > 1 ? value - 1 : 0];
+								visshape_2bitw_bottom[n] = WaveShape_2bitw[value < 2 ? value + 1 : 0];
+							}
 
-					text.Format(_T("%s, vol = %02i, mode = 0 [ %s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
-						visshape[0], visshape[1], visshape[2], visshape[3],
-						visshape[4], visshape[5], visshape[6], visshape[7]
-					);
-				}
-				else {
-					text.Format(_T("%s, vol = %02i, mode = 1 (muffled-square)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
-				}
-				break;
-			case 3:
-				period = reg[2] & 0x0F;
-				vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
-				text.Format(_T("%s, vol = %02i, mode = %i"), GetPitchTextFuncLong(1, period, freq, !(reg[2] >> 7)), vol, reg[2] >> 7);
-				break;
-			case 4:
-				period = reg[0] & 0x0F;
-				vol = 15 * !pSoundGen->PreviewDone();
-				text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
-					(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
-				text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);
-				break;
-			case 5:
-				text.Format(_T(""), 0, 0); // Clear
-				break;
+							text.Format(_T("                                                      %s[ %s%s%s%s%s%s%s%s ]"),
+								WaveViewerSpace,
+								visshape_2bitw_bottom[0], visshape_2bitw_bottom[1], visshape_2bitw_bottom[2], visshape_2bitw_bottom[3],
+								visshape_2bitw_bottom[4], visshape_2bitw_bottom[5], visshape_2bitw_bottom[6], visshape_2bitw_bottom[7]
+							);
+
+							++line; y += LINE_HEIGHT;	// go to the noise's line
+							DrawTextFunc(180, text);	// draw the bottom wave
+							--line; y -= LINE_HEIGHT;	// return to the triangle's line
+
+							text.Format(_T("%s, vol = %02i, mode = 0 %s[ %s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
+								WaveViewerSpace,
+								visshape_2bitw_top[0], visshape_2bitw_top[1], visshape_2bitw_top[2], visshape_2bitw_top[3],
+								visshape_2bitw_top[4], visshape_2bitw_top[5], visshape_2bitw_top[6], visshape_2bitw_top[7]
+							);
+							break;
+						case 1:
+							text.Format(_T("%s, vol = %02i, mode = 1 (triangle)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
+							break;
+						case 2:
+							text.Format(_T("%s, vol = %02i, mode = 2 (%0.3f%% pulse)"), GetPitchTextFunc(3, period, freq), reg[7] & 15, reg[5] < 31 ? (reg[5] + 1) * 3.125 : 100);
+							break;
+						case 3:
+							int deltacounter = 0; // not DMC counter
+							std::bitset<16> bitsarray(((reg[1] << 8) + reg[5]));
+							for (int n = 0; n < 16; ++n) {
+								if (bitsarray[15 - n]) {
+									if (deltacounter != 7) deltacounter++;
+								}
+								else {
+									if (deltacounter != 0) deltacounter--;
+								}
+
+								visshape_deltaw_top[n] = WaveShape_deltaw[deltacounter > 3 ? deltacounter - 3 : 0];
+								visshape_deltaw_bottom[n] = WaveShape_deltaw[deltacounter < 4 ? deltacounter + 1 : 0];
+							}
+							text.Format(_T("                                                      %s[ %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s ]"),
+								WaveViewerSpace,
+								visshape_deltaw_bottom[0], visshape_deltaw_bottom[1], visshape_deltaw_bottom[2], visshape_deltaw_bottom[3],
+								visshape_deltaw_bottom[4], visshape_deltaw_bottom[5], visshape_deltaw_bottom[6], visshape_deltaw_bottom[7],
+								visshape_deltaw_bottom[8], visshape_deltaw_bottom[9], visshape_deltaw_bottom[10], visshape_deltaw_bottom[11],
+								visshape_deltaw_bottom[12], visshape_deltaw_bottom[13], visshape_deltaw_bottom[14], visshape_deltaw_bottom[15]
+							);
+
+							++line; y += LINE_HEIGHT;	// go to the noise's line
+							DrawTextFunc(180, text);	// draw the bottom wave
+							--line; y -= LINE_HEIGHT;	// return to the triangle's line
+
+							text.Format(_T("%s, vol = %02i, mode = 3 %s[ %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
+								WaveViewerSpace,
+								visshape_deltaw_top[0], visshape_deltaw_top[1], visshape_deltaw_top[2], visshape_deltaw_top[3],
+								visshape_deltaw_top[4], visshape_deltaw_top[5], visshape_deltaw_top[6], visshape_deltaw_top[7],
+								visshape_deltaw_top[8], visshape_deltaw_top[9], visshape_deltaw_top[10], visshape_deltaw_top[11],
+								visshape_deltaw_top[12], visshape_deltaw_top[13], visshape_deltaw_top[14], visshape_deltaw_top[15]
+							);
+							break;
+					}
+					break;
+				case 3:
+					period = reg[2] & 0x0F;
+					vol = (reg[0] & 0x10) ? reg[0] & 0x0F : 0x15;
+					text.Format(_T("%s, vol = %02i, mode = %i"), GetPitchTextFuncLong(1, period, freq, !(reg[2] >> 7)), vol, reg[2] >> 7);
+					break;
+				case 4:
+					period = reg[0] & 0x0F;
+					vol = 15 * !pSoundGen->PreviewDone();
+					text.Format(_T("%s, %-5s size = %-4i byte%c"), GetPitchTextFuncLong(1, (period & 0x0F), freq, 1),
+						(reg[0] & 0x40) ? _T("loop,") : _T("once,"), (reg[3] << 4) | 1, reg[3] ? 's' : ' ');
+					break;
+				case 5:
+					text.Format(_T(""), 0, 0); // Clear
+					break;
 			}
 
 			DrawTextFunc(180, text);
@@ -2484,14 +2538,13 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 
 		}
 
-		// text.Format(_T("position: %02i, delta = $%02X"), m_DPCMState.SamplePos, m_DPCMState.DeltaCntr);	dawg	// // //
 		++line; y += LINE_HEIGHT;		// // //
 		DrawTextFunc(180, text);
 	}
 	pDC->SelectObject(pOldFont);
 
 	// Surrounding frame
-//	pDC->Draw3dRect(20, 20, 200, line * 18 + 20, 0xA0A0A0, 0x505050);		// // //
+	//	pDC->Draw3dRect(20, 20, 200, line * 18 + 20, 0xA0A0A0, 0x505050);		// // //
 
 }
 

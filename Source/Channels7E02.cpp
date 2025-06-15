@@ -308,7 +308,7 @@ void C7E02WaveformChan::RefreshChannel()
 	unsigned char HiFreq = (Freq & 0xFF);
 	unsigned char LoFreq = (Freq >> 8);
 
-	int WaveType = (m_iInstrument < 1) ? true : false; // Wave mode of the wave channel
+	int WaveType = m_iInstDuty; // Wave mode of the wave channel
 
 	if (m_iInstVolume > 0 && m_iVolume > 0 && m_bGate) {
 		WriteRegister(0x4208, (m_bEnvelopeLoop << 7) | (m_iLinearCounter & 0x7F));		// // //
