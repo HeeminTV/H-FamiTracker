@@ -287,10 +287,21 @@ namespace xgm
           }
       }
 
-      // Mode 1 (Triangle)
-      static UINT32 tritbl[32] = {
-            15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-      };
+      // Mode 1 (Delta-Modulated-Waveform mode)
+      static UINT32 dmwtbl[32];
+      int deltacounter = 0; // not DMC counter
+      std::bitset<16> bitsarray(fullbits);
+      for (int i = 0; i < 16; ++i) {
+          if (bitsarray[15 - i]) {
+              if (deltacounter != 7) deltacounter++;
+          }
+          else {
+              if (deltacounter != 0) deltacounter--;
+          }
+
+          dmwtbl[i * 2] = deltacounter;
+          dmwtbl[i * 2 + 1] = deltacounter;
+      }
 
       // Mode 2 (5-bit PWM)
       static UINT32 pwmtbl[32];
@@ -302,20 +313,9 @@ namespace xgm
           }
       }
 
-      // Mode 3 (Delta-Modulated-Waveform mode)
-      static UINT32 dmwtbl[32];
-      int deltacounter = 0; // not DMC counter
-      std::bitset<16> bitsarray(fullbits);
-      for (int i = 0; i < 16; ++i) {
-          if (bitsarray[15 - i]) {
-              if (deltacounter != 7) deltacounter++;
-          } else {
-              if (deltacounter != 0) deltacounter--;
-          }
+      // Mode 3 (Triangle)
+      static UINT32 tritbl[32] = { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
-          dmwtbl[i * 2] = deltacounter;
-          dmwtbl[i * 2 + 1] = deltacounter;
-      }
       /*std::printf(
           "%d,%d,%d,%d,%d,%d,%d,%d, %d,%d,%d,%d,%d,%d,%d,%d\r\n",
           (bitsarray[0] ? 1 : 0), 
@@ -352,11 +352,11 @@ namespace xgm
     switch (twaveT) {
         case 0: ret = wavetbl[tphase] << 2; 
             break;
-        case 1: ret = tritbl[tphase];
+        case 1: ret = dmwtbl[tphase] * 3;
             break;
         case 2: ret = pwmtbl[tphase];
             break;
-        case 3: ret = dmwtbl[tphase] * 3;
+        case 3: ret = tritbl[tphase];
             break;
     }
     return ret * tvol;

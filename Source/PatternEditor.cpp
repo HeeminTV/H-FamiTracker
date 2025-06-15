@@ -2466,13 +2466,13 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 								visshape_2bitw_top[4], visshape_2bitw_top[5], visshape_2bitw_top[6], visshape_2bitw_top[7]
 							);
 							break;
-						case 1:
-							text.Format(_T("%s, vol = %02i, mode = 1 (triangle)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
+						case 3:
+							text.Format(_T("%s, vol = %02i, mode = 3 (triangle)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
 							break;
 						case 2:
 							text.Format(_T("%s, vol = %02i, mode = 2 (%0.3f%% pulse)"), GetPitchTextFunc(3, period, freq), reg[7] & 15, reg[5] < 31 ? (reg[5] + 1) * 3.125 : 100);
 							break;
-						case 3:
+						case 1:
 							int deltacounter = 0; // not DMC counter
 							std::bitset<16> bitsarray(((reg[1] << 8) + reg[5]));
 							for (int n = 0; n < 16; ++n) {
@@ -2498,7 +2498,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 							DrawTextFunc(180, text);	// draw the bottom wave
 							--line; y -= LINE_HEIGHT;	// return to the triangle's line
 
-							text.Format(_T("%s, vol = %02i, mode = 3 %s[ %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
+							text.Format(_T("%s, vol = %02i, mode = 1 %s[ %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s ]"), GetPitchTextFunc(3, period, freq), reg[7] & 15,
 								WaveViewerSpace,
 								visshape_deltaw_top[0], visshape_deltaw_top[1], visshape_deltaw_top[2], visshape_deltaw_top[3],
 								visshape_deltaw_top[4], visshape_deltaw_top[5], visshape_deltaw_top[6], visshape_deltaw_top[7],
