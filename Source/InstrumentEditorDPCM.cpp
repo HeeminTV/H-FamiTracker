@@ -197,6 +197,7 @@ void CInstrumentEditorDPCM::BuildKeyList()
 void CInstrumentEditorDPCM::UpdateCurrentKey()		// // //
 {
 	UpdateKey(MIDI_NOTE(m_iOctave, m_iSelectedKey + 1));
+	GetDocument()->UpdateAllViews(NULL, UPDATE_PATTERN); // Taken from E-FamiTracker by Euly
 }
 
 void CInstrumentEditorDPCM::UpdateKey(int Index)
