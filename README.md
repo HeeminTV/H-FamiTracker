@@ -2,7 +2,7 @@
 
 # H-FamiTracker 
 
-H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**ipnotico"
+H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**eemin"
 
 ## Modifications from other forks
 
@@ -10,7 +10,7 @@ This fork also presents some features from various FamiTracker forks.
 
 ### [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) presented features
 
-This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
+This fork ***DOES NOT OWN*** the code that is taken from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
 
 - 5E01
 
@@ -24,7 +24,7 @@ This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https:/
 
 ### [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) presented features
 
-This fork ***DO NOT OWN*** the codes that are taken from [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) by @HertzDevil
+This fork ***DOES NOT OWN*** the code that is taken from [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) by @HertzDevil
 
 - ~~SN76489~~
 
