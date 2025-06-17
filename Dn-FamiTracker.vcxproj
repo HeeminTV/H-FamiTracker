@@ -677,7 +677,7 @@
     <ClCompile Include="Source\APU\N163.cpp" />
     <ClCompile Include="Source\APU\VRC6.cpp" />
     <ClCompile Include="Source\APU\VRC7.cpp" />
-	<ClCompile Include="Source\APU\OPLL.cpp" />
+    <ClCompile Include="Source\APU\OPLL.cpp" />
     <ClCompile Include="Source\Blip_Buffer\Blip_Buffer.cpp" />
     <ClCompile Include="Source\ChannelHandler.cpp" />
     <ClCompile Include="Source\Channels2A03.cpp" />
@@ -687,7 +687,7 @@
     <ClCompile Include="Source\ChannelsS5B.cpp" />
     <ClCompile Include="Source\ChannelsVRC6.cpp" />
     <ClCompile Include="Source\ChannelsVRC7.cpp" />
-	<ClCompile Include="Source\ChannelsOPLL.cpp" />
+    <ClCompile Include="Source\ChannelsOPLL.cpp" />
     <ClCompile Include="Source\SoundInterface.cpp" />
     <ClCompile Include="Source\MIDI.cpp" />
     <ClCompile Include="Source\Clipboard.cpp" />
@@ -1025,7 +1025,7 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "Dn-help\hlp\HTML
     <ClInclude Include="Source\APU\N163.h" />
     <ClInclude Include="Source\APU\VRC6.h" />
     <ClInclude Include="Source\APU\VRC7.h" />
-	<ClInclude Include="Source\APU\OPLL.h" />
+    <ClInclude Include="Source\APU\OPLL.h" />
     <ClInclude Include="Source\Blip_Buffer\Blip_Buffer.h" />
     <ClInclude Include="Source\ChannelHandler.h" />
     <ClInclude Include="Source\Channels2A03.h" />
@@ -1035,7 +1035,7 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "Dn-help\hlp\HTML
     <ClInclude Include="Source\ChannelsS5B.h" />
     <ClInclude Include="Source\ChannelsVRC6.h" />
     <ClInclude Include="Source\ChannelsVRC7.h" />
-	<ClInclude Include="Source\ChannelsOPLL.h" />
+    <ClInclude Include="Source\ChannelsOPLL.h" />
     <ClInclude Include="Source\SoundInterface.h" />
     <ClInclude Include="Source\AboutDlg.h" />
     <ClInclude Include="Source\ChannelsDlg.h" />
@@ -1158,6 +1158,7 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "Dn-help\hlp\HTML
     <Image Include="res\Application.ico" />
     <Image Include="res\Inst_5B.ico" />
     <Image Include="res\NewBanner.bmp" />
+    <Image Include="res\YM2413.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Source\libsamplerate\libsamplerate.vcxproj">

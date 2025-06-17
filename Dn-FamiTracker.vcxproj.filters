@@ -774,6 +774,12 @@
     <ClCompile Include="Source\Channels7E02.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\APU\OPLL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ChannelsOPLL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Exception.h">
@@ -1550,6 +1556,12 @@
     <ClInclude Include="Source\Channels7E02.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\APU\OPLL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ChannelsOPLL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dn-FamiTracker.rc">
@@ -1636,6 +1648,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\Inst_5B.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\YM2413.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
