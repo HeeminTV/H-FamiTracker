@@ -1035,7 +1035,7 @@ void CMMC5::Write(uint16_t Address, uint8_t Value)
 	case 0x5003:
 		m_pSquare1->Write(3, Value);
 		break;
-		// Channel 2
+	// Channel 2
 	case 0x5004:
 		m_pSquare2->Write(0, Value);
 		break;
@@ -1045,19 +1045,19 @@ void CMMC5::Write(uint16_t Address, uint8_t Value)
 	case 0x5007:
 		m_pSquare2->Write(3, Value);
 		break;
-		// Channel 3... (doesn't exist) [now it does]
+	// Channel 3... (doesn't exist) [now it does]
 	case 0x5010:
 		m_bDACMode = (Value & 1);
 		break;
 	case 0x5011:
 		if (m_bDACMode == true && Value != 0) m_iDAC = Value;
 		break;
-		// Control
+	// Control
 	case 0x5015:
 		m_pSquare1->WriteControl(Value & 1);
 		m_pSquare2->WriteControl((Value >> 1) & 1);
 		break;
-		// Hardware multiplier
+	// Hardware multiplier
 	case 0x5205:
 		m_iMulLow = Value;
 		break;
@@ -1167,7 +1167,7 @@ void CMMC5::Process(uint32_t Time)
 				}
 			}
 		}
-		int out = ((m_iDAC * PCMVolume) >> 8) + 1;
+		int out = ((m_iDAC * PCMVolume) >> 9) + 1;
 
 		//for (int i = DAChistorylen; i >= 1; i--)
 		//	DAChistory[i] = DAChistory[i - 1];
@@ -1197,8 +1197,8 @@ void CMMC5::Process(uint32_t Time)
 double CMMC5::GetFreq(int Channel) const		// // //
 {
 	switch (Channel) {
-	case 0: return m_pSquare1->GetFrequency();
-	case 1: return m_pSquare2->GetFrequency();
+		case 0: return m_pSquare1->GetFrequency();
+		case 1: return m_pSquare2->GetFrequency();
 	}
 	return 0.;
 }

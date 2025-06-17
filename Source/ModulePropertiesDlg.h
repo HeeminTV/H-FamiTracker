@@ -40,7 +40,7 @@ private:
 	unsigned int m_iSelectedSong;
 	unsigned char m_iExpansions;		// // //
 	uint8_t m_iN163Channels;
-	int16_t m_iDeviceLevelOffset[12];
+	int16_t m_iDeviceLevelOffset[13];
 
 	uint8_t m_iOPLLPatchBytes[19 * 8];
 	std::string m_strOPLLPatchNames[19];
@@ -62,10 +62,10 @@ protected:
 
 	void FillSongList();
 
-	NoNotifyEdit m_cDeviceLevelEdit[12]; // HFT modifications
-	CSliderCtrl m_cDeviceLevelSlider[12];
-	CStatic m_cDeviceLevelLabel[12];
-	CStatic m_cDevicedBLabel[12];
+	NoNotifyEdit m_cDeviceLevelEdit[13]; // HFT modifications
+	CSliderCtrl m_cDeviceLevelSlider[13];
+	CStatic m_cDeviceLevelLabel[13];
+	CStatic m_cDevicedBLabel[13];
 
 	CStatic m_cOPLLPatchLabel[19];
 	NoNotifyEdit m_cOPLLPatchBytesEdit[19];
@@ -110,6 +110,7 @@ public:
 	afx_msg void OnBnClickedExpansionN163();
 	afx_msg void OnBnClickedExpansion5E01(); // Taken from E-FamiTracker by Euly
 	afx_msg void OnBnClickedExpansion7E02();
+	afx_msg void OnBnClickedExpansionOPLL();
 
 	afx_msg void OnEnChangeApu1OffsetEdit();
 	afx_msg void OnEnChangeApu2OffsetEdit();
@@ -123,6 +124,7 @@ public:
 	afx_msg void OnEnChange5E01_Apu2OffsetEdit();
 	afx_msg void OnEnChange7E02_Apu1OffsetEdit();
 	afx_msg void OnEnChange7E02_Apu2OffsetEdit();
+	afx_msg void OnEnChangeOPLLOffsetEdit();
 
 	// what the heck is the real purpose of these?? 
 	afx_msg void OnBnClickedExternalOpll();
@@ -163,4 +165,5 @@ public:
 	afx_msg void OnEnKillfocusOpllPatchbyte18();
 	afx_msg void OnEnChangeOpllPatchname18();
 	afx_msg void OnBnClickedSurveyMixing();
+	afx_msg void OnBnClickedExpansion7e3();
 };

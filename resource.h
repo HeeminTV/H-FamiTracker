@@ -891,7 +891,6 @@
 #define ID_INSTRUMENT_ADD_VRC6          36869
 #define ID_INSTRUMENT_ADD_VRC7          36870
 #define ID_INSTRUMENT_ADD_5E01          36873
-#define ID_INSTRUMENT_ADD_7E02          53277
 #define ID_INDICATOR_CHIP               53248
 #define ID_INDICATOR_INSTRUMENT         53249
 #define ID_INDICATOR_OCTAVE             53250
@@ -922,6 +921,7 @@
 #define IDC_SLIDER_7E02_APU2            53274
 #define IDC_LEVEL_7E02_APU1             53275
 #define IDC_LEVEL_7E02_APU2             53276
+#define ID_INSTRUMENT_ADD_7E02          53277
 #define IDC_7E02_APU1_OFFSET_SLIDER     53278
 #define IDC_7E02_APU2_OFFSET_SLIDER     53279
 #define IDC_7E02_APU1_OFFSET_DB         53280
@@ -929,6 +929,12 @@
 #define IDC_7E02_APU1_OFFSET_EDIT       53282
 #define IDC_7E02_APU2_OFFSET_EDIT       53283
 #define IDC_EXPANSION_7E02              53284
+#define IDC_STATIC_OPLL                 53290
+#define IDC_LEVEL_OPLL                  53285
+#define IDC_OPLL_OFFSET_EDIT            53286
+#define IDC_OPLL_OFFSET_SLIDER          53287
+#define IDC_OPLL_OFFSET_DB              53288
+#define IDC_EXPANSION_OPLL              53289
 
 // Next default values for new objects
 // 

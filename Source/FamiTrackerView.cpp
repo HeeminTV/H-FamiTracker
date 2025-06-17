@@ -71,15 +71,15 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("Ixy - Hardware sweep down, X = speed, Y = shift"),
 	_T("0xy - Arpeggio, X = second note, Y = third note (if zero, produces 2-frame period)"),
 	_T("4xy - Vibrato, X = speed, Y = depth"),
-	_T("7xy - Tremolo, X = speed, Y = depth / 2-bit waveform higher bytes"),
+	_T("7xy - Tremolo, X = speed, Y = depth / 7E02 waveform higher bits"),
 	_T("Pxx - Fine pitch, XX - 80 = offset"),
 	_T("Gxx - Row delay, XX = number of frames"),
 	_T("Zxx - DPCM delta counter setting, XX<=7F = DC bias"),
 	_T("1xx - Slide up, XX = speed (pitch/frame)"),
 	_T("2xx - Slide down, XX = speed (pitch/frame)"),
-	_T("Vxx - Set FWG waveform mode / Noise mode to XX / 2-bit waveform lower bytes"),
+	_T("Vxx - Set waveform mode / Noise mode to XX / 7E02 waveform lower bits"),
 	_T("Vxx - Set N163 wave index to XX"),
-	_T("Vxx - Set VRC7 patch index to XX"),
+	_T("Vxx - Set OPLL patch index to XX"),
 	_T("Yxx - Set DPCM sample offset to XX<=3F"),
 	_T("Qxy - Portamento up, X = speed, Y = notes"),
 	_T("Rxy - Portamento down, X = speed, Y = notes"),
@@ -99,8 +99,8 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("Ixx - 5B envelope rate, high byte"),
 	_T("Jxx - 5B envelope rate, low byte"),
 	_T("Wxx - 5B noise pitch, 1F = highest"),
-	_T("Hxx - VRC7 custom patch port, XX = register address"),
-	_T("Ixx - VRC7 custom patch write, XX = register value"),
+	_T("Hxx - OPLL custom patch port, XX = register address"),
+	_T("Ixx - OPLL custom patch write, XX = register value"),
 	_T("Lxx - Note release, XX = frames to wait"),
 	_T("Oxx - Set groove to XX"),
 	_T("Txy - Delayed transpose (upward), X = frames to wait, Y = semitone offset"),
@@ -2515,6 +2515,10 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 		if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
 			m_pNoteQueue->AddMap({ CHANID_7E02_SQUARE1, CHANID_7E02_SQUARE2, CHANID_7E02_WAVEFORM, CHANID_7E02_NOISE, CHANID_7E02_DPCM });
 
+		if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
+			m_pNoteQueue->AddMap({ CHANID_OPLL_CH1, CHANID_OPLL_CH2, CHANID_OPLL_CH3,
+								  CHANID_OPLL_CH4, CHANID_OPLL_CH5, CHANID_OPLL_CH6 });
+
 	}
 
 //	for (int i = 0; i < Channels; ++i)
@@ -3808,7 +3812,7 @@ void CFamiTrackerView::OnTrackerRecordToInst()		// // //
 	int Chip = pDoc->GetChipType(m_iMenuChannel);
 	m_iMenuChannel = -1;
 
-	if (Channel == CHANID_2A03_DPCM || Chip == SNDCHIP_VRC7) {
+	if (Channel == CHANID_2A03_DPCM || Chip == SNDCHIP_VRC7 || Chip == SNDCHIP_OPLL) {
 		AfxMessageBox(IDS_DUMP_NOT_SUPPORTED, MB_ICONERROR); return;
 	}
 	if (pDoc->GetInstrumentCount() >= MAX_INSTRUMENTS) {
@@ -4201,7 +4205,7 @@ CString	CFamiTrackerView::GetEffectHint(const stChanNote &Note, int Column) cons
 	if (Index > EF_FDS_MOD_SPEED_HI || (Index == EF_FDS_MOD_SPEED_HI && Param >= 0x10)) ++Index;
 	if (Index > EF_FDS_MOD_DEPTH || (Index == EF_FDS_MOD_DEPTH && Param >= 0x80)) ++Index;
 	if (Index > EF_NOTE_CUT || (Index == EF_NOTE_CUT && Param >= 0x80 && Channel == CHANID_2A03_TRIANGLE)) ++Index;
-	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && (Chip == SNDCHIP_VRC7 || Chip == SNDCHIP_N163))) ++Index;
+	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && (Chip == SNDCHIP_VRC7 || Chip == SNDCHIP_OPLL || Chip == SNDCHIP_N163))) ++Index;
 	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && Chip == SNDCHIP_N163)) ++Index;
 	if (Index > EF_VOLUME || (Index == EF_VOLUME && Param >= 0xE0)) ++Index;
 	if (Index > EF_SPEED || (Index == EF_SPEED && Param >= GetDocument()->GetSpeedSplitPoint())) ++Index;

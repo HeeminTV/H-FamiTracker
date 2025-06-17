@@ -34,6 +34,7 @@
 #include "S5B.h"
 #include "5E01.h" // Taken from E-FamiTracker by Euly
 #include "7E02.h"
+#include "OPLL.h"
 
 #include "SoundChip.h"
 #include "SoundChip2.h"
@@ -190,6 +191,7 @@ CAPU::CAPU(IAudioCallback *pCallback) :		// // //
 	m_pVRC7(std::make_unique<CVRC7>()),
 	m_p5E01(std::make_unique<C5E01>()), // Taken from E-FamiTracker by Euly
 	m_p7E02(std::make_unique<C7E02>()),
+	m_pOPLL(std::make_unique<COPLL>()),
 	m_iExternalSoundChips(0),
 	m_iCyclesToRun(0),
 	m_iSampleRate(44100)		// // //
@@ -200,6 +202,7 @@ CAPU::CAPU(IAudioCallback *pCallback) :		// // //
 	m_pS5B  = new CS5B(m_pMixer);
 
 	m_fLevelVRC7 = 1.0f;
+	m_fLevelOPLL = 1.0f;
 
 #ifdef LOGGING
 	m_pLog = new CFile("apu_log.txt", CFile::modeCreate | CFile::modeWrite);
@@ -345,6 +348,8 @@ void CAPU::SetExternalSound(uint8_t Chip)
 		m_SoundChips2.push_back(m_p5E01.get());
 	if (Chip & SNDCHIP_7E02)
 		m_SoundChips2.push_back(m_p7E02.get());
+	if (Chip & SNDCHIP_OPLL)
+		m_SoundChips2.push_back(m_pOPLL.get());
 
 	// Set (unused) bitfield of external sound chips enabled.
 	m_iExternalSoundChips = Chip;
@@ -376,6 +381,7 @@ void CAPU::ChangeMachineRate(int Machine, int FrameRate)		// // //
 	m_p7E02->ChangeMachine(Machine);
 	m_pMixer->SetClockRate(BaseFreq);
 	m_pVRC7->SetSampleSpeed(m_iSampleRate, BaseFreq, FrameRate);
+	m_pOPLL->SetSampleSpeed(m_iSampleRate, BaseFreq, FrameRate);
 	m_iFrameCycleCount = BaseFreq / FrameRate;
 }
 
@@ -623,9 +629,10 @@ double CAPU::GetFreq(int Chip, int Chan) const
 	case SNDCHIP_FDS:		return PtrGetFreq(*m_pFDS);
 	case SNDCHIP_MMC5:		return PtrGetFreq(*m_pMMC5);
 	case SNDCHIP_N163:		return PtrGetFreq(*m_pN163);
-	case SNDCHIP_5B:	return PtrGetFreq(*m_pS5B);
+	case SNDCHIP_5B:		return PtrGetFreq(*m_pS5B);
 	case SNDCHIP_5E01:		return PtrGetFreq(*m_p5E01); // Taken from E-FamiTracker by Euly
 	case SNDCHIP_7E02:		return PtrGetFreq(*m_p7E02);
+	case SNDCHIP_OPLL:		return PtrGetFreq(*m_pOPLL);
 
 	default: AfxDebugBreak(); return 0.;
 	}
@@ -652,6 +659,7 @@ CRegisterState *CAPU::GetRegState(int Chip, int Reg) const		// // //
 	case SNDCHIP_5B:  return PtrGetRegState(*m_pS5B);
 	case SNDCHIP_5E01: return PtrGetRegState(*m_p5E01); // Taken from E-FamiTracker by Euly
 	case SNDCHIP_7E02: return PtrGetRegState(*m_p7E02);
+	case SNDCHIP_OPLL: return PtrGetRegState(*m_pOPLL);
 
 	default: AfxDebugBreak(); return nullptr;
 	}
@@ -723,7 +731,9 @@ void CAPUConfig::SetChipLevel(chip_level_t Chip, float LeveldB, bool SurveyMix)
 			-13,	// 5E01 APU2
 
 			0,		// 7E02 APU1
-			-13		// 7E02 APU2
+			-13,	// 7E02 APU2
+
+			776,	// OPLL
 		};
 		LevelLinear = powf(10, (LeveldB +
 			((static_cast<float>(dblevelcorrection[Chip]) / 100.0f)) +

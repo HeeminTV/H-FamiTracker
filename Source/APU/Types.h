@@ -22,15 +22,16 @@
 
 #include <cstdint>
 
-const uint8_t SNDCHIP_NONE	= 0;			// 2A03 Only
-const uint8_t SNDCHIP_VRC6	= 1;			// Konami VRCVI
-const uint8_t SNDCHIP_VRC7	= 2;			// Konami VRCVII
-const uint8_t SNDCHIP_FDS	= 4;			// Famicom Disk Sound
-const uint8_t SNDCHIP_MMC5	= 8;			// Nintendo MMC5
-const uint8_t SNDCHIP_N163	= 16;			// Namco 163
-const uint8_t SNDCHIP_5B	= 32;			// Saeyahn 5B
-const uint8_t SNDCHIP_5E01	= 64;			// Eulous 5E01
-const uint8_t SNDCHIP_7E02	= 128;			// Sunsoft 7E02
+const uint16_t SNDCHIP_NONE	= 0;			// 2A03 Only
+const uint16_t SNDCHIP_VRC6	= 1;			// Konami VRCVI
+const uint16_t SNDCHIP_VRC7	= 2;			// Konami VRCVII
+const uint16_t SNDCHIP_FDS	= 4;			// Famicom Disk Sound
+const uint16_t SNDCHIP_MMC5	= 8;			// Nintendo MMC5
+const uint16_t SNDCHIP_N163	= 16;			// Namco 163
+const uint16_t SNDCHIP_5B	= 32;			// Saeyahn 5B
+const uint16_t SNDCHIP_5E01	= 64;			// Eulous 5E01
+const uint16_t SNDCHIP_7E02	= 128;			// Sunsoft 7E02
+const uint16_t SNDCHIP_OPLL = 256;			// Yamaha YM2413
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,
@@ -80,6 +81,18 @@ enum chan_id_t {
 	CHANID_7E02_WAVEFORM,
 	CHANID_7E02_NOISE,
 	CHANID_7E02_DPCM,
+
+	CHANID_OPLL_CH1,
+	CHANID_OPLL_CH2,
+	CHANID_OPLL_CH3,
+	CHANID_OPLL_CH4,
+	CHANID_OPLL_CH5,
+	CHANID_OPLL_CH6,
+	/*
+		CHANID_OPLL_CH7,
+		CHANID_OPLL_CH8,
+		CHANID_OPLL_CH9,
+	*/
 
 	CHANNELS		/* Total number of channels */
 };

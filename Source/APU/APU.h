@@ -33,6 +33,7 @@
 // move to .cpp
 #include <exception>
 #include "VRC7.h"
+#include "OPLL.h"
 
 // External classes
 class C2A03;		// // //
@@ -44,6 +45,7 @@ class CN163;
 class CS5B;
 class C5E01; // Taken from E-FamiTracker by Euly
 class C7E02;
+class COPLL;
 
 class CSoundChip;		// // //
 class CSoundChip2;
@@ -157,6 +159,7 @@ private:
 	std::unique_ptr<CFDS> m_pFDS;
 	std::unique_ptr<CN163> m_pN163;
 	std::unique_ptr<CVRC7> m_pVRC7;
+	std::unique_ptr<COPLL> m_pOPLL;
 	CS5B		*m_pS5B;
 
 	/// Bitfield of external sound chips enabled.
@@ -185,6 +188,7 @@ private:
 	uint8_t		m_iSequencerCount;					// // // Step count for sequencer
 
 	float		m_fLevelVRC7;
+	float		m_fLevelOPLL;
 	// // // 050B removed
 
 #ifdef LOGGING

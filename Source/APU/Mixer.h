@@ -41,6 +41,7 @@ enum chip_level_t {
 	CHIP_LEVEL_5E01_APU2,
 	CHIP_LEVEL_7E02_APU1,
 	CHIP_LEVEL_7E02_APU2,
+	CHIP_LEVEL_OPLL,
 	CHIP_LEVEL_COUNT
 };
 
@@ -49,6 +50,7 @@ class CFDS;
 class CAPU;
 class C5E01; // Taken from E-FamiTracker by Euly
 class C7E02;
+class COPLL;
 
 struct MixerConfig {
 	// Global lowpass
@@ -83,6 +85,7 @@ struct MixerConfig {
 		0,		// 5E01_APU2
 		0,		// 7E02_APU1
 		0,		// 7E02_APU2
+		0,		// YM2413
 	};
 };
 
@@ -248,6 +251,7 @@ private:
 	float		m_fLevel5E01_APU2;
 	float		m_fLevel7E02_APU1;
 	float		m_fLevel7E02_APU2;
+	float		m_fLevelOPLL;
 
 	friend class CAPU;
 };

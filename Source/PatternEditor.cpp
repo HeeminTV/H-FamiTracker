@@ -1531,7 +1531,7 @@ void CPatternEditor::DrawCell(CDC *pDC, int PosX, cursor_column_t Column, int Ch
 						DrawChar(pDC, PosX + m_iCharWidth / 2, PosY, HEX[(NoiseFreq & 0x10) >> 4], pColorInfo->Note);		// // //
 						DrawChar(pDC, PosX + m_iCharWidth * 3 / 2, PosY, HEX[NoiseFreq & 0x0F], pColorInfo->Note);
 						DrawChar(pDC, PosX + m_iCharWidth * 5 / 2, PosY, '#', pColorInfo->Note);
-					} else if (pTrackerChannel->GetID() == CHANID_2A03_DPCM || pTrackerChannel->GetID() == CHANID_5E01_DPCM || pTrackerChannel->GetID() == CHANID_7E02_DPCM) { // Taken from E-FamiTracker by Euly
+					} else if (pTrackerChannel->GetID() == CHANID_2A03_DPCM || pTrackerChannel->GetID() == CHANID_5E01_DPCM || pTrackerChannel->GetID() == CHANID_7E02_DPCM || pTrackerChannel->GetID() == CHANID_MMC5_VOICE) { // Taken from E-FamiTracker by Euly
 						// DPCM
 						const char* pSampleName;
 						char pNameLength = 0;

@@ -174,6 +174,7 @@ static const auto EFF_CONVERSION_050 = MakeEffectConversion({
 	{EF_N163_WAVE_BUFFER,	EF_SUNSOFT_NOISE},
 	{EF_FDS_VOLUME,			EF_VRC7_PORT},
 	{EF_FDS_MOD_BIAS,		EF_VRC7_WRITE},
+	// {EF_OPLL_PORT,			EF_OPLL_WRITE}
 });
 
 //
@@ -194,6 +195,7 @@ const char* _5E01_APU1_OFFSET = "5e01_apu1-offset";
 const char* _5E01_APU2_OFFSET = "5e01_apu2-offset";
 const char* _7E02_APU1_OFFSET = "7E02_apu1-offset";
 const char* _7E02_APU2_OFFSET = "7E02_apu2-offset";
+const char* OPLL_OFFSET = "opll-offset";
 
 void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(APU1_OFFSET).get_to(d.APU1_OFFSET);
@@ -208,6 +210,7 @@ void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(_5E01_APU2_OFFSET).get_to(d._5E01_APU2_OFFSET);
 	j.at(_7E02_APU1_OFFSET).get_to(d._7E02_APU1_OFFSET);
 	j.at(_7E02_APU2_OFFSET).get_to(d._7E02_APU2_OFFSET);
+	j.at(OPLL_OFFSET).get_to(d.OPLL_OFFSET);
 	j.at(USE_SURVEY_MIX).get_to(d.USE_SURVEY_MIX);
 };
 
@@ -225,6 +228,7 @@ void to_json(json& j, const stJSONOptionalData& d) {
 		{ _5E01_APU2_OFFSET, d._5E01_APU2_OFFSET },
 		{ _7E02_APU1_OFFSET, d._7E02_APU1_OFFSET },
 		{ _7E02_APU2_OFFSET, d._7E02_APU2_OFFSET },
+		{ OPLL_OFFSET, d.OPLL_OFFSET },
 		{ USE_SURVEY_MIX, d.USE_SURVEY_MIX }
 	};
 };
@@ -2431,7 +2435,7 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 
 				if (Version == 3) {
 					// Fix for VRC7 portamento
-					if (ExpansionEnabled(SNDCHIP_VRC7) && Channel > 4) {
+					if ((ExpansionEnabled(SNDCHIP_VRC7) || ExpansionEnabled(SNDCHIP_OPLL)) && Channel > 4) {
 						for (int n = 0; n < MAX_EFFECT_COLUMNS; ++n) {
 							switch (Note->EffNumber[n]) {
 							case EF_PORTA_DOWN:
@@ -2791,13 +2795,13 @@ void CFamiTrackerDoc::ReadBlock_ParamsEmu(CDocumentFile* pDocFile, const int Ver
 
 bool CFamiTrackerDoc::WriteBlock_ParamsEmu(CDocumentFile* pDocFile, const int Version) const
 {
-	if (!(m_bUseExternalOPLLChip && (m_iExpansionChip & SNDCHIP_VRC7)))
+	if (!(m_bUseExternalOPLLChip && (m_iExpansionChip & (SNDCHIP_VRC7 || SNDCHIP_OPLL))))
 		return true;
 
 	pDocFile->CreateBlock(FILE_BLOCK_PARAMS_EMU, Version);
 
 	// VRC7 emulator parameters
-	if (m_iExpansionChip & SNDCHIP_VRC7) {
+	if (m_iExpansionChip & (SNDCHIP_VRC7 || SNDCHIP_OPLL)) {
 		pDocFile->WriteBlockInt(m_bUseExternalOPLLChip);
 
 		for (int i = 0; i < 19; i++) {
@@ -4462,6 +4466,10 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 		if (pos > CHANID_7E02_DPCM) pos -= 5;
 		else if (pos >= CHANID_7E02_SQUARE1) return -1;
 	}
+	if (!(Chip & SNDCHIP_OPLL)) {
+		if (pos > CHANID_OPLL_CH6) pos -= 6; // TODO fix this to 9 later
+		else if (pos >= CHANID_OPLL_CH1) return -1;
+	}
 
 	return pos;
 }
@@ -4652,6 +4660,7 @@ json CFamiTrackerDoc::InterfaceToOptionalJSON() const
 	if (GetLevelOffset(9) != DEFAULT._5E01_APU2_OFFSET) json[_5E01_APU2_OFFSET] = GetLevelOffset(9);
 	if (GetLevelOffset(10) != DEFAULT._7E02_APU1_OFFSET) json[_7E02_APU1_OFFSET] = GetLevelOffset(10);
 	if (GetLevelOffset(11) != DEFAULT._7E02_APU2_OFFSET) json[_7E02_APU2_OFFSET] = GetLevelOffset(11);
+	if (GetLevelOffset(12) != DEFAULT.OPLL_OFFSET) json[OPLL_OFFSET] = GetLevelOffset(12);
 
 	if (GetSurveyMixCheck() != DEFAULT.USE_SURVEY_MIX) json[USE_SURVEY_MIX] = GetSurveyMixCheck();
 
@@ -4673,6 +4682,7 @@ void CFamiTrackerDoc::OptionalJSONToInterface(json& j)
 	if (j.find(_5E01_APU2_OFFSET) != j.end()) SetLevelOffset(9, j.at(_5E01_APU2_OFFSET));
 	if (j.find(_7E02_APU1_OFFSET) != j.end()) SetLevelOffset(10, j.at(_7E02_APU1_OFFSET));
 	if (j.find(_7E02_APU2_OFFSET) != j.end()) SetLevelOffset(11, j.at(_7E02_APU2_OFFSET));
+	if (j.find(OPLL_OFFSET) != j.end()) SetLevelOffset(12, j.at(OPLL_OFFSET));
 
 	if (j.find(USE_SURVEY_MIX) != j.end()) SetSurveyMixCheck(j.at(USE_SURVEY_MIX));
 }
@@ -5372,7 +5382,7 @@ stFullState *CFamiTrackerDoc::RetrieveSoundState(unsigned int Track, unsigned in
 				case EF_VRC7_PORT:
 					if (!ch->IsEffectCompatible(fx, xy)) continue;
 				case EF_DUTY_CYCLE:
-					if (ch->GetChip() == SNDCHIP_VRC7) continue;		// // // 050B
+					if (ch->GetChip() == SNDCHIP_VRC7 || ch->GetChip() == SNDCHIP_OPLL) continue;		// // // 050B
 				case EF_VIBRATO: case EF_TREMOLO: case EF_PITCH: case EF_VOLUME_SLIDE:
 					if (State->Effect[fx] == -1)
 						State->Effect[fx] = xy;

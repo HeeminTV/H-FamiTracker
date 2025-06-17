@@ -182,6 +182,7 @@ CSoundGen::CSoundGen() :
 	std::fill(SurveyMixLevels.begin(), SurveyMixLevels.end(), 0);
 	UseExtOPLL = false;
 	OPLLDefaultPatchSet = theApp.GetSettings()->Emulation.iVRC7Patch;
+	OPLLDefaultPatchSet = theApp.GetSettings()->Emulation.iVRC7Patch;
 
 	OPLLHardwarePatchBytes.resize(19 * 8);
 	std::fill(OPLLHardwarePatchBytes.begin(), OPLLHardwarePatchBytes.end(), 0);
@@ -289,6 +290,20 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("7E02 Waveform"), _T("WAV"), SNDCHIP_7E02, CHANID_7E02_WAVEFORM));
 	AssignChannel(new CTrackerChannel(_T("7E02 Noise"), _T("NOI"), SNDCHIP_7E02, CHANID_7E02_NOISE));
 	AssignChannel(new CTrackerChannel(_T("7E02 DPCM"), _T("DMC"), SNDCHIP_7E02, CHANID_7E02_DPCM));
+
+	// Yamaha YM2413
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 1"), _T("YM1"), SNDCHIP_OPLL, CHANID_OPLL_CH1));
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 2"), _T("YM2"), SNDCHIP_OPLL, CHANID_OPLL_CH2));
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 3"), _T("YM3"), SNDCHIP_OPLL, CHANID_OPLL_CH3));
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 4"), _T("YM4"), SNDCHIP_OPLL, CHANID_OPLL_CH4));
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 5"), _T("YM5"), SNDCHIP_OPLL, CHANID_OPLL_CH5));
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 6"), _T("YM6"), SNDCHIP_OPLL, CHANID_OPLL_CH6));
+	/*
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 7"), _T("YM7"), SNDCHIP_OPLL, CHANID_OPLL_CH7));
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 8"), _T("YM8"), SNDCHIP_OPLL, CHANID_OPLL_CH8));
+	AssignChannel(new CTrackerChannel(_T("YM2413 FM 9"), _T("YM9"), SNDCHIP_OPLL, CHANID_OPLL_CH9));
+	*/
+
 }
 
 void CSoundGen::AssignChannel(CTrackerChannel *pTrackerChannel)		// // //
@@ -589,8 +604,8 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 			Table = m_iNoteLookupTableNTSC; break;
 		case CHANID_VRC6_SAWTOOTH:
 			Table = m_iNoteLookupTableSaw; break;
-		case CHANID_VRC7_CH1: case CHANID_VRC7_CH2: case CHANID_VRC7_CH3:
-		case CHANID_VRC7_CH4: case CHANID_VRC7_CH5: case CHANID_VRC7_CH6:
+		case CHANID_VRC7_CH1: case CHANID_VRC7_CH2: case CHANID_VRC7_CH3: case CHANID_VRC7_CH4: case CHANID_VRC7_CH5: case CHANID_VRC7_CH6: // VRC7
+		case CHANID_OPLL_CH1: case CHANID_OPLL_CH2: case CHANID_OPLL_CH3: case CHANID_OPLL_CH4: case CHANID_OPLL_CH5: case CHANID_OPLL_CH6: // case CHANID_OPLL_CH7: case CHANID_OPLL_CH8: case CHANID_OPLL_CH9: YM2413
 			Table = m_iNoteLookupTableVRC7; break;
 		case CHANID_FDS:
 			Table = m_iNoteLookupTableFDS; break;
@@ -633,6 +648,7 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU2) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU2);
 	SurveyMixLevels.at(CHIP_LEVEL_7E02_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix7E02_APU1);
 	SurveyMixLevels.at(CHIP_LEVEL_7E02_APU2) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix7E02_APU2);
+	SurveyMixLevels.at(CHIP_LEVEL_OPLL) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixOPLL);
 
 	bool refreshsettings = false;
 
@@ -1017,6 +1033,7 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU2, float(pSettings->ChipLevels.iLevel5E01_APU2 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_7E02_APU1, float(pSettings->ChipLevels.iLevel7E02_APU1 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_7E02_APU2, float(pSettings->ChipLevels.iLevel7E02_APU2 / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_OPLL, float(pSettings->ChipLevels.iLevelOPLL / 10.0f));
 		}
 	}
 
@@ -1529,7 +1546,12 @@ static CString GetStateString(const stChannelState &State)
 			if (p <= 0) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex >= CHANID_VRC7_CH1 && State.ChannelIndex <= CHANID_VRC7_CH6)
+	else if (
+		// VRC7
+			State.ChannelIndex >= CHANID_VRC7_CH1 && State.ChannelIndex <= CHANID_VRC7_CH6 ||
+			// YM2413
+			State.ChannelIndex >= CHANID_OPLL_CH1 && State.ChannelIndex <= CHANID_OPLL_CH6
+		)
 		for (const auto &x : VRC7_EFFECTS) {
 			int p = State.Effect[x];
 			if (p < 0) continue;

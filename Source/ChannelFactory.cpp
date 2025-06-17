@@ -30,9 +30,9 @@
 #include "ChannelsMMC5.h"
 #include "ChannelsN163.h"
 #include "ChannelsS5B.h"
-// #include "Channels5E01.cpp" WHO TF LET A CODE BE INCLUDED HERE
 #include "Channels5E01.h" // Taken from E-FamiTracker by Euly
 #include "Channels7E02.h"
+#include "ChannelsOPLL.h"
 
 // // // Default implementation for channel factory
 
@@ -97,5 +97,13 @@ CChannelFactory::CChannelFactory() : CFactory()
 	AddProduct<C7E02WaveformChan>(CHANID_7E02_WAVEFORM);
 	AddProduct<C7E02NoiseChan>(CHANID_7E02_NOISE);
 	AddProduct<C7E02DPCMChan>(CHANID_7E02_DPCM);
+
+	Func = MakeCtor<COPLLChannel>();
+	m_pMakeFunc[CHANID_OPLL_CH1] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH2] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH3] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH4] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH5] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH6] = Func;
 
 }

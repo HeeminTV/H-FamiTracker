@@ -89,3 +89,10 @@ class CChannelHandlerInterfaceS5B
 public:
 	virtual void	SetNoiseFreq(int) = 0;
 };
+
+class CChannelHandlerInterfaceOPLL
+{
+public:
+	virtual void	SetPatch(unsigned char) = 0;
+	virtual void	SetCustomReg(size_t, unsigned char) = 0;
+};

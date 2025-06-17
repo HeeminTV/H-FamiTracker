@@ -86,6 +86,7 @@ struct stJSONOptionalData {
 	int16_t _5E01_APU2_OFFSET = 0;
 	int16_t _7E02_APU1_OFFSET = 0;
 	int16_t _7E02_APU2_OFFSET = 0;
+	int16_t OPLL_OFFSET = 0;
 
 	// Use hardware based mixing values derived from survey: https://forums.nesdev.org/viewtopic.php?f=2&t=17741
 	bool USE_SURVEY_MIX = false;
@@ -579,7 +580,7 @@ private:
 	std::string		m_strOPLLPatchNames[19];
 
 	// JSON Optional properties
-	int16_t			m_iDeviceLevelOffset[12];					// !! !! Device level offsets, described in centibels
+	int16_t			m_iDeviceLevelOffset[13];					// !! !! Device level offsets, described in centibels
 	bool			m_bUseSurveyMixing;							// !! !! Use hardware-based mixing values, derived from survey: https://forums.nesdev.org/viewtopic.php?f=2&t=17741
 
 	// NSF info

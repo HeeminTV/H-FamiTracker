@@ -40,8 +40,8 @@ using namespace std::string_literals;
 
 const TCHAR *CConfigAppearance::COLOR_ITEMS[] = {
 	_T("Background"), 
-	_T("Highlight 1"),
-	_T("Highlight 2"),
+	_T("Highlighted background 1"),
+	_T("Highlighted background 2"),
 	_T("Pattern text"), 
 	_T("Highlighted pattern text 1"),
 	_T("Highlighted pattern text 2"),

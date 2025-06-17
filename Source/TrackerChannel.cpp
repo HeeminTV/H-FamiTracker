@@ -155,7 +155,6 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 		case SNDCHIP_FDS:
 		case SNDCHIP_5E01: // Taken from E-FamiTracker by Euly
 		case SNDCHIP_7E02:
-
 			switch (Type) {
 				case INST_2A03:
 				case INST_VRC6:
@@ -165,7 +164,7 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 				return true;
 			default: return false;
 			}
-		case SNDCHIP_VRC7:
+		case SNDCHIP_VRC7: case SNDCHIP_OPLL:
 			return Type == INST_VRC7;
 	}
 
@@ -257,7 +256,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 		case EF_FDS_VOLUME:
 			return m_iChip == SNDCHIP_FDS && (EffParam <= 0x7F || EffParam == 0xE0);
 		case EF_VRC7_PORT: case EF_VRC7_WRITE:		// // // 050B
-			return m_iChip == SNDCHIP_VRC7;
+			return m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL;
 		case EF_PHASE_RESET:
 			// Triangle and noise can't reset phase during runtime.
 			if (m_iChannelID == CHANID_2A03_TRIANGLE) return false;
@@ -271,12 +270,12 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 
 			if (m_iChannelID == CHANID_MMC5_VOICE) return false; // neither this PCM channel
 			// VRC7 and S5B is not supported yet.
-			if (m_iChip == SNDCHIP_VRC7) return false;
+			if (m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL) return false;
 			if (m_iChip == SNDCHIP_5B) return false;
 			return EffParam == 0x00;
 		case EF_HARMONIC:
 			// VRC7 is not supported yet.
-			if (m_iChip == SNDCHIP_VRC7) return false;
+			if (m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL) return false;
 			// 2A03 noise behaves strangely with Kxx.
 			if (m_iChannelID == CHANID_2A03_NOISE) return false;
 			if (m_iChannelID == CHANID_5E01_NOISE) return false;

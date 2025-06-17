@@ -10,7 +10,7 @@ This fork also presents some features from various FamiTracker forks.
 
 ### [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) presented features
 
-This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
+This fork ***DOES NOT OWN*** the codes that are taken from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) by @eulyderg
 
 - 5E01
 
@@ -22,18 +22,13 @@ This fork ***DO NOT OWN*** the codes that are taken from [E-FamiTracker](https:/
 
 - Shading Volume Columns
 
-### [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) presented features
-
-This fork ***DO NOT OWN*** the codes that are taken from [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) by @HertzDevil
-
-- ~~SN76489~~
-
 ## To do list
 - [x] 7E02
 - [x] MMC5 PCM
 - [ ] PCM importer via DPCM instrument
 - [x] 5E01
 - [x] 2A03
+- [ ] YM2413
 - [ ] SN76489
 
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)
