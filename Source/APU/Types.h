@@ -22,16 +22,16 @@
 
 #include <cstdint>
 
-const uint16_t SNDCHIP_NONE	= 0;			// 2A03 Only
-const uint16_t SNDCHIP_VRC6	= 1;			// Konami VRCVI
-const uint16_t SNDCHIP_VRC7	= 2;			// Konami VRCVII
-const uint16_t SNDCHIP_FDS	= 4;			// Famicom Disk Sound
-const uint16_t SNDCHIP_MMC5	= 8;			// Nintendo MMC5
-const uint16_t SNDCHIP_N163	= 16;			// Namco 163
-const uint16_t SNDCHIP_5B	= 32;			// Saeyahn 5B
-const uint16_t SNDCHIP_5E01	= 64;			// Eulous 5E01
-const uint16_t SNDCHIP_7E02	= 128;			// Sunsoft 7E02
-const uint16_t SNDCHIP_OPLL = 256;			// Yamaha YM2413
+const int SNDCHIP_NONE	= 0;			// 2A03 Only
+const int SNDCHIP_VRC6	= 1;			// Konami VRCVI
+const int SNDCHIP_VRC7	= 2;			// Konami VRCVII
+const int SNDCHIP_FDS	= 4;			// Famicom Disk Sound
+const int SNDCHIP_MMC5	= 8;			// Nintendo MMC5
+const int SNDCHIP_N163	= 16;			// Namco 163
+const int SNDCHIP_5B	= 32;			// Sunsoft 5B
+const int SNDCHIP_5E01	= 64;			// Eulous 5E01
+const int SNDCHIP_7E02	= 128;			// Saeyahn 7E02
+const int SNDCHIP_OPLL  = 256;			// Yamaha YM2413
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,

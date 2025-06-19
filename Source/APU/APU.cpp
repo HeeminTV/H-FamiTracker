@@ -656,7 +656,7 @@ CRegisterState *CAPU::GetRegState(int Chip, int Reg) const		// // //
 	case SNDCHIP_FDS:  return PtrGetRegState(*m_pFDS);
 	case SNDCHIP_MMC5: return PtrGetRegState(*m_pMMC5);
 	case SNDCHIP_N163: return PtrGetRegState(*m_pN163);
-	case SNDCHIP_5B:  return PtrGetRegState(*m_pS5B);
+	case SNDCHIP_5B:   return PtrGetRegState(*m_pS5B);
 	case SNDCHIP_5E01: return PtrGetRegState(*m_p5E01); // Taken from E-FamiTracker by Euly
 	case SNDCHIP_7E02: return PtrGetRegState(*m_p7E02);
 	case SNDCHIP_OPLL: return PtrGetRegState(*m_pOPLL);

@@ -344,6 +344,7 @@ void COPLLChannel::ClearRegisters()
 
 void COPLLChannel::RegWrite(unsigned char Reg, unsigned char Value)
 {
-	WriteRegister(0x9010, Reg);
-	WriteRegister(0x9030, Value);
+	// 패밀리 노래방 https://www.nesdev.org/wiki/NES_2.0_Mapper_515
+	WriteRegister(0x6000, Reg);
+	WriteRegister(0x6001, Value);
 }

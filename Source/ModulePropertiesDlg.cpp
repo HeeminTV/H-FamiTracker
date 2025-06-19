@@ -399,15 +399,15 @@ void CModulePropertiesDlg::OnBnClickedOk()
 		unsigned int Gone = m_pDocument->GetExpansionChip() & ~m_iExpansions;
 		for (int i = 0; i < 9; i++) { // HFT modifiactions
 			if (Gone & (1 << i)) switch (i) {
-			case 0: str += _T("VRC6 "); break;
-			case 1: str += _T("VRC7 "); break;
-			case 2: str += _T("2C33 ");  break;
-			case 3: str += _T("MMC5 "); break;
-			case 4: str += _T("N163 "); break;
-			case 5: str += _T("5B ");   break;
-			case 6: str += _T("5E01 ");   break;
-			case 7: str += _T("7E02 ");   break;
-			case 8: str += _T("YM2413 "); break;
+				case 0: str += _T("VRC6 "); break;
+				case 1: str += _T("VRC7 "); break;
+				case 2: str += _T("2C33 ");  break;
+				case 3: str += _T("MMC5 "); break;
+				case 4: str += _T("N163 "); break;
+				case 5: str += _T("5B ");   break;
+				case 6: str += _T("5E01 ");   break;
+				case 7: str += _T("7E02 ");   break;
+				case 8: str += _T("YM2413 "); break;
 			}
 			if (i == 4 && m_pDocument->ExpansionEnabled(SNDCHIP_N163)
 				&& (m_iExpansions & SNDCHIP_N163) && m_iN163Channels < m_pDocument->GetNamcoChannels()) {
@@ -874,6 +874,10 @@ void CModulePropertiesDlg::setN163NChannels(int nchan) {
 	text.LoadString(IDS_PROPERTIES_CHANNELS);
 	text.AppendFormat(_T(" %i"), nchan);
 	SetDlgItemText(IDC_CHANNELS_NR, text);
+
+	text.LoadString(IDS_PROPERTIES_TOTALRAM);
+	text.AppendFormat(_T(" %i"), 256 - 16 * nchan);
+	SetDlgItemText(IDC_CHANNELS_NTR, text);
 }
 
 // Taken from Euly by E-FamiTracker
@@ -921,18 +925,22 @@ void CModulePropertiesDlg::strFromLevel(CString &target, int16_t Level)
 
 void CModulePropertiesDlg::updateN163ChannelCountUI()
 {
-	CString channelsStr;
-	channelsStr.LoadString(IDS_PROPERTIES_CHANNELS);
+	CString N163RAMDisplayStr;
+	CString N163ChannelCountStr;
+	N163RAMDisplayStr.LoadString(IDS_PROPERTIES_TOTALRAM);
+	N163ChannelCountStr.LoadString(IDS_PROPERTIES_CHANNELS);
 
 	// Is N163 enabled?
 	bool N163Enabled = m_iExpansions & SNDCHIP_N163;
 	if (N163Enabled) {
 		if (!m_iN163Channels) m_iN163Channels = 1;		// // //
-		channelsStr.AppendFormat(_T(" %i"), m_iN163Channels);
+		N163RAMDisplayStr.AppendFormat(_T(" %i"), 256 - 16 * m_iN163Channels);
+		N163ChannelCountStr.AppendFormat(_T(" %i"), m_iN163Channels);
 	}
 	else {
 		m_iN163Channels = 0;
-		channelsStr.Append(_T(" N/A"));
+		N163RAMDisplayStr.Append(_T(" N/A"));
+		N163ChannelCountStr.Append(_T(" N/A"));
 	}
 	
 	// Enable/disable UI.
@@ -942,7 +950,8 @@ void CModulePropertiesDlg::updateN163ChannelCountUI()
 	// Redraw UI.
 	m_cChanSlider.SetPos(m_iN163Channels);
 
-	SetDlgItemText(IDC_CHANNELS_NR, channelsStr);
+	SetDlgItemText(IDC_CHANNELS_NTR, N163RAMDisplayStr);
+	SetDlgItemText(IDC_CHANNELS_NR, N163ChannelCountStr);
 }
 
 void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
@@ -1346,10 +1355,4 @@ void CModulePropertiesDlg::OnEnChangeOpllPatchname18()
 void CModulePropertiesDlg::OnBnClickedSurveyMixing()
 {
 	m_bSurveyMixing = (((CButton*)GetDlgItem(IDC_SURVEY_MIXING))->GetCheck() == BST_CHECKED);
-}
-
-
-void CModulePropertiesDlg::OnBnClickedExpansion7e3()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

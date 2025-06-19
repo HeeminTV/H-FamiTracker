@@ -303,18 +303,19 @@ namespace xgm
           dmwtbl[i * 2 + 1] = deltacounter;
       }
 
-      // Mode 2 (5-bit PWM)
+      // Mode 2 (Triangle)
+      static UINT32 tritbl[32] = { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+
+      // Mode 3 (5-bit PWM)
       static UINT32 pwmtbl[32];
       for (int i = 0; i < 32; ++i) {
           if (i > twaveL) {
               pwmtbl[i] = 15;
-          } else {
+          }
+          else {
               pwmtbl[i] = 0;
           }
       }
-
-      // Mode 3 (Triangle)
-      static UINT32 tritbl[32] = { 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
       /*std::printf(
           "%d,%d,%d,%d,%d,%d,%d,%d, %d,%d,%d,%d,%d,%d,%d,%d\r\n",
@@ -354,9 +355,9 @@ namespace xgm
             break;
         case 1: ret = dmwtbl[tphase] * 3;
             break;
-        case 2: ret = pwmtbl[tphase];
+        case 2: ret = tritbl[tphase];
             break;
-        case 3: ret = tritbl[tphase];
+        case 3: ret = pwmtbl[tphase];
             break;
     }
     return ret * tvol;

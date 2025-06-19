@@ -2500,10 +2500,10 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 							);
 							break;
 						case 3:
-							text.Format(_T("%s, vol = %02i, mode = 3 (triangle)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
+							text.Format(_T("%s, vol = %02i, mode = 3 (%0.3f%% pulse)"), GetPitchTextFunc(3, period, freq), reg[7] & 15, reg[5] < 31 ? (reg[5] + 1) * 3.125 : 100);
 							break;
 						case 2:
-							text.Format(_T("%s, vol = %02i, mode = 2 (%0.3f%% pulse)"), GetPitchTextFunc(3, period, freq), reg[7] & 15, reg[5] < 31 ? (reg[5] + 1) * 3.125 : 100);
+							text.Format(_T("%s, vol = %02i, mode = 2 (triangle)"), GetPitchTextFunc(3, period, freq), reg[7] & 15);
 							break;
 						case 1:
 							int deltacounter = 0; // not DMC counter

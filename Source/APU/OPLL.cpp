@@ -102,10 +102,10 @@ void COPLL::SetDirectVolume(double Volume)
 void COPLL::Write(uint16_t Address, uint8_t Value)
 {
 	switch (Address) {
-		case 0x9010:
+		case 0x6000:
 			m_iSoundReg = Value;
 			break;
-		case 0x9030:
+		case 0x6001:
 			OPLL_writeReg(m_pOPLLInt, m_iSoundReg, Value);
 			break;
 	}
@@ -114,8 +114,8 @@ void COPLL::Write(uint16_t Address, uint8_t Value)
 void COPLL::Log(uint16_t Address, uint8_t Value)		// // //
 {
 	switch (Address) {
-	case 0x9010: m_pRegisterLogger->SetPort(Value); break;
-	case 0x9030: m_pRegisterLogger->Write(Value); break;
+	case 0x6000: m_pRegisterLogger->SetPort(Value); break;
+	case 0x6001: m_pRegisterLogger->Write(Value); break;
 	}
 }
 

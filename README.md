@@ -30,6 +30,7 @@ This fork ***DOES NOT OWN*** the codes that are taken from [E-FamiTracker](https
 - [x] 2A03
 - [ ] YM2413
 - [ ] SN76489
+- [ ] Namco WSG
 
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)
 

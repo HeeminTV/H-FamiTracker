@@ -431,6 +431,8 @@
 #define IDC_SHOWONOPEN                  1247
 #define IDC_CHANNELS                    1250
 #define IDC_CHANNELS_NR                 1251
+#define IDC_CHANNELS_NR2                1253
+#define IDC_CHANNELS_NTR                1253
 #define IDC_COMBO_STYLE                 1255
 #define IDC_COMBO_GOTO_CHIP             1255
 #define IDC_COMBO_VERSION_SELECT        1255
@@ -929,12 +931,13 @@
 #define IDC_7E02_APU1_OFFSET_EDIT       53282
 #define IDC_7E02_APU2_OFFSET_EDIT       53283
 #define IDC_EXPANSION_7E02              53284
-#define IDC_STATIC_OPLL                 53290
 #define IDC_LEVEL_OPLL                  53285
 #define IDC_OPLL_OFFSET_EDIT            53286
 #define IDC_OPLL_OFFSET_SLIDER          53287
 #define IDC_OPLL_OFFSET_DB              53288
 #define IDC_EXPANSION_OPLL              53289
+#define IDC_STATIC_OPLL                 53290
+#define IDS_PROPERTIES_TOTALRAM         53291
 
 // Next default values for new objects
 // 
