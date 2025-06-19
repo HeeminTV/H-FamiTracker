@@ -2174,19 +2174,19 @@ IDR_MAINFRAME           ICON                    "res/Application.ico"
 
 IDR_FamiTrackerTYPE     ICON                    "res/Document.ico"
 
-IDI_INST_2A03           ICON                    "res/INST_2A03.ico"
+IDI_INST_2A03           ICON                    "res/Inst_Default.ico"
 
 IDI_INST_VRC6           ICON                    "res/Inst_VRC6.ico"
 
-IDI_INST_VRC7           ICON                    "res/Inst_VRC7.ico"
+IDI_INST_VRC7           ICON                    "res/Inst_YM2413.ico"
 
 IDI_INST_N163           ICON                    "res/Inst_N163.ico"
 
-IDI_INST_FDS            ICON                    "res/Inst_FDS.ico"
+IDI_INST_FDS            ICON                    "res/Inst_2C33.ico"
 
 IDI_INST_S5B            ICON                    "res/Inst_5B.ico"
 
-IDI_INST_2A07           ICON                    "res/Inst_2A07.ico"
+IDI_INST_2A07           ICON                    "res/Inst_Default.ico"
 
 IDI_LEFT                ICON                    "res/LeftArrow.ico"
 
