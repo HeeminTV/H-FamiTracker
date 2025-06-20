@@ -70,7 +70,7 @@ public:
 	void	Write(uint16_t Address, uint8_t Value);		// // //
 	uint8_t	Read(uint16_t Address);
 
-	int32_t	GetVol(uint8_t Chan) const;
+	int32_t	GetVol(int Chan) const;
 	uint8_t	GetReg(int Chip, int Reg) const;
 	double	GetFreq(int Chip, int Chan) const;		// // //
 	int	GetFDSModCounter() const;		// TODO: reading $4097 returns $00 for some reason, fix that and remove this hack instead
@@ -111,7 +111,7 @@ public:
 	}
 
 private:
-	void	SetExternalSound(uint8_t Chip);
+	void	SetExternalSound(int Chip);
 	// End configuration methods.
 
 public:
@@ -164,7 +164,7 @@ private:
 
 	/// Bitfield of external sound chips enabled.
 	/// Never read, except for code hidden behind #ifdef LOGGING.
-	uint8_t		m_iExternalSoundChips;
+	int			m_iExternalSoundChips;
 
 	std::vector<CSoundChip*> m_SoundChips;
 	std::vector<CSoundChip2*> m_SoundChips2;
@@ -213,7 +213,7 @@ public:
 	{}
 
 	// Mutator methods
-	void SetExternalSound(uint8_t Chip) {
+	void SetExternalSound(int Chip) {
 		m_ExternalSound = Chip;
 	}
 
@@ -253,7 +253,7 @@ private:
 	int m_UncaughtExceptions;
 
 	// Mutations.
-	std::optional<uint8_t> m_ExternalSound;
+	std::optional<int> m_ExternalSound;
 	std::optional<float> m_ChipLevels[CHIP_LEVEL_COUNT];		// Chip levels, in linear gain factor scale
 	std::optional<MixerConfig> m_MixerConfig;
 	std::optional<EmulatorConfig> m_EmulatorConfig;

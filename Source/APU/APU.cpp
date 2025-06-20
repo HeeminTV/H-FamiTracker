@@ -324,7 +324,7 @@ void CAPU::Reset()
 #endif
 }
 
-void CAPU::SetExternalSound(uint8_t Chip)
+void CAPU::SetExternalSound(int Chip)
 {
 	// Initialize list of active sound chips.
 	// Do this first because m_SoundChips2 is used by CMixer::ExternalSound() -> CMixer::UpdateMixing().
@@ -465,7 +465,7 @@ uint8_t CAPU::Read(uint16_t Address)
 // Expansion for famitracker
 
 // 2A03
-int32_t CAPU::GetVol(uint8_t Chan) const	
+int32_t CAPU::GetVol(int Chan) const	
 {
 	return m_pMixer->GetChanOutput(Chan);
 }
