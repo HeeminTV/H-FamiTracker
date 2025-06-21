@@ -2583,6 +2583,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 
 		GetRegsFunc(SNDCHIP_OPLL, [](int x) { return x; }, 8);
 		DrawRegFunc(_T("$00:"), 8);		// // //
+		auto pState = pSoundGen->GetRegState(SNDCHIP_OPLL, 0x0E);		// // //
+		bool PercMode = (pState->GetValue() >> 5) & 1;
 
 		std::string PatchName[20] = {
 			#include "APU/digital-sound-antiques/2413tone_patchname.h"
@@ -2597,10 +2599,16 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			int vol = 0x0F - (pSoundGen->GetReg(SNDCHIP_OPLL, i + 0x30) & 0x0F);
 			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_OPLL, i);		// // //
 
-			text.Format(_T("%s, vol = %02i, patch = $%01X (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[2] >> 4, PatchName[reg[2] >> 4 == 0 ? 19 : reg[2] >> 4]);
+			if (i >= 6 && PercMode) {
+				// if it's percussion mode and FM 7 - FM 9,
+				text.Format(_T("                                   vol = %02i             (Drums)"),vol, reg[2] >> 4);
+				DrawVolFunc(0, vol << 4);
+			} else {
+				// normal mode
+				text.Format(_T("%s, vol = %02i, patch = $%01X (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[2] >> 4, PatchName[reg[2] >> 4 == 0 ? 19 : reg[2] >> 4]);
+				DrawVolFunc(freq, vol << 4);
+			}
 			DrawTextFunc(180, text);
-
-			DrawVolFunc(freq, vol << 4);
 		}
 	}
 

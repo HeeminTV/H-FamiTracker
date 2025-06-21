@@ -30,7 +30,7 @@ const uint32_t COPLL::OPLL_CLOCK = CAPU::BASE_FREQ_VRC7;	// Clock frequency
 
 COPLL::COPLL()
 {
-	m_pRegisterLogger->AddRegisterRange(0x00, 0x07);		// // //
+	m_pRegisterLogger->AddRegisterRange(0x00, 0x0F);		// // //
 	m_pRegisterLogger->AddRegisterRange(0x10, 0x18);
 	m_pRegisterLogger->AddRegisterRange(0x20, 0x28);
 	m_pRegisterLogger->AddRegisterRange(0x30, 0x38);
@@ -55,12 +55,7 @@ void COPLL::Reset()
 	if (m_pOPLLInt != NULL) {
 		// update patchset and OPLL type
 		OPLL_setChipType(m_pOPLLInt, 0);
-
-		if (m_UseExternalOPLLChip && m_PatchSet != NULL)
-			OPLL_setPatch(m_pOPLLInt, m_PatchSet);
-		else
-			OPLL_resetPatch(m_pOPLLInt, m_PatchSelection);
-
+		OPLL_resetPatch(m_pOPLLInt, 7);
 		OPLL_reset(m_pOPLLInt);
 	}
 }
@@ -102,6 +97,7 @@ void COPLL::SetDirectVolume(double Volume)
 void COPLL::Write(uint16_t Address, uint8_t Value)
 {
 	switch (Address) {
+		// These adresses are what Family Noraebang used
 		case 0x6000:
 			m_iSoundReg = Value;
 			break;
@@ -114,8 +110,8 @@ void COPLL::Write(uint16_t Address, uint8_t Value)
 void COPLL::Log(uint16_t Address, uint8_t Value)		// // //
 {
 	switch (Address) {
-	case 0x6000: m_pRegisterLogger->SetPort(Value); break;
-	case 0x6001: m_pRegisterLogger->Write(Value); break;
+		case 0x6000: m_pRegisterLogger->SetPort(Value); break;
+		case 0x6001: m_pRegisterLogger->Write(Value); break;
 	}
 }
 
@@ -204,7 +200,7 @@ void COPLL::UpdateMixLevel(double v, bool UseSurveyMix)
 
 void COPLL::UpdatePatchSet(int PatchSelection, bool UseExternalOPLLChip, uint8_t* PatchSet)
 {
-	m_PatchSelection = PatchSelection;
-	m_UseExternalOPLLChip = UseExternalOPLLChip;
-	m_PatchSet = PatchSet;
+	m_PatchSelection = 7;
+	m_UseExternalOPLLChip = false;
+	m_PatchSet = NULL;
 }

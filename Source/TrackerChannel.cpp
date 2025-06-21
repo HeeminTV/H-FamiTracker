@@ -278,8 +278,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return EffParam == 0x00;
 		case EF_HARMONIC:
 			// VRC7 is not supported yet.
-			// in YM2413, this triggers drum mode
-			if (m_iChip == SNDCHIP_VRC7) return false;
+			if (m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL) return false;
 			// 2A03 noise behaves strangely with Kxx.
 			if (m_iChannelID == CHANID_2A03_NOISE) return false;
 			if (m_iChannelID == CHANID_5E01_NOISE) return false;
