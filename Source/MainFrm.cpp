@@ -1218,6 +1218,11 @@ void CMainFrame::OnAddInstrument7E02()
 	NewInstrument(SNDCHIP_7E02);
 }
 
+void CMainFrame::OnAddInstrumentOPLL()
+{
+	NewInstrument(SNDCHIP_OPLL);
+}
+
 void CMainFrame::OnAddInstrument()
 {
 	// Add new instrument to module
@@ -1671,16 +1676,16 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 				String = _T(" Konami VRC7");
 				break;
 			case SNDCHIP_FDS:
-				String = _T(" Nintendo FDS");
+				String = _T(" Nintendo 2C33");
 				break;
 			case SNDCHIP_MMC5:
 				String = _T(" Nintendo MMC5");
 				break;
 			case SNDCHIP_N163:
-				String = _T(" Namco 163");
+				String = _T(" Namco N163");
 				break;
 			case SNDCHIP_5B:
-				String = _T(" 5B");
+				String = _T(" Sunsoft 5B");
 				break;
 			// Taken from E-FamiTracker by Euly
 			case SNDCHIP_5E01:
@@ -1689,10 +1694,13 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 			case SNDCHIP_7E02:
 				String = _T(" Saeyahn 7E02");
 				break;
+			case SNDCHIP_OPLL:
+				String = _T(" Yamaha YM2413");
+				break;
 
 		}
 	else {
-		for (int i = 0; i < 7; i++)	if (Chip & (1 << i)) switch (i) {
+		for (int i = 0; i < GLOBAL_EXPANSION_COUNT; i++)	if (Chip & (1 << i)) switch (i) {
 			case 0:
 				String += _T(" + VRC6");
 				break;
@@ -1700,7 +1708,7 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 				String += _T(" + VRC7");
 				break;
 			case 2:
-				String += _T(" + FDS");
+				String += _T(" + 2C33");
 				break;
 			case 3:
 				String += _T(" + MMC5");
@@ -1719,6 +1727,9 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 
 			case 7:
 				String += _T(" + 7E02");
+				break;
+			case 8:
+				String += _T(" + YM2413");
 				break;
 		}
 		String.Delete(0, 3);
@@ -2732,6 +2743,8 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 
 	if (Chip & SNDCHIP_7E02)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_7E02, _T("New 7E02 instrument"));
+	if (Chip & SNDCHIP_OPLL)
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_OPLL, _T("New YM2413 instrument"));
 
 	switch (SelectedChip) {
 		case SNDCHIP_NONE:
@@ -2760,8 +2773,12 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 		case SNDCHIP_5E01:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_5E01);
 			break;
+
 		case SNDCHIP_7E02:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_7E02);
+			break;
+		case SNDCHIP_OPLL:
+			menu.SetDefaultItem(ID_INSTRUMENT_ADD_OPLL);
 			break;
 	}
 
@@ -2787,7 +2804,7 @@ void CMainFrame::OnLoadInstrumentMenu(NMHDR * pNotifyStruct, LRESULT * result)
 	if (retValue == CInstrumentFileTree::MENU_BASE) {
 		// Open file
 		OnLoadInstrument();
-	}
+	}	
 	else if (retValue == CInstrumentFileTree::MENU_BASE + 1) {
 		// Select dir
 		SelectInstrumentFolder();

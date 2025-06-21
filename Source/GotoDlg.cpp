@@ -79,8 +79,7 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->AddString(_T("N163"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_5B))
 		m_cChipEdit->AddString(_T("5B"));
-	// Taken from E-FamiTracker by Euly
-	if (pDoc->ExpansionEnabled(SNDCHIP_5E01))
+	if (pDoc->ExpansionEnabled(SNDCHIP_5E01)) 	// Taken from E-FamiTracker by Euly
 		m_cChipEdit->AddString(_T("5E01"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
 		m_cChipEdit->AddString(_T("7E02"));

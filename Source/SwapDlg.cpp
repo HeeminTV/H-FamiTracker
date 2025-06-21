@@ -92,6 +92,8 @@ BOOL CSwapDlg::OnInitDialog()
 		m_cChipFirst->AddString(_T("5E01"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
 		m_cChipFirst->AddString(_T("7E02"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
+		m_cChipFirst->AddString(_T("YM2413"));
 
 	CString str;
 	for (int i = 0; i < m_cChipFirst->GetCount(); i++)
@@ -137,6 +139,8 @@ int CSwapDlg::GetChipFromString(const CString str)
 		return SNDCHIP_5E01;
 	else if (str == _T("7E02"))
 		return SNDCHIP_7E02;
+	else if (str == _T("YM2413"))
+		return SNDCHIP_OPLL;
 	else
 		return SNDCHIP_NONE;
 }
@@ -146,14 +150,15 @@ int CSwapDlg::GetFinalChannel(unsigned int Channel, unsigned int Chip) const
 	CFamiTrackerDoc *pDoc = CFamiTrackerDoc::GetDoc();
 
 	switch (Chip) {
-	case SNDCHIP_VRC6: Channel += CHANID_VRC6_PULSE1; break;
-	case SNDCHIP_VRC7: Channel += CHANID_VRC7_CH1; break;
-	case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
-	case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
-	case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
-	case SNDCHIP_5B:  Channel += CHANID_5B_CH1; break;
-	case SNDCHIP_5E01: Channel += CHANID_5E01_SQUARE1; break;
-	case SNDCHIP_7E02:  Channel += CHANID_7E02_SQUARE1; break;
+		case SNDCHIP_VRC6: Channel += CHANID_VRC6_PULSE1; break;
+		case SNDCHIP_VRC7: Channel += CHANID_VRC7_CH1; break;
+		case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
+		case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
+		case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
+		case SNDCHIP_5B:  Channel += CHANID_5B_CH1; break;
+		case SNDCHIP_5E01: Channel += CHANID_5E01_SQUARE1; break;
+		case SNDCHIP_7E02:  Channel += CHANID_7E02_SQUARE1; break;
+		case SNDCHIP_OPLL:  Channel += CHANID_OPLL_CH1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);

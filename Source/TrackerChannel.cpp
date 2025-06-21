@@ -60,7 +60,7 @@ LPCTSTR CTrackerChannel::GetShortName() const
 	return m_pShortName;
 }
 
-const char CTrackerChannel::GetChip() const
+const int CTrackerChannel::GetChip() const
 {
 	return m_iChip;
 }

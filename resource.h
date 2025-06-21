@@ -938,6 +938,7 @@
 #define IDC_EXPANSION_OPLL              53289
 #define IDC_STATIC_OPLL                 53290
 #define IDS_PROPERTIES_TOTALRAM         53291
+#define ID_INSTRUMENT_ADD_OPLL 			53292
 
 // Next default values for new objects
 // 

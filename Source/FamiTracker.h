@@ -23,6 +23,8 @@
 
 // FamiTracker.h : main header file for the FamiTracker application
 
+#include "GlobalChipCount.h"
+
 #include <memory>
 #include <string>
 #include <thread>		// // //

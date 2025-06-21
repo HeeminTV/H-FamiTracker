@@ -123,7 +123,7 @@ void CInstrumentRecorder::RecordInstrument(const unsigned Tick, CFamiTrackerView
 	switch (Chip) {
 	case SNDCHIP_NONE: case SNDCHIP_5E01: case SNDCHIP_7E02: Table = m_pDocument->GetMachine() == PAL ? CDetuneTable::DETUNE_PAL : CDetuneTable::DETUNE_NTSC; break;
 	case SNDCHIP_VRC6: Table = m_iRecordChannel == CHANID_VRC6_SAWTOOTH ? CDetuneTable::DETUNE_SAW : CDetuneTable::DETUNE_NTSC; break;
-	case SNDCHIP_VRC7: Table = CDetuneTable::DETUNE_VRC7; break;
+	case SNDCHIP_VRC7: case SNDCHIP_OPLL: Table = CDetuneTable::DETUNE_VRC7; break;
 	case SNDCHIP_FDS:  Table = CDetuneTable::DETUNE_FDS; break;
 	case SNDCHIP_MMC5: Table = CDetuneTable::DETUNE_NTSC; break;
 	case SNDCHIP_N163: Table = CDetuneTable::DETUNE_N163; break;

@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "GlobalChipCount.h"
 
 // CChannelMap
 
@@ -44,7 +45,7 @@ public:
 	int				GetChipType(int Channel) const;
 
 public:
-	static const int CHIP_COUNT = 10;	// Number of allowed expansion chips
+	static const int CHIP_COUNT = GLOBAL_EXPANSION_COUNT + 2;	// Number of allowed expansion chips
 
 protected:
 	void AddChip(int Ident, inst_type_t Inst, LPCTSTR pName);

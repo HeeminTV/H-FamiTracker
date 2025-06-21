@@ -34,8 +34,6 @@
 
 LPCTSTR TRACK_FORMAT = _T("#%02i %s");
 
-int TotalMixerCount = 13; // ah fuck i hate hardcoding
-
 // CModulePropertiesDlg dialog
 
 //
@@ -214,7 +212,7 @@ constexpr std::array<unsigned int, 19> IDC_OPLL_PATCHNAME = {
 	IDC_OPLL_PATCHNAME18
 };
 
-constexpr std::array<unsigned int, 13> IDC_DEVICE_OFFSET_EDIT = {
+constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_DEVICE_OFFSET_EDIT = {
 	IDC_APU1_OFFSET_EDIT,
 	IDC_APU2_OFFSET_EDIT,
 	IDC_VRC6_OFFSET_EDIT,
@@ -230,7 +228,7 @@ constexpr std::array<unsigned int, 13> IDC_DEVICE_OFFSET_EDIT = {
 	IDC_OPLL_OFFSET_EDIT,
 };
 
-constexpr std::array<unsigned int, 13> IDC_DEVICE_OFFSET_SLIDER = {
+constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_DEVICE_OFFSET_SLIDER = {
 	IDC_APU1_OFFSET_SLIDER,
 	IDC_APU2_OFFSET_SLIDER,
 	IDC_VRC6_OFFSET_SLIDER,
@@ -246,7 +244,7 @@ constexpr std::array<unsigned int, 13> IDC_DEVICE_OFFSET_SLIDER = {
 	IDC_OPLL_OFFSET_SLIDER,
 };
 
-constexpr std::array<unsigned int, 13> IDC_DEVICE_OFFSET_DB = {
+constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_DEVICE_OFFSET_DB = {
 	IDC_APU1_OFFSET_DB,
 	IDC_APU2_OFFSET_DB,
 	IDC_VRC6_OFFSET_DB,
@@ -264,7 +262,7 @@ constexpr std::array<unsigned int, 13> IDC_DEVICE_OFFSET_DB = {
 	// just kidding :}
 };
 
-constexpr std::array<unsigned int, 13> IDC_STATIC_DEVICE = {
+constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_STATIC_DEVICE = {
 	IDC_STATIC_APU1,
 	IDC_STATIC_APU2,
 	IDC_STATIC_VRC6,
@@ -313,7 +311,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 	m_cChanSlider.SubclassDlgItem(IDC_CHANNELS, this);
 
 	// Device mix offset UI
-	for (int i = 0; i < TotalMixerCount; i++) {
+	for (int i = 0; i < GLOBAL_MIXER_COUNT; i++) {
 		m_cDeviceLevelEdit[i].SubclassDlgItem(IDC_DEVICE_OFFSET_EDIT[i], this);
 		m_cDeviceLevelSlider[i].SubclassDlgItem(IDC_DEVICE_OFFSET_SLIDER[i], this);
 		m_cDevicedBLabel[i].SubclassDlgItem(IDC_DEVICE_OFFSET_DB[i], this);
@@ -397,7 +395,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 	{
 		CString str;
 		unsigned int Gone = m_pDocument->GetExpansionChip() & ~m_iExpansions;
-		for (int i = 0; i < 9; i++) { // HFT modifiactions
+		for (int i = 0; i < GLOBAL_EXPANSION_COUNT; i++) {
 			if (Gone & (1 << i)) switch (i) {
 				case 0: str += _T("VRC6 "); break;
 				case 1: str += _T("VRC7 "); break;
@@ -434,7 +432,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 	m_pDocument->SetLinearPitch(pPitchBox->GetCurSel() == 1);
 
 	// Device mix offset
-	for (int i = 0; i < TotalMixerCount; i++) // HFT modification
+	for (int i = 0; i < GLOBAL_MIXER_COUNT; i++) // HFT modification
 		m_pDocument->SetLevelOffset(i, -m_iDeviceLevelOffset[i]);
 
 	// Hardware-based mixing
@@ -727,7 +725,7 @@ void CModulePropertiesDlg::OnBnClickedSongImport()
 	((CButton*)GetDlgItem(IDC_EXPANSION_OPLL))->SetCheck((m_iExpansions & SNDCHIP_OPLL) != 0);
 
 
-	for (int i = 0; i < TotalMixerCount; i++) // HFT modifiaction
+	for (int i = 0; i < GLOBAL_MIXER_COUNT; i++) // HFT modifiaction
 		updateDeviceMixOffsetUI(i);
 
 	m_pDocument->UpdateAllViews(NULL, UPDATE_PROPERTIES);
@@ -956,7 +954,7 @@ void CModulePropertiesDlg::updateN163ChannelCountUI()
 
 void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 {
-	int const chipenable[13] = {
+	int const chipenable[GLOBAL_MIXER_COUNT] = {
 		255,
 		255,
 		SNDCHIP_VRC6,

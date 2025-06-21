@@ -1888,7 +1888,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_5B) * 8 +		// // //
 		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8
+		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9
 	);
 	int vis_line = 0;
 
