@@ -2,25 +2,9 @@
 
 # H-FamiTracker 
 
-H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**ipnotico"
+H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**ipnotico".
 
-## Modifications from other forks
-
-This fork also presents some features from various FamiTracker forks.
-
-### [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) presented features
-
-This fork ***DOES NOT OWN*** the codes that are taken from [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker)
-
-- 5E01
-
-- MMC5 PCM
-
-- Scope Edge Trigger
-
-- DPCM Sample Name in Pattern Editor
-
-- Shading Volume Columns
+H-FamiTracker indirectly **succeeds** [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) and provides additional features.
 
 ## To do list
 - [x] 7E02
@@ -72,6 +56,8 @@ The meaning of the name "Dn" is "Derivative n", which alludes to this fork being
 
 ## Licenses
 
+(This specific section is also **shared** with H-FamiTracker)
+
 The application and the source code are distributed under the [GPLv3+ license](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 Copyright (C) 2020-2024 D.P.C.M.
@@ -93,6 +79,9 @@ Copyright (C) 2020-2024 D.P.C.M.
 - FDS and N163 sound emulator from Mesen
 	- Copyright (C) 2014-2024 Sour
 	- Licensed under [GPLv3](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html).
+- Atari TIA sound emulator from MAME 0.277
+	- Copyright (C) Ron Fries
+	- Licensed under [GPLv2+](https://scancode-licensedb.aboutcode.org/gpl-2.0-plus.html).
 - Blip_buffer 0.4.1
 	- Copyright (C) 2003-2006 Shay Green
 	- Licensed under [LGPLv2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
