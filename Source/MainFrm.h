@@ -24,7 +24,6 @@
 // CMainFrame, the main window class
 
 #include "InstrumentEditDlg.h"
-#include "PerformanceDlg.h"
 #include "DialogReBar.h"
 #include "ControlPanelDlg.h"
 #include "CustomControls.h"
@@ -183,7 +182,6 @@ private:  // control bar embedded members
 	CGrooveDlg			*m_pGrooveDlg;			// // //
 	CFindDlg			*m_pFindDlg;			// // //
 	CBookmarkDlg		*m_pBookmarkDlg;		// // //
-	CPerformanceDlg		*m_pPerformanceDlg;		// // //
 
 	CLockedEdit			*m_pLockedEditSpeed;
 	CLockedEdit			*m_pLockedEditTempo;

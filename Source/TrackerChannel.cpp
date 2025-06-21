@@ -214,7 +214,8 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 				m_iChannelID != CHANID_2A03_DPCM &&
 				m_iChannelID != CHANID_5E01_DPCM && 
 				m_iChannelID != CHANID_7E02_DPCM &&
-				m_iChannelID != CHANID_MMC5_VOICE
+				m_iChannelID != CHANID_MMC5_VOICE &&
+				!(m_iChannelID >= CHANID_OPLL_CH1 && m_iChannelID <= CHANID_OPLL_CH9)
 			) return false; // Taken from E-FamiTracker by Euly
 
 			int limit;
@@ -257,6 +258,8 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_FDS && (EffParam <= 0x7F || EffParam == 0xE0);
 		case EF_VRC7_PORT: case EF_VRC7_WRITE:		// // // 050B
 			return m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL;
+		// case EF_OPLL_PERCUSSION:
+		// 	return m_iChip == SNDCHIP_OPLL;
 		case EF_PHASE_RESET:
 			// Triangle and noise can't reset phase during runtime.
 			if (m_iChannelID == CHANID_2A03_TRIANGLE) return false;
@@ -275,7 +278,8 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return EffParam == 0x00;
 		case EF_HARMONIC:
 			// VRC7 is not supported yet.
-			if (m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL) return false;
+			// in YM2413, this triggers drum mode
+			if (m_iChip == SNDCHIP_VRC7) return false;
 			// 2A03 noise behaves strangely with Kxx.
 			if (m_iChannelID == CHANID_2A03_NOISE) return false;
 			if (m_iChannelID == CHANID_5E01_NOISE) return false;

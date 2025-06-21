@@ -121,7 +121,7 @@ typedef struct __OPLL {
   uint32_t noise;
   uint8_t short_noise;
 
-  int32_t patch_number[9];
+  int32_t patch_number[10];
   OPLL_SLOT slot[18];
   OPLL_PATCH patch[19 * 2];
 

@@ -87,7 +87,7 @@ const int ECHO_BUFFER_LENGTH = 3;
 // Taken from E-FamiTracker by Eu- wait I wrote this by myself.
 // huh
 // 2A03 + VRC6 + MMC5 + N163 + 2C33 + VRC7 + 5B + 5E01 + 7E02 + YM2413
-const int MAX_CHANNELS	 = 5 + 3 + 3 + 8 + 1 + 6 + 3 + 5 + 5 + 6;
+const int MAX_CHANNELS	 = 5 + 3 + 3 + 8 + 1 + 6 + 3 + 5 + 5 + 9;
 
 const int CHANNELS_DEFAULT = 5;
 const int CHANNELS_VRC6	   = 3;
@@ -132,7 +132,7 @@ enum effect_t : unsigned char {
 	EF_TREMOLO,         	// Tremolo
 	EF_PITCH,           	// Pitch
 	EF_DELAY,           	// Note delay
-	EF_DAC,             	// DAC setting
+	EF_DAC,             	// DAC setting or YM2413 drum mode
 	EF_PORTA_UP,        	// Portamento up
 	EF_PORTA_DOWN,      	// Portamento down
 	EF_DUTY_CYCLE,      	// Duty cycle

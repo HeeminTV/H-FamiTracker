@@ -706,6 +706,8 @@
     <ClCompile Include="Source\InstrumentFileTree.cpp" />
     <ClCompile Include="Source\Settings.cpp" />
     <ClCompile Include="Source\WaveFile.cpp" />
+    <ClCompile Include="Source\InstHandlerOPLL.cpp" />
+    <ClCompile Include="Source\InstHandlerOPLL.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="resource.h">
@@ -1156,7 +1158,10 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "Dn-help\hlp\HTML
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Application.ico" />
+    <Image Include="res\Inst_2C33.ico" />
     <Image Include="res\Inst_5B.ico" />
+    <Image Include="res\Inst_Default.ico" />
+    <Image Include="res\Inst_YM2413.ico" />
     <Image Include="res\NewBanner.bmp" />
     <Image Include="res\YM2413.bmp" />
   </ItemGroup>

@@ -298,11 +298,9 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 4"), _T("YM4"), SNDCHIP_OPLL, CHANID_OPLL_CH4));
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 5"), _T("YM5"), SNDCHIP_OPLL, CHANID_OPLL_CH5));
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 6"), _T("YM6"), SNDCHIP_OPLL, CHANID_OPLL_CH6));
-	/*
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 7"), _T("YM7"), SNDCHIP_OPLL, CHANID_OPLL_CH7));
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 8"), _T("YM8"), SNDCHIP_OPLL, CHANID_OPLL_CH8));
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 9"), _T("YM9"), SNDCHIP_OPLL, CHANID_OPLL_CH9));
-	*/
 
 }
 
@@ -605,7 +603,7 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		case CHANID_VRC6_SAWTOOTH:
 			Table = m_iNoteLookupTableSaw; break;
 		case CHANID_VRC7_CH1: case CHANID_VRC7_CH2: case CHANID_VRC7_CH3: case CHANID_VRC7_CH4: case CHANID_VRC7_CH5: case CHANID_VRC7_CH6: // VRC7
-		case CHANID_OPLL_CH1: case CHANID_OPLL_CH2: case CHANID_OPLL_CH3: case CHANID_OPLL_CH4: case CHANID_OPLL_CH5: case CHANID_OPLL_CH6: // case CHANID_OPLL_CH7: case CHANID_OPLL_CH8: case CHANID_OPLL_CH9: YM2413
+		case CHANID_OPLL_CH1: case CHANID_OPLL_CH2: case CHANID_OPLL_CH3: case CHANID_OPLL_CH4: case CHANID_OPLL_CH5: case CHANID_OPLL_CH6: case CHANID_OPLL_CH7: case CHANID_OPLL_CH8: case CHANID_OPLL_CH9: // YM2413
 			Table = m_iNoteLookupTableVRC7; break;
 		case CHANID_FDS:
 			Table = m_iNoteLookupTableFDS; break;
@@ -1550,7 +1548,7 @@ static CString GetStateString(const stChannelState &State)
 		// VRC7
 			State.ChannelIndex >= CHANID_VRC7_CH1 && State.ChannelIndex <= CHANID_VRC7_CH6 ||
 			// YM2413
-			State.ChannelIndex >= CHANID_OPLL_CH1 && State.ChannelIndex <= CHANID_OPLL_CH6
+			State.ChannelIndex >= CHANID_OPLL_CH1 && State.ChannelIndex <= CHANID_OPLL_CH9
 		)
 		for (const auto &x : VRC7_EFFECTS) {
 			int p = State.Effect[x];

@@ -426,7 +426,7 @@ void CMixer::FinishBuffer(int t)
 		StoreChannelLevel(CHANID_7E02_SQUARE1 + i, get_channel_level(chip7E02, i));
 
 	auto& chipOPLL = *m_APU->m_pOPLL;
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < 9; ++i)
 		StoreChannelLevel(CHANID_OPLL_CH1 + i, get_channel_level(chipOPLL, i));
 
 }

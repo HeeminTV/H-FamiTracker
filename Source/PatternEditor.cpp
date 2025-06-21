@@ -1889,7 +1889,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		m_pDocument->ExpansionEnabled(SNDCHIP_5B) * 8 +		// // //
 		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9
+		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 11
 	);
 	int vis_line = 0;
 
@@ -2319,6 +2319,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		DrawVolFDSMod(freq, vol << 3, outfreq, moddepth << 3, outfreq);
 	}
 
+	// VRC7
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_VRC7)) {		// // //
 		DrawHeaderFunc(_T("VRC7"));		// // //
 		
@@ -2341,10 +2342,10 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		}
 	}
 
+	// 5B
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_5B)) {		// // //
 		DrawHeaderFunc(_T("5B"));		// // //
 
-		// S5B
 		for (int i = 0; i < 4; ++i) {
 			GetRegsFunc(SNDCHIP_5B, [&] (int x) { return i * 2 + x; }, 2);
 			text.Format(_T("$%02X:"), i * 2);
@@ -2575,6 +2576,34 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		++line; y += LINE_HEIGHT;		// // //
 		DrawTextFunc(180, text);
 	}
+
+	// YM2413
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_OPLL)) {		// // //
+		DrawHeaderFunc(_T("YM2413"));		// // //
+
+		GetRegsFunc(SNDCHIP_OPLL, [](int x) { return x; }, 8);
+		DrawRegFunc(_T("$00:"), 8);		// // //
+
+		std::string PatchName[20] = {
+			#include "APU/digital-sound-antiques/2413tone_patchname.h"
+			"Custom"
+		};
+		for (int i = 0; i < 9; ++i) {
+			GetRegsFunc(SNDCHIP_OPLL, [&](int x) { return i + (++x << 4); }, 3);
+			text.Format(_T("$x%01X:"), i);
+			DrawRegFunc(text, 3);
+
+			int period = reg[0] | ((reg[1] & 0x01) << 8);
+			int vol = 0x0F - (pSoundGen->GetReg(SNDCHIP_OPLL, i + 0x30) & 0x0F);
+			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_OPLL, i);		// // //
+
+			text.Format(_T("%s, vol = %02i, patch = $%01X (%s)"), GetPitchTextFunc(3, period, freq), vol, reg[2] >> 4, PatchName[reg[2] >> 4 == 0 ? 19 : reg[2] >> 4]);
+			DrawTextFunc(180, text);
+
+			DrawVolFunc(freq, vol << 4);
+		}
+	}
+
 	pDC->SelectObject(pOldFont);
 
 	// Surrounding frame

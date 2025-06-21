@@ -105,5 +105,8 @@ CChannelFactory::CChannelFactory() : CFactory()
 	m_pMakeFunc[CHANID_OPLL_CH4] = Func;
 	m_pMakeFunc[CHANID_OPLL_CH5] = Func;
 	m_pMakeFunc[CHANID_OPLL_CH6] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH7] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH8] = Func;
+	m_pMakeFunc[CHANID_OPLL_CH9] = Func;
 
 }

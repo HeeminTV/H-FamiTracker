@@ -25,15 +25,15 @@
 #include "OPLL.h"
 #include "../RegisterState.h"		// // //
 
-const float  COPLL::AMPLIFY = 4.6f;		// Mixing amplification, OPLL patch 14 is 4, 88 times stronger than a 50 % square @ v = 15
+const float  COPLL::AMPLIFY = 4.6f;		// Mixing amplification, VRC7 patch 14 is 4, 88 times stronger than a 50 % square @ v = 15
 const uint32_t COPLL::OPLL_CLOCK = CAPU::BASE_FREQ_VRC7;	// Clock frequency
 
 COPLL::COPLL()
 {
 	m_pRegisterLogger->AddRegisterRange(0x00, 0x07);		// // //
-	m_pRegisterLogger->AddRegisterRange(0x10, 0x15);
-	m_pRegisterLogger->AddRegisterRange(0x20, 0x25);
-	m_pRegisterLogger->AddRegisterRange(0x30, 0x35);
+	m_pRegisterLogger->AddRegisterRange(0x10, 0x18);
+	m_pRegisterLogger->AddRegisterRange(0x20, 0x28);
+	m_pRegisterLogger->AddRegisterRange(0x30, 0x38);
 	Reset();
 }
 
@@ -54,7 +54,7 @@ void COPLL::Reset()
 	m_BlipOPLL.clear();
 	if (m_pOPLLInt != NULL) {
 		// update patchset and OPLL type
-		OPLL_setChipType(m_pOPLLInt, ((m_UseExternalOPLLChip || m_PatchSelection > 6) ? 0 : 1));
+		OPLL_setChipType(m_pOPLLInt, 0);
 
 		if (m_UseExternalOPLLChip && m_PatchSet != NULL)
 			OPLL_setPatch(m_pOPLLInt, m_PatchSet);
@@ -142,7 +142,7 @@ void COPLL::EndFrame(Blip_Buffer& Output, gsl::span<int16_t> TempBuffer)
 
 		// emu2413's waveform output ranges from -4095...4095
 		// fully rectified by abs(), so resulting waveform is around 0-4095
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 9; i++)
 			m_ChannelLevels[i].update(static_cast<uint8_t>((255.0 * (OPLL_getchanvol(i) + 1.0)/4096.0)));
 
 		// Apply direct volume, hacky workaround
@@ -166,7 +166,7 @@ void COPLL::EndFrame(Blip_Buffer& Output, gsl::span<int16_t> TempBuffer)
 
 double COPLL::GetFreq(int Channel) const		// // //
 {
-	if (Channel < 0 || Channel >= 6) return 0.;
+	if (Channel < 0 || Channel >= 9) return 0.;
 	int Lo = m_pRegisterLogger->GetRegister(Channel | 0x10)->GetValue();
 	int Hi = m_pRegisterLogger->GetRegister(Channel | 0x20)->GetValue() & 0x0F;
 	Lo |= (Hi << 8) & 0x100;
@@ -177,7 +177,7 @@ double COPLL::GetFreq(int Channel) const		// // //
 int COPLL::GetChannelLevel(int Channel)
 {
 	ASSERT(0 <= Channel && Channel < 9);
-	if (0 <= Channel && Channel < 6) {
+	if (0 <= Channel && Channel < 9) {
 		return m_ChannelLevels[Channel].getLevel();
 	}
 	return 0;

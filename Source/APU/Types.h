@@ -30,8 +30,8 @@ const int SNDCHIP_MMC5	= 8;			// Nintendo MMC5
 const int SNDCHIP_N163	= 16;			// Namco N163
 const int SNDCHIP_5B	= 32;			// Sunsoft 5B
 const int SNDCHIP_5E01	= 64;			// Eulous 5E01
-const int SNDCHIP_7E02	= 128;			// Saeyahn 7E02
-const int SNDCHIP_OPLL  = 256;			// Yamaha YM2413
+const int SNDCHIP_7E02	= 1024;			// Saeyahn 7E02
+const int SNDCHIP_OPLL  = 128;			// Yamaha YM2413
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,
@@ -88,11 +88,9 @@ enum chan_id_t {
 	CHANID_OPLL_CH4,
 	CHANID_OPLL_CH5,
 	CHANID_OPLL_CH6,
-	/*
-		CHANID_OPLL_CH7,
-		CHANID_OPLL_CH8,
-		CHANID_OPLL_CH9,
-	*/
+	CHANID_OPLL_CH7,
+	CHANID_OPLL_CH8,
+	CHANID_OPLL_CH9,
 
 	CHANNELS		/* Total number of channels */
 };

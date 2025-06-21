@@ -2490,8 +2490,7 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 			m_pNoteQueue->AddMap({CHANID_VRC6_SAWTOOTH});
 		}
 		if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
-			m_pNoteQueue->AddMap({CHANID_VRC7_CH1, CHANID_VRC7_CH2, CHANID_VRC7_CH3,
-								  CHANID_VRC7_CH4, CHANID_VRC7_CH5, CHANID_VRC7_CH6});
+			m_pNoteQueue->AddMap({CHANID_VRC7_CH1, CHANID_VRC7_CH2, CHANID_VRC7_CH3, CHANID_VRC7_CH4, CHANID_VRC7_CH5, CHANID_VRC7_CH6});
 		if (pDoc->ExpansionEnabled(SNDCHIP_FDS))
 			m_pNoteQueue->AddMap({CHANID_FDS});
 		if (pDoc->ExpansionEnabled(SNDCHIP_MMC5))
@@ -2516,8 +2515,7 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 			m_pNoteQueue->AddMap({ CHANID_7E02_SQUARE1, CHANID_7E02_SQUARE2, CHANID_7E02_WAVEFORM, CHANID_7E02_NOISE, CHANID_7E02_DPCM });
 
 		if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
-			m_pNoteQueue->AddMap({ CHANID_OPLL_CH1, CHANID_OPLL_CH2, CHANID_OPLL_CH3,
-								  CHANID_OPLL_CH4, CHANID_OPLL_CH5, CHANID_OPLL_CH6 });
+			m_pNoteQueue->AddMap({ CHANID_OPLL_CH1, CHANID_OPLL_CH2, CHANID_OPLL_CH3, CHANID_OPLL_CH4, CHANID_OPLL_CH5, CHANID_OPLL_CH6, CHANID_OPLL_CH7, CHANID_OPLL_CH8, CHANID_OPLL_CH9 });
 
 	}
 

@@ -108,25 +108,7 @@ const std::string CAPU::OPLL_PATCHNAME_VRC7[19] = {
 };
 
 const std::string CAPU::OPLL_PATCHNAME_YM2413[19] = {
-	"(custom patch)",
-	"Violin",
-	"Guitar",
-	"Piano",
-	"Flute",
-	"Clarinet",
-	"Oboe",
-	"Trumpet",
-	"Organ",
-	"Horn",
-	"Synthesizer",
-	"Harpsichord",
-	"Vibraphone",
-	"Synthsizer Bass",
-	"Acoustic Bass",
-	"Electric Guitar",
-	"Bass Drum",
-	"Snare Drum / Hi-Hat",
-	"Tom / Top Cymbal"
+	#include "digital-sound-antiques/2413tone_patchname.h"
 };
 
 const std::string CAPU::OPLL_PATCHNAME_YMF281B[19] = {

@@ -102,7 +102,6 @@ CMainFrame::CMainFrame() :
 	m_pGrooveDlg(NULL),			// // //
 	m_pFindDlg(NULL),			// // //
 	m_pBookmarkDlg(NULL),		// // //
-	m_pPerformanceDlg(NULL),	// // //
 	m_pImageList(NULL),
 	m_pLockedEditSpeed(NULL),
 	m_pLockedEditTempo(NULL),
@@ -148,7 +147,6 @@ CMainFrame::~CMainFrame()
 	SAFE_RELEASE(m_pGrooveDlg);			// // //
 	SAFE_RELEASE(m_pFindDlg);			// // //
 	SAFE_RELEASE(m_pBookmarkDlg);			// // //
-	SAFE_RELEASE(m_pPerformanceDlg);		// // //
 	SAFE_RELEASE(m_pInstrumentList);
 	SAFE_RELEASE(m_pVisualizerWnd);
 	SAFE_RELEASE(m_history);
@@ -1596,6 +1594,7 @@ void CMainFrame::OnPrevFrame()
 
 void CMainFrame::OnHelpPerformance()
 {
+	/*
 	if (m_pPerformanceDlg == NULL)		// // //
 		m_pPerformanceDlg = new CPerformanceDlg();
 	if (!m_pPerformanceDlg->m_hWnd)
@@ -1604,6 +1603,7 @@ void CMainFrame::OnHelpPerformance()
 		m_pPerformanceDlg->CenterWindow();
 	m_pPerformanceDlg->ShowWindow(SW_SHOW);
 	m_pPerformanceDlg->SetFocus();
+	*/
 }
 
 void CMainFrame::OnUpdateSBInstrument(CCmdUI *pCmdUI)

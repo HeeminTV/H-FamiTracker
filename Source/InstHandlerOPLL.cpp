@@ -22,40 +22,39 @@
 #include "Instrument.h"
 #include "InstrumentVRC7.h"
 #include "ChannelHandlerInterface.h"
-#include "InstHandlerVRC7.h"
 #include "InstHandlerOPLL.h"
 
-void CInstHandlerVRC7::LoadInstrument(std::shared_ptr<CInstrument> pInst)
+void CInstHandlerOPLL::LoadInstrument(std::shared_ptr<CInstrument> pInst)
 {
 	m_pInstrument = pInst;
-	//m_pInstrument = std::dynamic_pointer_cast<CInstrumentVRC7>(pInst);
+	//m_pInstrument = std::dynamic_pointer_cast<CInstrumentOPLL>(pInst);
 	UpdateRegs();
 }
 
-void CInstHandlerVRC7::TriggerInstrument()
+void CInstHandlerOPLL::TriggerInstrument()
 {
 	UpdateRegs();
 }
 
-void CInstHandlerVRC7::ReleaseInstrument()
+void CInstHandlerOPLL::ReleaseInstrument()
 {
 }
 
-void CInstHandlerVRC7::UpdateInstrument()
+void CInstHandlerOPLL::UpdateInstrument()
 {
 	if (!m_bUpdate) return;
-	CChannelHandlerInterfaceVRC7 *pInterface = dynamic_cast<CChannelHandlerInterfaceVRC7*>(m_pInterface);
+	CChannelHandlerInterfaceOPLL *pInterface = dynamic_cast<CChannelHandlerInterfaceOPLL*>(m_pInterface);
 	if (pInterface == nullptr) return;
-	auto pVRC7Inst = std::dynamic_pointer_cast<const CInstrumentVRC7>(m_pInstrument);
-	if (pVRC7Inst == nullptr) return;
-	pInterface->SetPatch(pVRC7Inst->GetPatch());
-	if (!pVRC7Inst->GetPatch())
+	auto pOPLLInst = std::dynamic_pointer_cast<const CInstrumentVRC7>(m_pInstrument);
+	if (pOPLLInst == nullptr) return;
+	pInterface->SetPatch(pOPLLInst->GetPatch());
+	if (!pOPLLInst->GetPatch())
 		for (std::size_t i = 0; i < 8; i++)
-			pInterface->SetCustomReg(i, pVRC7Inst->GetCustomReg(static_cast<int>(i)));
+			pInterface->SetCustomReg(i, pOPLLInst->GetCustomReg(static_cast<int>(i)));
 	m_bUpdate = false;
 }
 
-void CInstHandlerVRC7::UpdateRegs()
+void CInstHandlerOPLL::UpdateRegs()
 {
 	m_bUpdate = true;
 }

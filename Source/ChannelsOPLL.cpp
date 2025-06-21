@@ -27,7 +27,13 @@
 #include "ChannelHandler.h"
 #include "ChannelsOPLL.h"
 #include "InstHandler.h"		// // //
-#include "InstHandlerVRC7.h"		// // //
+#include "InstHandlerOPLL.h"		// // //
+
+int g_iPercMode;	// Taken from 0CC-LLTracker
+int g_iPercModePrev;
+int g_iPercVolumeBD;
+int g_iPercVolumeSDHH;
+int g_iPercVolumeTOMCY;
 
 #define OPL_NOTE_ON 0x10
 #define OPL_SUSTAIN_ON 0x20
@@ -39,7 +45,7 @@ bool CChannelHandlerOPLL::m_bRegsDirty = false;
 // Each bit represents that the custom patch register on that index has been updated
 char CChannelHandlerOPLL::m_cPatchFlag = 0;		// // // 050B
 // Custom instrument patch
-unsigned char CChannelHandlerOPLL::m_iPatchRegs[8] = { };		// // // 050B
+unsigned char CChannelHandlerOPLL::m_iPatchRegs[8];		// // // 050B
 
 CChannelHandlerOPLL::CChannelHandlerOPLL() : 
 	FrequencyChannelHandler((1 << (OPLL_PITCH_RESOLUTION + 9)) - 1, 15),		// // //
@@ -47,6 +53,12 @@ CChannelHandlerOPLL::CChannelHandlerOPLL() :
 	m_iTriggeredNote(0)
 {
 	m_iVolume = VOL_COLUMN_MAX;
+
+	g_iPercMode = 0; // Taken from 0CC-LLTracker
+	g_iPercModePrev = 0;
+	g_iPercVolumeBD = 15;
+	g_iPercVolumeSDHH = 15;
+	g_iPercVolumeTOMCY = 15;
 }
 
 void CChannelHandlerOPLL::SetChannelID(int ID)
@@ -88,6 +100,30 @@ bool CChannelHandlerOPLL::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		m_iPatchRegs[m_iCustomPort] = EffParam;
 		m_cPatchFlag |= 1 << m_iCustomPort;
 		m_bRegsDirty = true;
+		break;
+	case EF_DAC:	// Taken from 0CC-LLTracker
+		/*switch (EffParam & 0xf0)
+		{
+		case 0x00://turn percussion mode on/off
+			switch (EffParam & 0x0f)
+			{
+			case 0x00://off
+				g_iPercMode &= ~0x20;
+				break;
+			case 0x01://on
+				g_iPercMode |= 0x20;
+				break;
+			}
+			break;
+		}
+		what the heck????
+		*/
+		if (EffParam == 0x00) {
+			g_iPercMode &= ~0x20;
+		}
+		else if (EffParam == 0x01) {
+			g_iPercMode |= 0x20;
+		}
 		break;
 	default: return FrequencyChannelHandler::HandleEffect(EffNum, EffParam);
 	}
@@ -179,7 +215,7 @@ bool CChannelHandlerOPLL::CreateInstHandler(inst_type_t Type)
 	switch (Type) {
 	case INST_VRC7:
 		if (m_iInstTypeCurrent != INST_VRC7)
-			m_pInstHandler.reset(new CInstHandlerVRC7(this, 0x0F));
+			m_pInstHandler.reset(new CInstHandlerOPLL(this, 0x0F));
 		return true;
 	}
 	return false;
@@ -222,6 +258,39 @@ int CChannelHandlerOPLL::TriggerNote(int Note)
 	if (m_iCommand != OPLL_CMD_NOTE_TRIGGER && m_iCommand != OPLL_CMD_NOTE_HALT)
 		m_iCommand = OPLL_CMD_NOTE_ON;
 	m_iOctave = Note / NOTE_RANGE;
+
+	if (g_iPercMode & 0x20 && m_iChannelID >= CHANID_OPLL_CH7 && m_iChannelID <= CHANID_OPLL_CH9) { // Taken from 0CC-LLTracker
+		switch (Note % 12)	//drum mapping similar to the MIDI drum layout
+		{
+		case 0:	//BD
+		case 1:
+			g_iPercMode |= 0x10;
+			g_iPercVolumeBD = (15 - CalculateVolume());
+			break;
+		case 2: //SD
+		case 3:
+		case 4:
+			g_iPercMode |= 0x08;
+			g_iPercVolumeSDHH = (g_iPercVolumeSDHH & 0xf0) | (15 - CalculateVolume());
+			break;
+		case 5: //TOM
+		case 7:
+		case 9:
+		case 11:
+			g_iPercMode |= 0x04;
+			g_iPercVolumeTOMCY = (g_iPercVolumeTOMCY & 0x0f) | ((15 - CalculateVolume()) << 4);
+			break;
+		case 10: //CY
+			g_iPercMode |= 0x02;
+			g_iPercVolumeTOMCY = (g_iPercVolumeTOMCY & 0xf0) | (15 - CalculateVolume());
+			break;
+		case 6: //HH
+		case 8:
+			g_iPercMode |= 0x01;
+			g_iPercVolumeSDHH = (g_iPercVolumeSDHH & 0x0f) | ((15 - CalculateVolume()) << 4);
+			break;
+		}
+	}
 
 	return m_bLinearPitch ? (Note << LINEAR_PITCH_AMOUNT) : GetFnum(Note);		// // //
 }
@@ -289,10 +358,51 @@ void COPLLChannel::RefreshChannel()
 			RegWrite(i, m_iPatchRegs[i]);
 	}
 
-	m_bRegsDirty = false;
+	int subindex = m_iChannelID - CHANID_OPLL_CH1;
+	if (subindex == 8)	// Taken from 0CC-LLTracker
+	{
+		//only send all percussion related writes from one of the channels
 
-	if (!m_bGate)
-		m_iCommand = OPLL_CMD_NOTE_HALT;
+		if (g_iPercMode & 0x20)
+		{
+			//repeating writes will get filtered out during export
+
+			RegWrite(0x26, 0x00);	//force key off to percussion channels
+			RegWrite(0x27, 0x00);
+			RegWrite(0x28, 0x00);
+			RegWrite(0x16, 0x20);	//preset values for percussion
+			RegWrite(0x17, 0x50);
+			RegWrite(0x18, 0xc0);
+			RegWrite(0x26, 0x05);
+			RegWrite(0x27, 0x05);
+			RegWrite(0x28, 0x01);
+
+			RegWrite(0x0e, g_iPercMode);	//enable rhythm mode
+			RegWrite(0x36, g_iPercVolumeBD);	//percussion volume
+			RegWrite(0x37, g_iPercVolumeSDHH);
+			RegWrite(0x38, g_iPercVolumeTOMCY);
+
+			g_iPercMode &= ~0x1f;
+		}
+		else
+		{
+			if (g_iPercModePrev & 0x20)
+			{
+				RegWrite(0x0e, 0x00);	//disable rhythm mode
+				RegWrite(0x26, 0x00);	//force key off to percussion channels
+				RegWrite(0x27, 0x00);
+				RegWrite(0x28, 0x00);
+				RegWrite(0x36, 0x1f);
+				RegWrite(0x37, 0x1f);
+				RegWrite(0x38, 0x1f);
+
+			}
+		}
+
+		g_iPercModePrev = g_iPercMode;
+	}
+
+	if ((g_iPercMode & 0x20) && (subindex >= 6)) return;	//don't allow notes on the percussion channels when percussion mode is enabled
 
 	int Cmd = 0;
 
@@ -323,7 +433,7 @@ void COPLLChannel::RefreshChannel()
 
 	RegWrite(0x20 + m_iChannel, ((Fnum >> 8) & 1) | (Bnum << 1) | Cmd);
 
-	if (m_iChannelID == CHANID_OPLL_CH6)		// // // 050B
+	if (m_iChannelID == CHANID_OPLL_CH9)		// // // 050B
 		m_cPatchFlag = 0;
 }
 

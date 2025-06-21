@@ -71,7 +71,6 @@
 #define ID_CMD_INST_NUM                 143
 #define ID_BLOCK_START                  144
 #define IDS_INFO_TITLE                  144
-#define IDD_PERFORMANCE                 145
 #define ID_BLOCK_END                    145
 #define IDS_INFO_AUTHOR                 145
 #define IDD_SPEED                       146
@@ -260,10 +259,6 @@
 #define IDC_VOLUME                      1054
 #define IDC_QUALITY_FRM                 1056
 #define IDC_VOLUME_FRM                  1057
-#define IDC_CPU                         1058
-#define IDC_CPU_BAR                     1059
-#define IDC_FRAMERATE                   1060
-#define IDC_UNDERRUN                    1061
 #define IDC_DEVICES                     1063
 #define IDC_MASTER_SYNC                 1065
 #define IDC_KEY_RELEASE                 1066
@@ -431,8 +426,6 @@
 #define IDC_SHOWONOPEN                  1247
 #define IDC_CHANNELS                    1250
 #define IDC_CHANNELS_NR                 1251
-#define IDC_CHANNELS_NR2                1253
-#define IDC_CHANNELS_NTR                1253
 #define IDC_COMBO_STYLE                 1255
 #define IDC_COMBO_GOTO_CHIP             1255
 #define IDC_COMBO_VERSION_SELECT        1255
@@ -938,7 +931,7 @@
 #define IDC_EXPANSION_OPLL              53289
 #define IDC_STATIC_OPLL                 53290
 #define IDS_PROPERTIES_TOTALRAM         53291
-#define ID_INSTRUMENT_ADD_OPLL 			53292
+#define ID_INSTRUMENT_ADD_OPLL          53292
 
 // Next default values for new objects
 // 

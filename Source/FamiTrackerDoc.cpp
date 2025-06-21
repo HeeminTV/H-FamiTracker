@@ -4467,7 +4467,7 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 		else if (pos >= CHANID_7E02_SQUARE1) return -1;
 	}
 	if (!(Chip & SNDCHIP_OPLL)) {
-		if (pos > CHANID_OPLL_CH6) pos -= 6; // TODO fix this to 9 later
+		if (pos > CHANID_OPLL_CH9) pos -= 9	; // TODO fix this to 9 later
 		else if (pos >= CHANID_OPLL_CH1) return -1;
 	}
 

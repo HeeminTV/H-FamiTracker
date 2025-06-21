@@ -873,9 +873,9 @@ void CModulePropertiesDlg::setN163NChannels(int nchan) {
 	text.AppendFormat(_T(" %i"), nchan);
 	SetDlgItemText(IDC_CHANNELS_NR, text);
 
-	text.LoadString(IDS_PROPERTIES_TOTALRAM);
-	text.AppendFormat(_T(" %i"), 256 - 16 * nchan);
-	SetDlgItemText(IDC_CHANNELS_NTR, text);
+	// text.LoadString(IDS_PROPERTIES_TOTALRAM);
+	//text.AppendFormat(_T(" %i"), 256 - 16 * nchan);
+	// SetDlgItemText(IDC_CHANNELS_NTR, text);
 }
 
 // Taken from Euly by E-FamiTracker
@@ -948,7 +948,7 @@ void CModulePropertiesDlg::updateN163ChannelCountUI()
 	// Redraw UI.
 	m_cChanSlider.SetPos(m_iN163Channels);
 
-	SetDlgItemText(IDC_CHANNELS_NTR, N163RAMDisplayStr);
+	// SetDlgItemText(IDC_CHANNELS_NTR, N163RAMDisplayStr);
 	SetDlgItemText(IDC_CHANNELS_NR, N163ChannelCountStr);
 }
 

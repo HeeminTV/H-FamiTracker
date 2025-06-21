@@ -29,8 +29,9 @@
  * class CInstrumentVRC7
  *
  */
-
-static const unsigned char VRC7_SINE_PATCH[] = {0x01, 0x21, 0x00, 0x00, 0x00, 0xF0, 0x00, 0x0F};		// // //
+static const unsigned char VRC7_SINE_PATCH[] = { 0x01, 0x21, 0x00, 0x00, 0x00, 0xF0, 0x00, 0x0F };		// // //
+//static const unsigned char VRC7_SINE_PATCH[] = { 0x65, 0x21, 0x28, 0x17, 0xf5, 0xf1, 0x33, 0x56 };		// // //
+// ^ Taken from Furnace Tracker
 
 CInstrumentVRC7::CInstrumentVRC7() : CInstrument(INST_VRC7), m_iPatch(0)		// // //
 {
@@ -99,7 +100,7 @@ int CInstrumentVRC7::Compile(CChunk *pChunk, int Index)
 {
 	int Patch = GetPatch();
 
-	pChunk->StoreByte(6);		// // // CHAN_VRC7
+	pChunk->StoreByte(10);		// // // CHAN_VRC7
 	pChunk->StoreByte(Patch << 4);	// Shift up by 4 to make room for volume
 
 	if (Patch == 0) {

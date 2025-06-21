@@ -780,6 +780,12 @@
     <ClCompile Include="Source\ChannelsOPLL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\InstHandlerOPLL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\InstHandlerOPLL.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Exception.h">
@@ -1651,6 +1657,15 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\YM2413.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Inst_Default.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Inst_YM2413.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\Inst_2C33.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

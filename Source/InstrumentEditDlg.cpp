@@ -53,12 +53,10 @@ const TCHAR *CInstrumentEditDlg::CHIP_NAMES[] = {
 	_T(""), 
 	_T("2A03"), 
 	_T("VRC6"), 
-	_T("VRC7"), 
+	_T("YM2413"), 
 	_T("2C33"), 
 	_T("N163"), 
 	_T("5B"),
-	_T("5E01"), // Taken from E-FamiTracker by Euly
-	_T("7E02")
 };
 
 // CInstrumentEditDlg dialog
