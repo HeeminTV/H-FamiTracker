@@ -94,6 +94,8 @@ BOOL CSwapDlg::OnInitDialog()
 		m_cChipFirst->AddString(_T("7E02"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
 		m_cChipFirst->AddString(_T("YM2413"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_6581))
+		m_cChipFirst->AddString(_T("6581"));
 
 	CString str;
 	for (int i = 0; i < m_cChipFirst->GetCount(); i++)
@@ -141,6 +143,8 @@ int CSwapDlg::GetChipFromString(const CString str)
 		return SNDCHIP_7E02;
 	else if (str == _T("YM2413"))
 		return SNDCHIP_OPLL;
+	else if (str == _T("6581"))
+		return SNDCHIP_6581;
 	else
 		return SNDCHIP_NONE;
 }
@@ -159,6 +163,7 @@ int CSwapDlg::GetFinalChannel(unsigned int Channel, unsigned int Chip) const
 		case SNDCHIP_5E01: Channel += CHANID_5E01_SQUARE1; break;
 		case SNDCHIP_7E02:  Channel += CHANID_7E02_SQUARE1; break;
 		case SNDCHIP_OPLL:  Channel += CHANID_OPLL_CH1; break;
+		case SNDCHIP_6581:  Channel += CHANID_6581_CH1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);

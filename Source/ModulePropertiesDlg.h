@@ -111,6 +111,7 @@ public:
 	afx_msg void OnBnClickedExpansion5E01(); // Taken from E-FamiTracker by Euly
 	afx_msg void OnBnClickedExpansion7E02();
 	afx_msg void OnBnClickedExpansionOPLL();
+	afx_msg void OnBnClickedExpansion6581(); // Taken from E-FamiTracker by Euly
 
 	afx_msg void OnEnChangeApu1OffsetEdit();
 	afx_msg void OnEnChangeApu2OffsetEdit();
@@ -125,6 +126,7 @@ public:
 	afx_msg void OnEnChange7E02_Apu1OffsetEdit();
 	afx_msg void OnEnChange7E02_Apu2OffsetEdit();
 	afx_msg void OnEnChangeOPLLOffsetEdit();
+	afx_msg void OnEnChange6581OffsetEdit();
 
 	// what the heck is the real purpose of these?? 
 	afx_msg void OnBnClickedExternalOpll();

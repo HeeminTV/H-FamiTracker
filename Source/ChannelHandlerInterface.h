@@ -96,3 +96,12 @@ public:
 	virtual void	SetPatch(unsigned char) = 0;
 	virtual void	SetCustomReg(size_t, unsigned char) = 0;
 };
+
+class CChannelHandlerInterfaceSID
+{
+public:
+	virtual void SetADSR(unsigned char, unsigned char) = 0;
+	virtual void SetPulseWidth(unsigned int) = 0;
+	virtual void SetFilterCutoff(unsigned int) = 0;
+	virtual unsigned int GetPulseWidth() const = 0;
+};

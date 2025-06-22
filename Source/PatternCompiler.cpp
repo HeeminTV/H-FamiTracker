@@ -111,6 +111,15 @@ enum command_t {
 	CMD_EFF_S5B_ENV_RATE_HI,	// // //
 	CMD_EFF_S5B_ENV_RATE_LO,	// // //
 	CMD_EFF_S5B_NOISE,			// // // 050B
+
+	CMD_EFF_SID_FILTER_RESONANCE, // Taken from E-FamiTracker by Euly
+	CMD_EFF_SID_FILTER_CUTOFF_HI,
+	CMD_EFF_SID_FILTER_CUTOFF_LO,
+	CMD_EFF_SID_FILTER_MODE,
+	CMD_EFF_SID_ENVELOPE,
+	CMD_EFF_SID_RING,
+
+	CMD_EFF_AY8930_PULSE_WIDTH,
 };
 
 const unsigned char CMD_LOOP_POINT = 26;	// Currently unused
@@ -734,6 +743,57 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 						WriteData(Command(CMD_EFF_N163_WAVE_BUFFER));
 						WriteData(EffParam == 0x7F ? 0x80 : EffParam);
 					}
+					break;
+				// 6581 
+				// most likely taken from E-FamiTracker by Euly
+				case EF_AY8930_PULSE_WIDTH:		// // // 050B
+					/*if (ChipID == SNDCHIP_AY8930) {
+						WriteData(Command(CMD_EFF_AY8930_PULSE_WIDTH));
+						WriteData(EffParam & 0x0F);
+					}
+					else if (ChipID == SNDCHIP_6581) {
+					*/
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_AY8930_PULSE_WIDTH));
+						WriteData(EffParam & 0xFF);
+					}
+					// }
+					break;
+				case EF_SID_FILTER_RESONANCE:		// // // 050B
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_SID_FILTER_RESONANCE));
+						WriteData(EffParam & 0x0F);
+					}
+					break;
+				case EF_SID_FILTER_CUTOFF_HI:		// // // 050B
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_SID_FILTER_CUTOFF_HI));
+						WriteData(EffParam & 0x0F);
+					}
+					break;
+				case EF_SID_FILTER_CUTOFF_LO:		// // // 050B
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_SID_FILTER_CUTOFF_LO));
+						WriteData(EffParam & 0xFF);
+					}
+					break;
+				case EF_SID_FILTER_MODE:		// // // 050B
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_SID_FILTER_MODE));
+						WriteData(EffParam & 0x0F);
+					}
+				case EF_SID_ENVELOPE:		// // // 050B
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_SID_ENVELOPE));
+						WriteData(EffParam & 0x0F);
+					}
+					break;
+				case EF_SID_RING:		// // // 050B
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_SID_RING));
+						WriteData(EffParam & 0x0F);
+					}
+					break;
 					break;
 			}
 		}

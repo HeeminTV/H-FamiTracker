@@ -1889,7 +1889,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		m_pDocument->ExpansionEnabled(SNDCHIP_5B) * 8 +		// // //
 		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 11
+		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 11 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_6581) * 5
 	);
 	int vis_line = 0;
 
@@ -2610,6 +2611,17 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			}
 			DrawTextFunc(180, text);
 		}
+	}
+
+	// SID
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_6581)) {		// // //
+		DrawHeaderFunc(_T("6581"));		// // //
+		for (int i = 0; i < 4; ++i) {
+			GetRegsFunc(SNDCHIP_6581, [&](int x) { return 0xD400 + i * 7 + x; }, 8);
+			text.Format(_T("$%02X:"), i * 7);
+			DrawRegFunc(text, 7);
+		}
+
 	}
 
 	pDC->SelectObject(pOldFont);

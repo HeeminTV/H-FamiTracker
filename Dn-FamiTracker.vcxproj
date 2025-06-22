@@ -520,6 +520,30 @@
     <Manifest />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\APU\residfp\Dac.cpp" />
+    <ClCompile Include="Source\APU\residfp\EnvelopeGenerator.cpp" />
+    <ClCompile Include="Source\APU\residfp\ExternalFilter.cpp" />
+    <ClCompile Include="Source\APU\residfp\Filter.cpp" />
+    <ClCompile Include="Source\APU\residfp\Filter6581.cpp" />
+    <ClCompile Include="Source\APU\residfp\Filter8580.cpp" />
+    <ClCompile Include="Source\APU\residfp\FilterModelConfig.cpp" />
+    <ClCompile Include="Source\APU\residfp\FilterModelConfig8580.cpp" />
+    <ClCompile Include="Source\APU\residfp\Integrator.cpp" />
+    <ClCompile Include="Source\APU\residfp\Integrator8580.cpp" />
+    <ClCompile Include="Source\APU\residfp\OpAmp.cpp" />
+    <ClCompile Include="Source\APU\residfp\resample\SincResampler.cpp" />
+    <ClCompile Include="Source\APU\residfp\SID.cpp" />
+    <ClCompile Include="Source\APU\residfp\Spline.cpp" />
+    <ClCompile Include="Source\APU\residfp\version.cc" />
+    <ClCompile Include="Source\APU\residfp\Voice.cpp" />
+    <ClCompile Include="Source\APU\residfp\WaveformCalculator.cpp" />
+    <ClCompile Include="Source\APU\residfp\WaveformGenerator.cpp" />
+    <ClCompile Include="Source\InstrumentEditorSID.cpp" />
+    <ClCompile Include="Source\SeqInstHandlerSID.cpp" />
+    <ClCompile Include="Source\APU\6581.cpp" />
+    <ClCompile Include="Source\InstrumentSID.cpp" />
+    <ClCompile Include="Source\Channels6581.cpp" />
+    <ClCompile Include="Source\Channels6581.h" />
     <ClCompile Include="Source\APU\5E01.cpp" />
     <ClCompile Include="Source\APU\nsfplay\xgm\devices\Sound\5e01_apu.cpp" />
     <ClCompile Include="Source\APU\nsfplay\xgm\devices\Sound\5e01_dmc.cpp" />
@@ -1160,6 +1184,7 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "Dn-help\hlp\HTML
     <Image Include="res\Application.ico" />
     <Image Include="res\Inst_2C33.ico" />
     <Image Include="res\Inst_5B.ico" />
+    <Image Include="res\Inst_6581.ico" />
     <Image Include="res\Inst_Default.ico" />
     <Image Include="res\Inst_YM2413.ico" />
     <Image Include="res\NewBanner.bmp" />

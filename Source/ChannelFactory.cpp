@@ -33,6 +33,7 @@
 #include "Channels5E01.h" // Taken from E-FamiTracker by Euly
 #include "Channels7E02.h"
 #include "ChannelsOPLL.h"
+#include "Channels6581.h" // Taken from E-FamiTracker by Euly
 
 // // // Default implementation for channel factory
 
@@ -108,5 +109,10 @@ CChannelFactory::CChannelFactory() : CFactory()
 	m_pMakeFunc[CHANID_OPLL_CH7] = Func;
 	m_pMakeFunc[CHANID_OPLL_CH8] = Func;
 	m_pMakeFunc[CHANID_OPLL_CH9] = Func;
+
+	Func = MakeCtor<CChannelHandler6581>(); // Taken from E-FamiTracker by Euly
+	m_pMakeFunc[CHANID_6581_CH1] = Func;
+	m_pMakeFunc[CHANID_6581_CH2] = Func;
+	m_pMakeFunc[CHANID_6581_CH3] = Func;
 
 }

@@ -32,6 +32,7 @@ const int SNDCHIP_5B	= 32;			// Sunsoft 5B
 const int SNDCHIP_5E01	= 512;			// Eulous 5E01
 const int SNDCHIP_7E02	= 1024;			// Saeyahn 7E02
 const int SNDCHIP_OPLL  = 128;			// Yamaha YM2413
+const int SNDCHIP_6581	= 64;			// MOS 6581
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,
@@ -91,6 +92,10 @@ enum chan_id_t {
 	CHANID_OPLL_CH7,
 	CHANID_OPLL_CH8,
 	CHANID_OPLL_CH9,
+
+	CHANID_6581_CH1,
+	CHANID_6581_CH2,
+	CHANID_6581_CH3,
 
 	CHANNELS		/* Total number of channels */
 };

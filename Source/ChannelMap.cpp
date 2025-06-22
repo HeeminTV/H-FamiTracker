@@ -50,10 +50,11 @@ void CChannelMap::SetupSoundChips()
 	AddChip(SNDCHIP_FDS,  INST_FDS,  _T("Nintendo 2C33"));
 	AddChip(SNDCHIP_MMC5, INST_2A03, _T("Nintendo MMC5"));
 	AddChip(SNDCHIP_N163, INST_N163, _T("Namco 163"));
-	AddChip(SNDCHIP_5B,	  INST_S5B,  _T("Sunsoft 5B"));
+	AddChip(SNDCHIP_5B,   INST_S5B,  _T("Sunsoft 5B"));
 	AddChip(SNDCHIP_5E01, INST_2A03, _T("Eulous 5E01")); // Taken from E-FamiTracker by Euly
 	AddChip(SNDCHIP_7E02, INST_2A03, _T("Saeyahn 7E02"));
 	AddChip(SNDCHIP_OPLL, INST_VRC7, _T("Yamaha YM2413"));
+	AddChip(SNDCHIP_6581, INST_SID, _T("MOS 6581"));
 
 }
 

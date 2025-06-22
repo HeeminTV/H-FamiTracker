@@ -40,6 +40,7 @@
 #include "InstrumentEditorFDS.h"
 #include "InstrumentEditorFDSEnvelope.h"
 #include "InstrumentEditorN163Wave.h"
+#include "InstrumentEditorSID.h" // Taken from E-FamiTracker by Euly
 #include "MainFrm.h"
 #include "SoundGen.h"
 #include "TrackerChannel.h"
@@ -57,6 +58,7 @@ const TCHAR *CInstrumentEditDlg::CHIP_NAMES[] = {
 	_T("2C33"), 
 	_T("N163"), 
 	_T("5B"),
+	_T("6581"),
 };
 
 // CInstrumentEditDlg dialog
@@ -212,6 +214,9 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 				break;
 			case INST_S5B:
 				InsertPane(new CInstrumentEditorSeq(NULL, _T("5B"), CInstrumentS5B::SEQUENCE_NAME, 15, 255, INST_S5B), true);
+				break;
+			case INST_SID:
+				InsertPane(new CInstrumentEditorSID(), true);
 				break;
 		}
 

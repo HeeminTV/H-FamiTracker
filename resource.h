@@ -932,6 +932,45 @@
 #define IDC_STATIC_OPLL                 53290
 #define IDS_PROPERTIES_TOTALRAM         53291
 #define ID_INSTRUMENT_ADD_OPLL          53292
+#define IDC_6581_OFFSET_SLIDER   	    53293
+#define IDC_6581_OFFSET_DB              53294
+#define IDC_6581_OFFSET_EDIT            53295
+#define ID_INSTRUMENT_ADD_6581          53296
+#define IDC_STATIC_6581                 53297
+#define IDC_EXPANSION_6581				53298
+#define IDC_PWM_MODE1					53299
+#define IDC_PWM_MODE2					53300
+#define IDC_PWM_MODE3					53301
+#define IDC_PWM_MODE4					53302
+#define IDC_DISABLE_PWM					53303
+#define IDC_TEXT_RATE					53304
+#define IDC_SLIDER_ATTACK				53305
+#define IDC_SLIDER_DECAY				53306
+#define IDC_SLIDER_SUSTAIN				53307
+#define IDC_SLIDER_RELEASE				53308
+#define IDC_PWM_START					53309
+#define IDC_PWM_END						53310
+#define IDC_PWM_SPEED					53311
+#define IDC_BOX_PWM_START				53312
+#define IDC_BOX_PWM_END					53313
+#define IDC_PWM_START_SPIN				53314
+#define IDC_PWM_END_SPIN				53315
+#define IDD_INSTRUMENT_SID				53316
+#define IDC_ENVELOPE_CANVAS             53317
+#define IDC_FILTER_START_SPIN			53318
+#define IDC_FILTER_END_SPIN				53319
+#define IDC_BOX_FILTER_START			53320
+#define IDC_BOX_FILTER_END				53321
+#define IDC_FILTER_START				53322
+#define IDC_FILTER_END					53323
+#define IDC_FILTER_SPEED				53324
+#define IDC_TEXT_RATE2					53325
+#define IDC_FILTER_MODE1				53326
+#define IDC_FILTER_MODE2				53327
+#define IDC_FILTER_MODE3				53328
+#define IDC_FILTER_MODE4				53329
+#define IDC_DISABLE_FILTER				53330
+
 
 // Next default values for new objects
 // 

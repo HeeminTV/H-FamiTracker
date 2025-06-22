@@ -2517,6 +2517,9 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 		if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
 			m_pNoteQueue->AddMap({ CHANID_OPLL_CH1, CHANID_OPLL_CH2, CHANID_OPLL_CH3, CHANID_OPLL_CH4, CHANID_OPLL_CH5, CHANID_OPLL_CH6, CHANID_OPLL_CH7, CHANID_OPLL_CH8, CHANID_OPLL_CH9 });
 
+		if (pDoc->ExpansionEnabled(SNDCHIP_6581))
+			m_pNoteQueue->AddMap({ CHANID_6581_CH1, CHANID_6581_CH2, CHANID_6581_CH3 });
+
 	}
 
 //	for (int i = 0; i < Channels; ++i)
@@ -3823,6 +3826,7 @@ void CFamiTrackerView::OnTrackerRecordToInst()		// // //
 		case SNDCHIP_VRC6: Type = INST_VRC6; break;
 		case SNDCHIP_N163: Type = INST_N163; break;
 		case SNDCHIP_5B:  Type = INST_S5B; break;
+		case SNDCHIP_6581: Type = INST_SID; break; // Taken from E-FamiTracker by Euly
 		}
 		if (Type != INST_NONE) for (int i = 0; i < SEQ_COUNT; i++)
 			if (pDoc->GetFreeSequence(Type, i) == -1) {

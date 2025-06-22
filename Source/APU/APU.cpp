@@ -35,6 +35,7 @@
 #include "5E01.h" // Taken from E-FamiTracker by Euly
 #include "7E02.h"
 #include "OPLL.h"
+#include "6581.h"
 
 #include "SoundChip.h"
 #include "SoundChip2.h"
@@ -45,6 +46,7 @@ const int		CAPU::SEQUENCER_FREQUENCY	= 240;		// // //
 const uint32_t	CAPU::BASE_FREQ_NTSC		= 1789773;		// 72.667
 const uint32_t	CAPU::BASE_FREQ_PAL			= 1662607;
 const uint32_t	CAPU::BASE_FREQ_VRC7		= 3579545;
+const uint32_t  CAPU::BASE_FREQ_ATARI		= 10227273;
 const uint8_t	CAPU::FRAME_RATE_NTSC		= 60;
 const uint8_t	CAPU::FRAME_RATE_PAL		= 50;
 const uint16_t	CAPU::NSF_RATE_NTSC			= 16639;
@@ -174,6 +176,7 @@ CAPU::CAPU(IAudioCallback *pCallback) :		// // //
 	m_p5E01(std::make_unique<C5E01>()), // Taken from E-FamiTracker by Euly
 	m_p7E02(std::make_unique<C7E02>()),
 	m_pOPLL(std::make_unique<COPLL>()),
+	m_p6581(std::make_unique<C6581>()), // Taken from E-FamiTracker by Euly
 	m_iExternalSoundChips(0),
 	m_iCyclesToRun(0),
 	m_iSampleRate(44100)		// // //
@@ -332,6 +335,8 @@ void CAPU::SetExternalSound(int Chip)
 		m_SoundChips2.push_back(m_p7E02.get());
 	if (Chip & SNDCHIP_OPLL)
 		m_SoundChips2.push_back(m_pOPLL.get());
+	if (Chip & SNDCHIP_6581) // Taken from E-FamiTracker by Euly
+		m_SoundChips2.push_back(m_p6581.get());
 
 	// Set (unused) bitfield of external sound chips enabled.
 	m_iExternalSoundChips = Chip;
@@ -615,6 +620,7 @@ double CAPU::GetFreq(int Chip, int Chan) const
 	case SNDCHIP_5E01:		return PtrGetFreq(*m_p5E01); // Taken from E-FamiTracker by Euly
 	case SNDCHIP_7E02:		return PtrGetFreq(*m_p7E02);
 	case SNDCHIP_OPLL:		return PtrGetFreq(*m_pOPLL);
+	case SNDCHIP_6581:		return PtrGetFreq(*m_p6581); // Taken from E-FamiTracker by Euly
 
 	default: AfxDebugBreak(); return 0.;
 	}
@@ -642,6 +648,7 @@ CRegisterState *CAPU::GetRegState(int Chip, int Reg) const		// // //
 	case SNDCHIP_5E01: return PtrGetRegState(*m_p5E01); // Taken from E-FamiTracker by Euly
 	case SNDCHIP_7E02: return PtrGetRegState(*m_p7E02);
 	case SNDCHIP_OPLL: return PtrGetRegState(*m_pOPLL);
+	case SNDCHIP_6581: return PtrGetRegState(*m_p6581); // Taken from E-FamiTracker by Euly
 
 	default: AfxDebugBreak(); return nullptr;
 	}

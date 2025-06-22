@@ -166,6 +166,9 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 			}
 		case SNDCHIP_VRC7: case SNDCHIP_OPLL:
 			return Type == INST_VRC7;
+		case SNDCHIP_6581:
+			// return Type == INST_VRC6;
+			return Type == INST_SID;
 	}
 
 	return false;
@@ -245,6 +248,17 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			int limit = channelHandler->getDutyMax();
 			return EffParam <= limit;
 		}
+		case EF_AY8930_PULSE_WIDTH: // Taken from E-FamiTracker by Euly
+			// return (m_iChip == SNDCHIP_AY8930 && EffParam <= 0x0F) || (m_iChip == SNDCHIP_6581 && EffParam <= 0xFF);
+			return m_iChip == SNDCHIP_6581 && EffParam <= 0xFF;
+		case EF_SID_FILTER_RESONANCE: case EF_SID_FILTER_CUTOFF_HI: case EF_SID_FILTER_MODE:
+			return (m_iChip == SNDCHIP_6581 && EffParam <= 0x0F);
+		case EF_SID_FILTER_CUTOFF_LO:
+			return m_iChip == SNDCHIP_6581;
+		case EF_SID_ENVELOPE:
+			return (m_iChip == SNDCHIP_6581 && EffParam <= 0x3F);
+		case EF_SID_RING:
+			return (m_iChip == SNDCHIP_6581 && EffParam <= 0x0F);
 		case EF_FDS_MOD_DEPTH:
 			return m_iChip == SNDCHIP_FDS && (EffParam <= 0x3F || EffParam >= 0x80);
 		case EF_FDS_MOD_SPEED_HI: case EF_FDS_MOD_SPEED_LO: case EF_FDS_MOD_BIAS:

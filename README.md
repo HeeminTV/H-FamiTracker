@@ -13,11 +13,9 @@ H-FamiTracker indirectly **succeeds** [E-FamiTracker](https://github.com/eulyder
 - [x] 2A03
 - [x] YM2413
 - [ ] SN76489
-- [ ] Namco WSG
-- [ ] N129
 - [ ] YM2149F
-- [ ] Atari TIA
-- [ ] All chips from E-FamiTracker
+- [x] 5E01
+- [x] 6581
 
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)
 

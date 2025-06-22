@@ -71,6 +71,11 @@ effect_t GetEffectFromChar(char ch, int Chip, bool *bValid)		// // //
 			if (ch == EFF_CHAR[x])
 				return x;
 		break;
+	case SNDCHIP_6581:
+		for (const auto& x : SID_EFFECTS)
+			if (ch == EFF_CHAR[x])
+				return x;
+		break;
 	}
 
 	for (effect_t eff = EF_NONE; eff != EF_COUNT; eff = static_cast<effect_t>(eff + 1)) {

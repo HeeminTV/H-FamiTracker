@@ -46,6 +46,7 @@ class CS5B;
 class C5E01; // Taken from E-FamiTracker by Euly
 class C7E02;
 class COPLL;
+class C6581; // Taken from E-FamiTracker by Euly
 
 class CSoundChip;		// // //
 class CSoundChip2;
@@ -128,6 +129,7 @@ public:
 	static const uint32_t	BASE_FREQ_NTSC;
 	static const uint32_t	BASE_FREQ_PAL;
 	static const uint32_t	BASE_FREQ_VRC7;
+	static const uint32_t	BASE_FREQ_ATARI;
 	static const uint8_t	FRAME_RATE_NTSC;
 	static const uint8_t	FRAME_RATE_PAL;
 	static const uint16_t	NSF_RATE_NTSC;
@@ -154,6 +156,8 @@ private:
 	std::unique_ptr<C2A03> m_p2A03;
 	std::unique_ptr<C5E01> m_p5E01; // Taken from E-FamiTracker by Euly
 	std::unique_ptr<C7E02> m_p7E02;
+	std::unique_ptr<C6581> m_p6581; // Taken from E-FamiTracker by Euly
+
 	CVRC6		*m_pVRC6;
 	CMMC5		*m_pMMC5;
 	std::unique_ptr<CFDS> m_pFDS;
@@ -189,6 +193,7 @@ private:
 
 	float		m_fLevelVRC7;
 	float		m_fLevelOPLL;
+	float		m_fLevel6581; // Taken from E-FamiTracker by Euly
 	// // // 050B removed
 
 #ifdef LOGGING

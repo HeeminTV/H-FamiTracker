@@ -196,6 +196,7 @@ const char* _5E01_APU2_OFFSET = "5e01_apu2-offset";
 const char* _7E02_APU1_OFFSET = "7E02_apu1-offset";
 const char* _7E02_APU2_OFFSET = "7E02_apu2-offset";
 const char* OPLL_OFFSET = "opll-offset";
+const char* _6581_OFFSET = "6581-offset";
 
 void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(APU1_OFFSET).get_to(d.APU1_OFFSET);
@@ -211,6 +212,7 @@ void from_json(const json& j, stJSONOptionalData& d) {
 	j.at(_7E02_APU1_OFFSET).get_to(d._7E02_APU1_OFFSET);
 	j.at(_7E02_APU2_OFFSET).get_to(d._7E02_APU2_OFFSET);
 	j.at(OPLL_OFFSET).get_to(d.OPLL_OFFSET);
+	j.at(_6581_OFFSET).get_to(d._6581_OFFSET);
 	j.at(USE_SURVEY_MIX).get_to(d.USE_SURVEY_MIX);
 };
 
@@ -228,6 +230,7 @@ void to_json(json& j, const stJSONOptionalData& d) {
 		{ _5E01_APU2_OFFSET, d._5E01_APU2_OFFSET },
 		{ _7E02_APU1_OFFSET, d._7E02_APU1_OFFSET },
 		{ _7E02_APU2_OFFSET, d._7E02_APU2_OFFSET },
+		{ _6581_OFFSET, d._6581_OFFSET },
 		{ OPLL_OFFSET, d.OPLL_OFFSET },
 		{ USE_SURVEY_MIX, d.USE_SURVEY_MIX }
 	};
@@ -4470,7 +4473,10 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // 
 		if (pos > CHANID_OPLL_CH9) pos -= 9	; // TODO fix this to 9 later
 		else if (pos >= CHANID_OPLL_CH1) return -1;
 	}
-
+	if (!(Chip & SNDCHIP_6581)) {
+		if (pos > CHANID_6581_CH3) pos -= 3;
+		else if (pos >= CHANID_6581_CH1) return -1;
+	}
 	return pos;
 }
 
@@ -4661,6 +4667,7 @@ json CFamiTrackerDoc::InterfaceToOptionalJSON() const
 	if (GetLevelOffset(10) != DEFAULT._7E02_APU1_OFFSET) json[_7E02_APU1_OFFSET] = GetLevelOffset(10);
 	if (GetLevelOffset(11) != DEFAULT._7E02_APU2_OFFSET) json[_7E02_APU2_OFFSET] = GetLevelOffset(11);
 	if (GetLevelOffset(12) != DEFAULT.OPLL_OFFSET) json[OPLL_OFFSET] = GetLevelOffset(12);
+	if (GetLevelOffset(13) != DEFAULT._6581_OFFSET) json[_6581_OFFSET] = GetLevelOffset(13);
 
 	if (GetSurveyMixCheck() != DEFAULT.USE_SURVEY_MIX) json[USE_SURVEY_MIX] = GetSurveyMixCheck();
 
@@ -4683,6 +4690,7 @@ void CFamiTrackerDoc::OptionalJSONToInterface(json& j)
 	if (j.find(_7E02_APU1_OFFSET) != j.end()) SetLevelOffset(10, j.at(_7E02_APU1_OFFSET));
 	if (j.find(_7E02_APU2_OFFSET) != j.end()) SetLevelOffset(11, j.at(_7E02_APU2_OFFSET));
 	if (j.find(OPLL_OFFSET) != j.end()) SetLevelOffset(12, j.at(OPLL_OFFSET));
+	if (j.find(_6581_OFFSET) != j.end()) SetLevelOffset(13, j.at(_6581_OFFSET));
 
 	if (j.find(USE_SURVEY_MIX) != j.end()) SetSurveyMixCheck(j.at(USE_SURVEY_MIX));
 }
@@ -5380,6 +5388,7 @@ stFullState *CFamiTrackerDoc::RetrieveSoundState(unsigned int Track, unsigned in
 				case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE:
 				case EF_N163_WAVE_BUFFER:
 				case EF_VRC7_PORT:
+				case EF_SID_FILTER_RESONANCE: case EF_SID_FILTER_CUTOFF_HI: case EF_SID_FILTER_CUTOFF_LO: case EF_SID_FILTER_MODE: case EF_SID_ENVELOPE: case EF_SID_RING: // Taken from E-FamiTracker by Euly
 					if (!ch->IsEffectCompatible(fx, xy)) continue;
 				case EF_DUTY_CYCLE:
 					if (ch->GetChip() == SNDCHIP_VRC7 || ch->GetChip() == SNDCHIP_OPLL) continue;		// // // 050B

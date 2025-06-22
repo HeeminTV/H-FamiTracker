@@ -42,6 +42,7 @@ enum chip_level_t {
 	CHIP_LEVEL_7E02_APU1,
 	CHIP_LEVEL_7E02_APU2,
 	CHIP_LEVEL_OPLL,
+	CHIP_LEVEL_6581,
 	CHIP_LEVEL_COUNT
 };
 
@@ -51,6 +52,7 @@ class CAPU;
 class C5E01; // Taken from E-FamiTracker by Euly
 class C7E02;
 class COPLL;
+class C6581; // Taken from E-FamiTracker by Euly
 
 struct MixerConfig {
 	// Global lowpass
@@ -73,19 +75,20 @@ struct MixerConfig {
 	// Device mixing offsets, described in centibels. too late to change to millibels.
 	// range is +- 12 db.
 	std::vector<int16_t> DeviceMixOffsets = {
-		0,		// APU1Offset
-		0,		// APU2Offset
-		0,		// VRC6Offset
-		0,		// VRC7Offset
-		0,		// FDSOffset
-		0,		// MMC5Offset
-		0,		// N163Offset
-		0,		// S5BOffset
+		0,		// 2A03_APU1
+		0,		// 2A03_APU2
+		0,		// VRC6
+		0,		// VRC7
+		0,		// 2C33
+		0,		// MMC5
+		0,		// N163
+		0,		// 5B
 		0,		// 5E01_APU1
 		0,		// 5E01_APU2
 		0,		// 7E02_APU1
 		0,		// 7E02_APU2
 		0,		// YM2413
+		0,		// 6581
 	};
 };
 
@@ -252,6 +255,7 @@ private:
 	float		m_fLevel7E02_APU1;
 	float		m_fLevel7E02_APU2;
 	float		m_fLevelOPLL;
+	float		m_fLevel6581; // Taken from E-FamiTracker by Euly
 
 	friend class CAPU;
 };

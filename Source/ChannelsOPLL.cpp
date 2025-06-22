@@ -118,11 +118,10 @@ bool CChannelHandlerOPLL::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		}
 		what the heck????
 		*/
-		if (EffParam == 0x00) {
-			g_iPercMode &= ~0x20;
-		}
-		else if (EffParam == 0x01) {
+		if (EffParam == 0x01) {
 			g_iPercMode |= 0x20;
+		} else {
+			g_iPercMode &= ~0x20;
 		}
 		break;
 	default: return FrequencyChannelHandler::HandleEffect(EffNum, EffParam);
@@ -363,8 +362,7 @@ void COPLLChannel::RefreshChannel()
 	{
 		//only send all percussion related writes from one of the channels
 
-		if (g_iPercMode & 0x20)
-		{
+		if (g_iPercMode & 0x20) {
 			//repeating writes will get filtered out during export
 
 			RegWrite(0x26, 0x00);	//force key off to percussion channels
@@ -383,20 +381,14 @@ void COPLLChannel::RefreshChannel()
 			RegWrite(0x38, g_iPercVolumeTOMCY);
 
 			g_iPercMode &= ~0x1f;
-		}
-		else
-		{
-			if (g_iPercModePrev & 0x20)
-			{
-				RegWrite(0x0e, 0x00);	//disable rhythm mode
-				RegWrite(0x26, 0x00);	//force key off to percussion channels
-				RegWrite(0x27, 0x00);
-				RegWrite(0x28, 0x00);
-				RegWrite(0x36, 0x1f);
-				RegWrite(0x37, 0x1f);
-				RegWrite(0x38, 0x1f);
-
-			}
+		} else if (g_iPercModePrev & 0x20) {
+			RegWrite(0x0e, 0x00);	//disable rhythm mode
+			RegWrite(0x26, 0x00);	//force key off to percussion channels
+			RegWrite(0x27, 0x00);
+			RegWrite(0x28, 0x00);
+			RegWrite(0x36, 0x1f);
+			RegWrite(0x37, 0x1f);
+			RegWrite(0x38, 0x1f);
 		}
 
 		g_iPercModePrev = g_iPercMode;
@@ -450,6 +442,9 @@ void COPLLChannel::ClearRegisters()
 
 	m_iCommand = OPLL_CMD_NOTE_HALT;
 	m_iCustomPort = 0;		// // // 050B
+	// g_iPercMode &= ~0x20;
+	// should we reset or not???
+
 }
 
 void COPLLChannel::RegWrite(unsigned char Reg, unsigned char Value)

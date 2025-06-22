@@ -272,9 +272,9 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("VRC7 FM 6"), _T("FM6"), SNDCHIP_VRC7, CHANID_VRC7_CH6));
 
 	// // // Sunsoft 5B
-	AssignChannel(new CTrackerChannel(_T("5B PSG 1"), _T("5B1"), SNDCHIP_5B, CHANID_5B_CH1));
-	AssignChannel(new CTrackerChannel(_T("5B PSG 2"), _T("5B2"), SNDCHIP_5B, CHANID_5B_CH2));
-	AssignChannel(new CTrackerChannel(_T("5B PSG 3"), _T("5B3"), SNDCHIP_5B, CHANID_5B_CH3));
+	AssignChannel(new CTrackerChannel(_T("5B SSG 1"), _T("5B1"), SNDCHIP_5B, CHANID_5B_CH1));
+	AssignChannel(new CTrackerChannel(_T("5B SSG 2"), _T("5B2"), SNDCHIP_5B, CHANID_5B_CH2));
+	AssignChannel(new CTrackerChannel(_T("5B SSG 3"), _T("5B3"), SNDCHIP_5B, CHANID_5B_CH3));
 
 	// Taken from E-FamiTracker by Euly
 	// // // Eulous 5E01
@@ -301,6 +301,11 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 7"), _T("YM7"), SNDCHIP_OPLL, CHANID_OPLL_CH7));
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 8"), _T("YM8"), SNDCHIP_OPLL, CHANID_OPLL_CH8));
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 9"), _T("YM9"), SNDCHIP_OPLL, CHANID_OPLL_CH9));
+
+	// MOS 6581
+	AssignChannel(new CTrackerChannel(_T("6581 SID 1"), _T("SI1"), SNDCHIP_6581, CHANID_6581_CH1));
+	AssignChannel(new CTrackerChannel(_T("6581 SID 2"), _T("SI2"), SNDCHIP_6581, CHANID_6581_CH2));
+	AssignChannel(new CTrackerChannel(_T("6581 SID 3"), _T("SI3"), SNDCHIP_6581, CHANID_6581_CH3));
 
 }
 
@@ -509,6 +514,9 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		// // // MMC5 PCM
 		Pitch = ((440. * pow(2.0, double(i - A440_NOTE) / 12.)) / 523.25) * 0x0100; // Taken from E-FamiTracker by Euly. Modified a little bit (becasue they added detune settings. I guess this won't be affected by it?)
 		m_iNoteLookupTablePCM[i] = (unsigned int)(Pitch - pDocument->GetDetuneOffset(0, i));		// // //
+
+		Pitch = ((440. * pow(2.0, double(i - A440_NOTE) / 12.) * 16777216 / CAPU::BASE_FREQ_NTSC)) - 0.5; // Taken from E-FamiTracker by Euly
+		m_iNoteLookupTableSID[i] = (unsigned int)(Pitch - pDocument->GetDetuneOffset(0, i));
 	}
 
 #ifdef WRITE_PERIOD_FILES
@@ -614,6 +622,8 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 			Table = m_iNoteLookupTableS5B; break;
 		case CHANID_MMC5_VOICE: // Taken from E-FamiTracker by Euly
 			Table = m_iNoteLookupTablePCM; break;
+		case CHANID_6581_CH1: case CHANID_6581_CH2: case CHANID_6581_CH3:
+			Table = m_iNoteLookupTableSID; break;
 
 		default: continue;
 		}

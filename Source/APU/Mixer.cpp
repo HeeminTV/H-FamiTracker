@@ -75,6 +75,7 @@
 #include "5E01.h" // Taken from E-FamiTracker by Euly
 #include "7E02.h"
 #include "OPLL.h"
+#include "6581.h"
 
 #include "utils/variadic_minmax.h"
 
@@ -103,6 +104,7 @@ CMixer::CMixer(CAPU* Parent)
 	m_fLevel7E02_APU1 = 1.0f;
 	m_fLevel7E02_APU2 = 1.0f;
 	m_fLevelOPLL = 1.0f;
+	m_fLevel6581 = 1.0f;
 
 	m_iExternalChip = 0;
 	m_iSampleRate = 0;
@@ -161,6 +163,9 @@ void CMixer::SetChipLevel(chip_level_t Chip, float Level)
 	case CHIP_LEVEL_OPLL:
 		m_fLevelOPLL = Level;
 		break;
+	case CHIP_LEVEL_6581:
+		m_fLevel6581 = Level;
+		break;
 
 	case CHIP_LEVEL_COUNT:
 		break;
@@ -181,6 +186,7 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 		const float ATTENUATION_5E01 = 0.80f; // Taken from E-FamiTracker by Euly
 		const float ATTENUATION_7E02 = 0.80f;
 		const float ATTENUATION_OPLL = 0.64f;
+		const float ATTENUATION_6581 = 0.80f; // Taken from E-FamiTracker by Euly
 
 		// Increase headroom if some expansion chips are enabled
 
@@ -202,6 +208,8 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 			ATTENUATION_2A03 *= ATTENUATION_7E02;
 		if (m_iExternalChip & SNDCHIP_OPLL)
 			ATTENUATION_2A03 *= ATTENUATION_OPLL;
+		if (m_iExternalChip & SNDCHIP_6581)		// Taken from E-FamiTracker by Euly
+			ATTENUATION_2A03 *= ATTENUATION_6581;
 
 	} else {
 		// attenuation scaling is exponential based on total chips used
@@ -215,6 +223,7 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 		if (m_iExternalChip & SNDCHIP_5E01) TotalChipsUsed++; 
 		if (m_iExternalChip & SNDCHIP_7E02) TotalChipsUsed++;
 		if (m_iExternalChip & SNDCHIP_OPLL) TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_6581) TotalChipsUsed++;
 		ATTENUATION_2A03 *= static_cast<float>(1.0 / (float)TotalChipsUsed);
 	}
 
@@ -250,6 +259,7 @@ void CMixer::RecomputeEmuMixState()
 	auto& chip5E01 = *m_APU->m_p5E01; // Taken from E-FamiTracker by Euly
 	auto& chip7E02 = *m_APU->m_p7E02;
 	auto& chipOPLL = *m_APU->m_pOPLL;
+	auto& chip6581 = *m_APU->m_p6581; // Taken from E-FamiTracker by Euly
 
 	bool UseSurveyMixing = m_MixerConfig.UseSurveyMix;
 
@@ -267,6 +277,7 @@ void CMixer::RecomputeEmuMixState()
 	chip5E01.UpdateMixing5E01_APU2(Volume * m_fLevel5E01_APU2, UseSurveyMixing);
 	chip7E02.UpdateMixing7E02_APU1(Volume * m_fLevel7E02_APU1, UseSurveyMixing); // Im in your walls
 	chip7E02.UpdateMixing7E02_APU2(Volume * m_fLevel7E02_APU2, UseSurveyMixing);
+	chip6581.UpdateMix(Volume * m_fLevel6581); // Taken from E-FamiTracker by Euly
 
 	if (UseSurveyMixing) {
 		chipVRC7.UpdateMixLevel(Volume * m_fLevelVRC7, UseSurveyMixing);
@@ -427,6 +438,10 @@ void CMixer::FinishBuffer(int t)
 	auto& chipOPLL = *m_APU->m_pOPLL;
 	for (int i = 0; i < 9; ++i)
 		StoreChannelLevel(CHANID_OPLL_CH1 + i, get_channel_level(chipOPLL, i));
+
+	auto& chip6581 = *m_APU->m_p6581; // Taken from E-FamiTracker by Euly
+	for (int i = 0; i < 3; i++)
+		StoreChannelLevel(CHANID_6581_CH1 + i, get_channel_level(chip6581, i));
 
 }
 

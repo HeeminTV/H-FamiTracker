@@ -85,6 +85,8 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->AddString(_T("7E02"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
 		m_cChipEdit->AddString(_T("YM2413"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_6581))
+		m_cChipEdit->AddString(_T("6581"));
 		
 	int Channel = pDoc->GetChannelType(pEditor->GetChannel());
 
@@ -124,6 +126,10 @@ BOOL CGotoDlg::OnInitDialog()
 	else if (Channel >= CHANID_VRC6_PULSE1) {
 		Channel -= CHANID_VRC6_PULSE1;
 		m_cChipEdit->SelectString(-1, _T("VRC6"));
+	}
+	else if (Channel >= CHANID_6581_CH1) {
+		Channel -= CHANID_6581_CH1;
+		m_cChipEdit->SelectString(-1, _T("6581"));
 	}
 	else
 		m_cChipEdit->SelectString(-1, _T("2A03"));
@@ -182,6 +188,8 @@ int CGotoDlg::GetChipFromString(const CString str)
 		return SNDCHIP_7E02;
 	else if (str == _T("YM2413"))
 		return SNDCHIP_OPLL;
+	else if (str == _T("6581"))
+		return SNDCHIP_6581;
 
 	else
 		return SNDCHIP_NONE;
@@ -202,6 +210,7 @@ int CGotoDlg::GetFinalChannel() const
 		case SNDCHIP_5E01:  Channel += CHANID_5E01_SQUARE1; break; // Taken from E-FamiTracker by Euly
 		case SNDCHIP_7E02:  Channel += CHANID_7E02_SQUARE1; break;
 		case SNDCHIP_OPLL:  Channel += CHANID_OPLL_CH1; break;
+		case SNDCHIP_6581:  Channel += CHANID_6581_CH1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);
