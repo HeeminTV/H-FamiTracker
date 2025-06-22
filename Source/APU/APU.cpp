@@ -652,14 +652,14 @@ void CAPUConfig::SetupEmulation(
 	int UseOPLLPatchSet,
 	bool UseOPLLExt,
 	std::vector<uint8_t> UseOPLLPatchBytes,
-	std::vector<std::string> UseOPLLPatchNames)
+	std::vector<std::string> UseVRC7PatchNames)
 {
 	m_EmulatorConfig = EmulatorConfig{
 		N163DisableMultiplexing,
 		UseOPLLPatchSet,
 		UseOPLLExt,
 		UseOPLLPatchBytes,
-		UseOPLLPatchNames
+		UseVRC7PatchNames
 	};
 }
 

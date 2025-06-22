@@ -579,7 +579,7 @@ private:
 	// Emulation properties
 	bool			m_bUseExternalOPLLChip;						// !! !! User-defined hardware patch set for OPLL
 	uint8_t			m_iOPLLPatchBytes[19 * 8];
-	std::string		m_strOPLLPatchNames[19];
+	std::string		m_strVRC7PatchNames[19];
 
 	// JSON Optional properties
 	int16_t			m_iDeviceLevelOffset[GLOBAL_MIXER_COUNT];					// !! !! Device level offsets, described in centibels

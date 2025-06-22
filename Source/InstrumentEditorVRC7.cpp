@@ -89,11 +89,11 @@ BOOL CInstrumentEditorVRC7::OnInitDialog()
 	for (int i = 0; i < 19; i++) {
 		for (int j = 0; j < 8; j++)
 			OPLLPatchBytes[(8 * i) + j] = m_pDocument->GetOPLLPatchByte((8 * i) + j);
-		OPLLPatchNames[i] = m_pDocument->GetOPLLPatchName(i);
+		VRC7PatchNames[i] = m_pDocument->GetOPLLPatchName(i);
 	}
 
 	for (int i = 0; i < 16; ++i) {
-		Text.Format(_T("Patch #%i - %s"), i, OPLLPatchNames[i].c_str());
+		Text.Format(_T("Patch #%i - %s / %s"), i, VRC7PatchNames[i].c_str(), OPLLPatchNames[i]);
 		pPatchBox->AddString(Text);
 	}
 

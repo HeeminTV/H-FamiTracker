@@ -28,7 +28,7 @@ public:
 	CInstrumentEditorVRC7(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CInstrumentEditorVRC7();
 	virtual int GetIDD() const { return IDD; };
-	virtual TCHAR *GetTitle() const { return _T("YM2413"); };
+	virtual TCHAR *GetTitle() const { return _T("VRC7 / YM2413"); };
 
 	virtual void SelectInstrument(std::shared_ptr<CInstrument> pInst);
 
@@ -37,7 +37,10 @@ public:
 
 private:
 	uint8_t			OPLLPatchBytes[19 * 8];
-	std::string		OPLLPatchNames[19];
+	std::string		VRC7PatchNames[19];
+	std::string		OPLLPatchNames[19] = { 
+		#include "APU/digital-sound-antiques/2413tone_patchname.h" 
+	};
 
 	CFamiTrackerDoc *m_pDocument;
 protected:

@@ -56,7 +56,7 @@ void C7E02::Reset()
 	m_Apu2.Reset();
 
 	Synth7E02FF.clear();
-	Synth7E02TND.clear();
+	Synth7E02WND.clear();
 
 	// nsfplay's triangle output is nonzero after being reset. Cancel it out.
 	{
@@ -67,7 +67,7 @@ void C7E02::Reset()
 		m_Apu2.Render(&out[0]);
 
 		// Eliminate pop in speakers.
-		Synth7E02TND.center_dc(out[0]);
+		Synth7E02WND.center_dc(out[0]);
 
 		// Eliminate pop in volume meters.
 		m_ChannelLevels[2].update(m_Apu2.out[0]);
@@ -78,7 +78,7 @@ void C7E02::Reset()
 void C7E02::UpdateFilter(blip_eq_t eq)
 {
 	Synth7E02FF.treble_eq(eq);
-	Synth7E02TND.treble_eq(eq);
+	Synth7E02WND.treble_eq(eq);
 }
 
 void C7E02::Process(uint32_t Time, Blip_Buffer& Output)
@@ -95,7 +95,7 @@ void C7E02::Process(uint32_t Time, Blip_Buffer& Output)
 		Synth7E02FF.update(m_iTime + now, out[0], &blip_buf);
 
 		m_Apu2.Render(out);
-		Synth7E02TND.update(m_iTime + now, out[0], &blip_buf);
+		Synth7E02WND.update(m_iTime + now, out[0], &blip_buf);
 
 		// pulse 1/2
 		m_ChannelLevels[0].update(m_Apu1.out[0]);
@@ -204,7 +204,7 @@ void C7E02::UpdateMixing7E02_APU1(double v, bool UseSurveyMix) {
 }
 
 void C7E02::UpdateMixing7E02_APU2(double v, bool UseSurveyMix) {
-	Synth7E02TND.volume(v, UseSurveyMix ? 8191 : 10000);
+	Synth7E02WND.volume(v, UseSurveyMix ? 8191 : 10000);
 }
 
 void C7E02::ClockSequence()

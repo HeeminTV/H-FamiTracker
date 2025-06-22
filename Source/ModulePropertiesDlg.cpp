@@ -349,7 +349,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 		for (int i = 0; i < 19; ++i) {
 			for (int j = 0; j < 8; j++)
 				m_iOPLLPatchBytes[(8 * i) + j] = m_pDocument->GetOPLLPatchByte((8 * i) + j);
-			m_strOPLLPatchNames[i] = m_pDocument->GetOPLLPatchName(i);
+			m_strVRC7PatchNames[i] = m_pDocument->GetOPLLPatchName(i);
 		}
 	else {
 		// initialize default patchset if it hasn't been already
@@ -357,7 +357,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 		for (int i = 0; i < 19; ++i) {
 			for (int j = 0; j < 8; j++)
 				m_iOPLLPatchBytes[(8 * i) + j] = m_pDocument->GetOPLLPatchByte((8 * i) + j);
-			m_strOPLLPatchNames[i] = m_pDocument->GetOPLLPatchName(i);
+			m_strVRC7PatchNames[i] = m_pDocument->GetOPLLPatchName(i);
 		}
 	}
 
@@ -445,7 +445,7 @@ void CModulePropertiesDlg::OnBnClickedOk()
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 8; j++)
 				m_pDocument->SetOPLLPatchByte((8 * i) + j, m_iOPLLPatchBytes[(8 * i) + j]);
-			m_pDocument->SetOPLLPatchName(i, m_strOPLLPatchNames[i]);
+			m_pDocument->SetOPLLPatchName(i, m_strVRC7PatchNames[i]);
 		}
 	else
 		m_pDocument->SetOPLLPatchSet(theApp.GetSettings()->Emulation.iVRC7Patch);
@@ -1113,7 +1113,7 @@ void CModulePropertiesDlg::updateExternallOPLLUI(int patchnum, bool renderText)
 		for (int i = 0; i < 8; i++)
 			patchbytes[i] = m_iOPLLPatchBytes[(8 * patchnum) + i];
 		m_cOPLLPatchBytesEdit[patchnum].SetWindowTextNoNotify(PatchBytesToText(patchbytes));
-		m_cOPLLPatchNameEdit[patchnum].SetWindowTextNoNotify(m_strOPLLPatchNames[patchnum].c_str());
+		m_cOPLLPatchNameEdit[patchnum].SetWindowTextNoNotify(m_strVRC7PatchNames[patchnum].c_str());
 	}
 }
 
@@ -1166,7 +1166,7 @@ void CModulePropertiesDlg::OpllPatchNameEdit(int patchnum)
 {
 	CString str;
 	m_cOPLLPatchNameEdit[patchnum].GetWindowText(str);
-	m_strOPLLPatchNames[patchnum] = str;
+	m_strVRC7PatchNames[patchnum] = str;
 	updateExternallOPLLUI(patchnum, false);
 }
 

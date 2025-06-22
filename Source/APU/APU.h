@@ -222,7 +222,7 @@ public:
 		int UseOPLLPatchSet,
 		bool UseOPLLExt,
 		std::vector<uint8_t> UseOPLLPatchBytes,
-		std::vector<std::string> UseOPLLPatchNames
+		std::vector<std::string> UseVRC7PatchNames
 	);
 
 	void SetupMixer(

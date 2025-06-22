@@ -43,7 +43,7 @@ private:
 	int16_t m_iDeviceLevelOffset[GLOBAL_MIXER_COUNT];
 
 	uint8_t m_iOPLLPatchBytes[19 * 8];
-	std::string m_strOPLLPatchNames[19];
+	std::string m_strVRC7PatchNames[19];
 
 	CFamiTrackerDoc* m_pDocument;
 

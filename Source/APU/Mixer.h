@@ -120,7 +120,7 @@ struct EmulatorConfig {
 	};
 
 	// User-defined hardware patch names for external OPLL
-	std::vector<std::string> UseOPLLPatchNames = {
+	std::vector<std::string> UseVRC7PatchNames = {
 		"(custom patch)",		// patch 0 must always be named "(custom instrument)"
 		"",
 		"",
@@ -221,7 +221,7 @@ private:
 	Blip_Buffer	BlipBuffer;
 
 	int32_t		m_iChannels[CHANNELS];
-	uint8_t		m_iExternalChip;
+	int			m_iExternalChip;
 	uint32_t	m_iSampleRate;
 
 	// channel levels for volume meter

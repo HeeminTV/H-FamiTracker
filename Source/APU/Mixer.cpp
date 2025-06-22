@@ -203,8 +203,7 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 		if (m_iExternalChip & SNDCHIP_OPLL)
 			ATTENUATION_2A03 *= ATTENUATION_OPLL;
 
-	}
-	else {
+	} else {
 		// attenuation scaling is exponential based on total chips used
 		uint8_t TotalChipsUsed = 1;
 		if (m_iExternalChip & SNDCHIP_VRC6) TotalChipsUsed++;

@@ -29,7 +29,7 @@ const int SNDCHIP_FDS	= 4;			// Famicom Disk Sound
 const int SNDCHIP_MMC5	= 8;			// Nintendo MMC5
 const int SNDCHIP_N163	= 16;			// Namco N163
 const int SNDCHIP_5B	= 32;			// Sunsoft 5B
-const int SNDCHIP_5E01	= 64;			// Eulous 5E01
+const int SNDCHIP_5E01	= 512;			// Eulous 5E01
 const int SNDCHIP_7E02	= 1024;			// Saeyahn 7E02
 const int SNDCHIP_OPLL  = 128;			// Yamaha YM2413
 

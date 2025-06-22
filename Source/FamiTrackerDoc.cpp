@@ -2788,7 +2788,7 @@ void CFamiTrackerDoc::ReadBlock_ParamsEmu(CDocumentFile* pDocFile, const int Ver
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 8; j++)
 				m_iOPLLPatchBytes[(8 * i) + j] = static_cast<uint8_t>(pDocFile->GetBlockChar());
-			m_strOPLLPatchNames[i] = std::string(pDocFile->ReadString());
+			m_strVRC7PatchNames[i] = std::string(pDocFile->ReadString());
 		}
 	}
 }
@@ -2807,7 +2807,7 @@ bool CFamiTrackerDoc::WriteBlock_ParamsEmu(CDocumentFile* pDocFile, const int Ve
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 8; j++)
 				pDocFile->WriteBlockChar(static_cast<char>(m_iOPLLPatchBytes[(8 * i) + j]));
-			pDocFile->WriteString(m_strOPLLPatchNames[i]);
+			pDocFile->WriteString(m_strVRC7PatchNames[i]);
 		}
 	}
 
@@ -4599,16 +4599,16 @@ void CFamiTrackerDoc::SetOPLLPatchSet(int patchset)
 		}
 		switch (patchset) {
 		case 7:
-			m_strOPLLPatchNames[i] = CAPU::OPLL_PATCHNAME_YM2413[i];
+			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_YM2413[i];
 			break;
 		case 8:
-			m_strOPLLPatchNames[i] = CAPU::OPLL_PATCHNAME_YMF281B[i];
+			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_YMF281B[i];
 			break;
 		case 9:
-			m_strOPLLPatchNames[i] = CAPU::OPLL_PATCHNAME_HM[i];
+			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_HM[i];
 			break;
 		default:
-			m_strOPLLPatchNames[i] = CAPU::OPLL_PATCHNAME_VRC7[i];
+			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_VRC7[i];
 			break;
 		}
 	}
@@ -4616,17 +4616,17 @@ void CFamiTrackerDoc::SetOPLLPatchSet(int patchset)
 
 std::string CFamiTrackerDoc::GetOPLLPatchName(int index) const
 {
-	return m_strOPLLPatchNames[index];
+	return m_strVRC7PatchNames[index];
 }
 
 void CFamiTrackerDoc::SetOPLLPatchName(int index, std::string PatchName)
 {
-	if (m_strOPLLPatchNames[index] != PatchName)
+	if (m_strVRC7PatchNames[index] != PatchName)
 		ModifyIrreversible();
 
 	// patch 0 must always be "(custom instrument)"
 	if (index != 0)
-		m_strOPLLPatchNames[index] = PatchName;
+		m_strVRC7PatchNames[index] = PatchName;
 }
 
 bool CFamiTrackerDoc::GetExternalOPLLChipCheck() const

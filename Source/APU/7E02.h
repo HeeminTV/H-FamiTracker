@@ -122,7 +122,7 @@ private:
 	ChannelLevelState<uint8_t> m_ChannelLevels[5];
 
 	Blip_Synth<blip_good_quality> Synth7E02FF;
-	Blip_Synth<blip_good_quality> Synth7E02TND;
+	Blip_Synth<blip_good_quality> Synth7E02WND;
 
 	uint32_t	m_iTime = 0;  // Clock counter, used as a timestamp for Blip_Buffer, resets every new frame
 };
