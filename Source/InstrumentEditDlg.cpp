@@ -30,6 +30,7 @@
 #include "InstrumentS5B.h"		// // //
 #include "InstrumentFDS.h"		// // //
 #include "InstrumentVRC7.h"		// // //
+#include "InstrumentSID.h"
 #include "FamiTrackerView.h"
 #include "SequenceEditor.h"
 #include "InstrumentEditPanel.h"
@@ -191,7 +192,7 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 					int Channel = CFamiTrackerView::GetView()->GetSelectedChannel();
 					int Type = pDoc->GetChannelType(Channel);
 					bool bShowDPCM = (Type == CHANID_2A03_DPCM) || (std::static_pointer_cast<CInstrument2A03>(pInstrument)->AssignedSamples());
-					InsertPane(new CInstrumentEditorSeq(NULL, _T("2A03 settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
+					InsertPane(new CInstrumentEditorSeq(NULL, _T("Macros"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // // //
 					//InsertPane(new CInstrumentEditorSeq(NULL, _T("2-bit waveform settings"), CInstrument2A03::SEQUENCE_NAME, 15, 3, INST_2A03), !bShowDPCM); // maybe later
 					InsertPane(new CInstrumentEditorDPCM(), bShowDPCM);
 				}
@@ -207,16 +208,15 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 				InsertPane(new CInstrumentEditorFDSEnvelope(), false);
 				break;
 			case INST_N163:
-				InsertPane(new CInstrumentEditorSeq(
-					NULL, _T("Envelopes"), CInstrumentN163::SEQUENCE_NAME, 15, CInstrumentN163::MAX_WAVE_COUNT - 1, INST_N163
-				), true);
+				InsertPane(new CInstrumentEditorSeq(NULL, _T("Macros"), CInstrumentN163::SEQUENCE_NAME, 15, CInstrumentN163::MAX_WAVE_COUNT - 1, INST_N163), true);
 				InsertPane(new CInstrumentEditorN163Wave(), false);
 				break;
 			case INST_S5B:
-				InsertPane(new CInstrumentEditorSeq(NULL, _T("5B"), CInstrumentS5B::SEQUENCE_NAME, 15, 255, INST_S5B), true);
+				InsertPane(new CInstrumentEditorSeq(NULL, _T("Sunsoft 5B"), CInstrumentS5B::SEQUENCE_NAME, 15, 255, INST_S5B), true);
 				break;
 			case INST_SID:
 				InsertPane(new CInstrumentEditorSID(), true);
+				InsertPane(new CInstrumentEditorSeq(NULL, _T("Macros"), CInstrumentSID::SEQUENCE_NAME, 15, 15, INST_SID), false);
 				break;
 		}
 

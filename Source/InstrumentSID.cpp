@@ -9,11 +9,11 @@
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
-** This program is distributed in the hope that it will be useful,
+** This program is distributed in the hope that it will be useful, 
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-** Library General Public License for more details.  To obtain a
-** copy of the GNU Library General Public License, write to the Free
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+** Library General Public License for more details.  To obtain a 
+** copy of the GNU Library General Public License, write to the Free 
 ** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 ** Any permitted reproduction of these routines, in whole or in part,
@@ -38,7 +38,7 @@ inline int modulo(int i, int n) {
 }
 
 
-LPCTSTR CInstrumentSID::SEQUENCE_NAME[] = { _T("Global Volume"), _T("Arpeggio"), _T("Pitch"), _T("Hi-pitch"), _T("Waveform"), _T("Pulse Width") };
+LPCTSTR CInstrumentSID::SEQUENCE_NAME[] = {_T("Global Volume"), _T("Arpeggio"), _T("Pitch"), _T("Hi-pitch"), _T("Waveform"), _T("Pulse Width")};
 
 CInstrumentSID::CInstrumentSID() : CSeqInstrument(INST_SID), // // //
 m_pEnvelopeAD(0x0A),
@@ -54,19 +54,19 @@ m_pFilterMode(PWM_DISABLED)
 {
 }
 
-CInstrument* CInstrumentSID::Clone() const
+CInstrument * CInstrumentSID::Clone() const
 {
-	CInstrumentSID* inst = new CInstrumentSID();		// // //
+	CInstrumentSID*inst = new CInstrumentSID();		// // //
 	inst->CloneFrom(this);
 	return inst;
 }
 
-void CInstrumentSID::CloneFrom(const CInstrument* pInst)
+void CInstrumentSID::CloneFrom(const CInstrument *pInst)
 {
 	CSeqInstrument::CloneFrom(pInst);
-
+	
 	if (auto pNew = dynamic_cast<const CInstrumentSID*>(pInst)) {
-		// Copy parameters
+	// Copy parameters
 		SetEnvParam(ENV_ATTACK, pNew->GetEnvParam(ENV_ATTACK));
 		SetEnvParam(ENV_DECAY, pNew->GetEnvParam(ENV_DECAY));
 		SetEnvParam(ENV_SUSTAIN, pNew->GetEnvParam(ENV_SUSTAIN));
@@ -88,7 +88,7 @@ void CInstrumentSID::Setup()
 {
 }
 
-void CInstrumentSID::Store(CDocumentFile* pDocFile)
+void CInstrumentSID::Store(CDocumentFile *pDocFile)
 {
 
 	pDocFile->WriteBlockInt(4);
@@ -107,9 +107,9 @@ void CInstrumentSID::Store(CDocumentFile* pDocFile)
 	CSeqInstrument::Store(pDocFile);		// // //
 }
 
-bool CInstrumentSID::Load(CDocumentFile* pDocFile)
+bool CInstrumentSID::Load(CDocumentFile *pDocFile)
 {
-
+	
 	unsigned int instversion = pDocFile->GetBlockInt();
 	if (instversion <= 255) {
 		m_pEnvelopeAD = pDocFile->GetBlockChar();
@@ -129,8 +129,7 @@ bool CInstrumentSID::Load(CDocumentFile* pDocFile)
 		if (instversion >= 4) {
 			CSeqInstrument::Load(pDocFile);
 		}
-	}
-	else {
+	} else {
 		pDocFile->RollbackPointer(4);
 		unsigned int a = pDocFile->GetBlockInt();
 		unsigned int b = pDocFile->GetBlockInt();
@@ -141,22 +140,22 @@ bool CInstrumentSID::Load(CDocumentFile* pDocFile)
 		}
 	}
 
-	//	}
+//	}
 
-		// Older files was 0-15, new is 0-31
-		//if (pDocFile->GetBlockVersion() <= 3) DoubleVolume();
+	// Older files was 0-15, new is 0-31
+	//if (pDocFile->GetBlockVersion() <= 3) DoubleVolume();
 
 	return true;
 }
 
-void CInstrumentSID::SaveFile(CInstrumentFile* pFile)
+void CInstrumentSID::SaveFile(CInstrumentFile *pFile)
 {
 
 	// Sequences
 	CSeqInstrument::SaveFile(pFile);		// // //
 }
 
-bool CInstrumentSID::LoadFile(CInstrumentFile* pFile, int iVersion)
+bool CInstrumentSID::LoadFile(CInstrumentFile *pFile, int iVersion)
 {
 	// Sequences
 	CSeqInstrument::LoadFile(pFile, iVersion);		// // //
@@ -164,14 +163,14 @@ bool CInstrumentSID::LoadFile(CInstrumentFile* pFile, int iVersion)
 	return true;
 }
 
-int CInstrumentSID::Compile(CChunk* pChunk, int Index)
+int CInstrumentSID::Compile(CChunk *pChunk, int Index)
 {
 	return 0;
 }
 
 bool CInstrumentSID::CanRelease() const
 {
-	const CSequence* pVol = GetSequence(SEQ_VOLUME);
+	const CSequence *pVol = GetSequence(SEQ_VOLUME);
 	return pVol && pVol->GetItemCount() && pVol->GetReleasePoint() != -1;
 }
 

@@ -69,7 +69,7 @@ CChannelHandler6581::CChannelHandler6581() :
 
 
 
-const char CChannelHandler6581::MAX_DUTY = 0xF;
+const char CChannelHandler6581::MAX_DUTY = 0x0F;
 
 int CChannelHandler6581::GetDutyMax() const {
 	return MAX_DUTY;
@@ -286,7 +286,7 @@ void CChannelHandler6581::RefreshChannel()
 	//}
 
 	if (m_iGateCounter > 0) {
-		if (m_iGateCounter < 3) {
+		if (m_iGateCounter < 2) {
 			m_iGateCounter++;
 			m_iGateBit = 0;
 			WriteReg(0x05 + Offset, 0x00);

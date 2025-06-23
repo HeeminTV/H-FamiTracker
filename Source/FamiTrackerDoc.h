@@ -241,7 +241,7 @@ public:
 	unsigned int	GetPlaybackRate() const;
 	unsigned int	GetPlaybackRateType() const { return m_iPlaybackRateType; };
 
-	void			SelectExpansionChip(unsigned char Chip, bool Move = false);		// // //
+	void			SelectExpansionChip(unsigned int Chip, bool Move = false);		// // //
 	unsigned char	GetExpansionChip() const { return m_iExpansionChip; };
 	bool			ExpansionEnabled(int Chip) const;
 	int				GetNamcoChannels() const;
@@ -421,6 +421,8 @@ private:
 	bool			WriteBlock_SequencesVRC6(CDocumentFile *pDocFile, const int Version) const;
 	bool			WriteBlock_SequencesN163(CDocumentFile *pDocFile, const int Version) const;
 	bool			WriteBlock_SequencesS5B(CDocumentFile *pDocFile, const int Version) const;
+	bool			WriteBlock_SequencesSID(CDocumentFile* pDocFile, const int Version) const; // Taken from E-FamiTracker by Euly
+
 	// // //
 	bool			WriteBlock_ParamsExtra(CDocumentFile *pDocFile, const int Version) const;
 	bool			WriteBlock_DetuneTables(CDocumentFile *pDocFile, const int Version) const;
@@ -444,6 +446,8 @@ private:
 	void			ReadBlock_SequencesVRC6(CDocumentFile *pDocFile, const int Version);
 	void			ReadBlock_SequencesN163(CDocumentFile *pDocFile, const int Version);
 	void			ReadBlock_SequencesS5B(CDocumentFile *pDocFile, const int Version);
+	void			ReadBlock_SequencesSID(CDocumentFile* pDocFile, const int Version); // Taken from E-FamiTracker by Euly
+
 	// // //
 	void			ReadBlock_ParamsExtra(CDocumentFile *pDocFile, const int Version);
 	void			ReadBlock_DetuneTables(CDocumentFile *pDocFile, const int Version);
@@ -506,9 +510,9 @@ private:
 	CPatternData*	GetTrack(unsigned int Track) const;
 	void			SwapTracks(unsigned int Track1, unsigned int Track2);
 
-	void			SetupChannels(unsigned char Chip);
+	void			SetupChannels(unsigned int Chip);
 	void			ApplyExpansionChip();
-	int				GetChannelPosition(int Channel, unsigned char Chip);		// // //
+	int				GetChannelPosition(int Channel, unsigned int Chip);		// // //
 
 	//
 	// Private variables

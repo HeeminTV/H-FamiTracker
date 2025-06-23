@@ -55,6 +55,7 @@
 #include "InstrumentVRC6.h"		// // // for error messages only
 #include "InstrumentN163.h"		// // // for error messages only
 #include "InstrumentS5B.h"		// // // for error messages only
+#include "InstrumentSID.h"
 #include "FamiTrackerDoc.h"
 #include "ModuleException.h"		// // //
 #include "TrackerChannel.h"
@@ -111,6 +112,9 @@ const char *FILE_BLOCK_PARAMS_EXTRA			= "PARAMS_EXTRA";
 // !! !! Dn-FamiTracker specific
 const char *FILE_BLOCK_JSON = "JSON";
 const char *FILE_BLOCK_PARAMS_EMU = "PARAMS_EMU";
+
+// H-FamiTracker modification
+static const char* FILE_BLOCK_SEQUENCES_SID = "SEQUENCES_SID"; // Taken from E-FamiTracker by Euly
 
 // FTI instruments files
 static const char INST_HEADER[] = "FTI";
@@ -722,7 +726,7 @@ BOOL CFamiTrackerDoc::SaveDocument(LPCTSTR lpszPathName) const
 
 	// First write to a temp file (if saving fails, the original is not destroyed)
 	CString updir = "/..";
-	GetTempFileName(lpszPathName + updir, _T("DNM"), 0, TempFile);
+	GetTempFileName(lpszPathName + updir, _T("HNM"), 0, TempFile);
 
 	if (!DocumentFile.Open(TempFile, CFile::modeWrite | CFile::modeCreate, &ex)) {
 		// Could not open file
@@ -900,7 +904,7 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	pDocFile->CreateBlock(FILE_BLOCK_PARAMS, Version);
 	
 	if (Version >= 2)
-		pDocFile->WriteBlockChar(m_iExpansionChip);		// ver 2 change
+		pDocFile->WriteBlockInt(m_iExpansionChip);		// Taken from E-FamiTracker by Euly. you're a god.
 	else
 		pDocFile->WriteBlockInt(GetTrack(0)->GetSongSpeed());
 
@@ -1254,6 +1258,58 @@ bool CFamiTrackerDoc::WriteBlock_SequencesS5B(CDocumentFile *pDocFile, const int
 
 			if (Count > 0) {
 				const CSequence *pSeq = GetSequence(INST_S5B, i, j);
+
+				// Store index
+				pDocFile->WriteBlockInt(i);
+				// Store type of sequence
+				pDocFile->WriteBlockInt(j);
+				// Store number of items in this sequence
+				pDocFile->WriteBlockChar(Count);
+				// Store loop point
+				pDocFile->WriteBlockInt(pSeq->GetLoopPoint());
+				// Store release point
+				pDocFile->WriteBlockInt(pSeq->GetReleasePoint());
+				// Store setting
+				pDocFile->WriteBlockInt(pSeq->GetSetting());
+				// Store items
+				for (int k = 0; k < Count; ++k) {
+					pDocFile->WriteBlockChar(pSeq->GetItem(k));
+				}
+			}
+		}
+	}
+
+	return pDocFile->FlushBlock();
+}
+
+// Taken from E-FamiTracker by Euly
+bool CFamiTrackerDoc::WriteBlock_SequencesSID(CDocumentFile* pDocFile, const int Version) const
+{
+	/*
+	 * Store SID sequences
+	 */
+
+	int Count = 0;
+
+	// Count number of used sequences
+	for (int i = 0; i < MAX_SEQUENCES; ++i)
+		for (int j = 0; j < SEQ_COUNT; ++j)
+			if (GetSequenceItemCount(INST_SID, i, j) > 0)
+				Count++;
+
+	if (!Count) return true;		// // //
+	// Sequences, version 0
+	pDocFile->CreateBlock(FILE_BLOCK_SEQUENCES_SID, Version);
+
+	// Write it
+	pDocFile->WriteBlockInt(Count);
+
+	for (int i = 0; i < MAX_SEQUENCES; ++i) {
+		for (int j = 0; j < SEQ_COUNT; ++j) {
+			Count = GetSequenceItemCount(INST_SID, i, j);
+
+			if (Count > 0) {
+				const CSequence* pSeq = GetSequence(INST_SID, i, j);
 
 				// Store index
 				pDocFile->WriteBlockInt(i);
@@ -1722,6 +1778,7 @@ BOOL CFamiTrackerDoc::OpenDocumentNew(CDocumentFile &DocumentFile)
 	FTM_READ_FUNC[FILE_BLOCK_SEQUENCES_N163]	= &CFamiTrackerDoc::ReadBlock_SequencesN163;
 	FTM_READ_FUNC[FILE_BLOCK_SEQUENCES_N106]	= &CFamiTrackerDoc::ReadBlock_SequencesN163;	// Backward compatibility
 	FTM_READ_FUNC[FILE_BLOCK_SEQUENCES_S5B]		= &CFamiTrackerDoc::ReadBlock_SequencesS5B;		// // //
+	FTM_READ_FUNC[FILE_BLOCK_SEQUENCES_SID]		= &CFamiTrackerDoc::ReadBlock_SequencesSID; // Taken from E-FamiTracker by Euly
 	FTM_READ_FUNC[FILE_BLOCK_DETUNETABLES]		= &CFamiTrackerDoc::ReadBlock_DetuneTables;		// // //
 	FTM_READ_FUNC[FILE_BLOCK_GROOVES]			= &CFamiTrackerDoc::ReadBlock_Grooves;			// // //
 	FTM_READ_FUNC[FILE_BLOCK_BOOKMARKS]			= &CFamiTrackerDoc::ReadBlock_Bookmarks;		// // //
@@ -2277,6 +2334,43 @@ void CFamiTrackerDoc::ReadBlock_SequencesS5B(CDocumentFile *pDocFile, const int 
 		}
 		catch (CModuleException *e) {
 			e->AppendError("At 5B %s sequence %d,", CInstrumentS5B::SEQUENCE_NAME[Type], Index);
+			throw;
+		}
+	}
+}
+
+// Taken from E-FamiTracker by Euly
+void CFamiTrackerDoc::ReadBlock_SequencesSID(CDocumentFile* pDocFile, const int Version)
+{
+	unsigned int Count = AssertRange(pDocFile->GetBlockInt(), 0, MAX_SEQUENCES * SEQ_COUNT, "SID sequence count");
+	// AssertRange<MODULE_ERROR_OFFICIAL>(Count, 0U, static_cast<unsigned>(MAX_SEQUENCES * SEQ_COUNT - 1), "SID sequence count"); // we don't use this anymore
+
+	CSequenceManager* pManager = GetSequenceManager(INST_SID);		// // //
+
+	for (unsigned int i = 0; i < Count; i++) {
+		unsigned int  Index = AssertRange(pDocFile->GetBlockInt(), 0, MAX_SEQUENCES - 1, "Sequence index");
+		unsigned int  Type = AssertRange(pDocFile->GetBlockInt(), 0, SEQ_COUNT - 1, "Sequence type");
+		try {
+			unsigned char SeqCount = pDocFile->GetBlockChar();
+			CSequence* pSeq = pManager->GetCollection(Type)->GetSequence(Index);
+			pSeq->Clear();
+			pSeq->SetItemCount(SeqCount < MAX_SEQUENCE_ITEMS ? SeqCount : MAX_SEQUENCE_ITEMS);
+
+			pSeq->SetLoopPoint(AssertRange<MODULE_ERROR_STRICT>(
+				pDocFile->GetBlockInt(), -1, static_cast<int>(SeqCount) - 1, "Sequence loop point"));
+			pSeq->SetReleasePoint(AssertRange<MODULE_ERROR_STRICT>(
+				pDocFile->GetBlockInt(), -1, static_cast<int>(SeqCount) - 1, "Sequence release point"));
+			pSeq->SetSetting(static_cast<seq_setting_t>(pDocFile->GetBlockInt()));		// // //
+
+			// AssertRange(SeqCount, 0, MAX_SEQUENCE_ITEMS, "Sequence item count");
+			for (int j = 0; j < SeqCount; ++j) {
+				char Value = pDocFile->GetBlockChar();
+				if (j < MAX_SEQUENCE_ITEMS)		// // //
+					pSeq->SetItem(j, Value);
+			}
+		}
+		catch (CModuleException* e) {
+			e->AppendError("At SID %s sequence %d,", CInstrumentSID::SEQUENCE_NAME[Type], Index);
 			throw;
 		}
 	}
@@ -4173,7 +4267,7 @@ unsigned int CFamiTrackerDoc::GetTrackCount() const
 	return m_iTrackCount;
 }
 
-void CFamiTrackerDoc::SelectExpansionChip(unsigned char Chip, bool Move)
+void CFamiTrackerDoc::SelectExpansionChip(unsigned int Chip, bool Move)
 {
 	// // // Move pattern data upon removing expansion chips
 	if (Move) {
@@ -4213,7 +4307,7 @@ void CFamiTrackerDoc::SelectExpansionChip(unsigned char Chip, bool Move)
 		m_iNamcoChannels = 0;
 }
 
-void CFamiTrackerDoc::SetupChannels(unsigned char Chip)
+void CFamiTrackerDoc::SetupChannels(unsigned int Chip)
 {
 	// This will select a chip in the sound emulator
 
@@ -4429,7 +4523,7 @@ int CFamiTrackerDoc::GetChannelCount() const
 	return m_iRegisteredChannels;
 }
 
-int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned char Chip)		// // //
+int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned int Chip)		// // //
 {
 	// TODO: use information from the current channel map instead
 	unsigned int pos = Channel;

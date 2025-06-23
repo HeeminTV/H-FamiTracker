@@ -8,14 +8,16 @@ H-FamiTracker indirectly **succeeds** [E-FamiTracker](https://github.com/eulyder
 
 ## To do list
 - [x] 7E02
-- [x] MMC5 PCM
-- [ ] PCM importer via DPCM instrument
 - [x] 2A03
-- [x] YM2413
+- [x] YM2413 **expansion**
 - [ ] SN76489
 - [ ] YM2149F
 - [x] 5E01
 - [x] 6581
+- [ ] 8580
+- [ ] Konami VRC7 / Yamaha YM2413 instrument macro
+- [x] MMC5 PCM
+- [ ] PCM importer via DPCM instrument
 
 H-FamiTracker also brings several features from some forks.
 

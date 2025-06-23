@@ -112,7 +112,7 @@ bool CModuleImportDlg::LoadFile(CString Path, CFamiTrackerDoc *pDoc)
 		m_pDocument->SelectExpansionChip(Chip, true);
 	}
 	if (m_pImportedDoc->GetExpansionChip() != m_pDocument->GetExpansionChip()) {
-		unsigned char Chip = m_pImportedDoc->GetExpansionChip() | m_pDocument->GetExpansionChip();
+		unsigned int Chip = m_pImportedDoc->GetExpansionChip() | m_pDocument->GetExpansionChip();
 		m_pImportedDoc->SelectExpansionChip(Chip, true);
 		m_pDocument->SelectExpansionChip(Chip, true);
 	}
