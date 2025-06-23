@@ -71,13 +71,13 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("Ixy - Hardware sweep down, X = speed, Y = shift"),
 	_T("0xy - Arpeggio, X = second note, Y = third note (if zero, produces 2-frame period)"),
 	_T("4xy - Vibrato, X = speed, Y = depth"),
-	_T("7xy - Tremolo, X = speed, Y = depth / 7E02 waveform higher bits"),
+	_T("7xy - Tremolo, X = speed, Y = depth / 7E02 waveform, high byte"),
 	_T("Pxx - Fine pitch, XX - 80 = offset"),
 	_T("Gxx - Row delay, XX = number of frames"),
 	_T("Zxx - DPCM delta counter setting, XX<=7F = DC bias"),
 	_T("1xx - Slide up, XX = speed (pitch/frame)"),
 	_T("2xx - Slide down, XX = speed (pitch/frame)"),
-	_T("Vxx - Set waveform mode / Noise mode to XX / 7E02 waveform lower bits"),
+	_T("Vxx - Set duty cycle / Noise mode to XX / 7E02 waveform, low byte"),
 	_T("Vxx - Set N163 wave index to XX"),
 	_T("Vxx - Set OPLL patch index to XX"),
 	_T("Yxx - Set DPCM sample offset to XX<=3F"),
@@ -112,6 +112,13 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("=00 - Reset channel phase"),
 	_T("Kxx - Multiply frequency by XX, does not affect FDS Ixy modulator"),
 	_T("Nxy - Target volume slide, X = speed, Y = volume"),
+	_T("W0x - SID filter resonance"),
+	_T("I0x - SID filter cutoff, high byte"),
+	_T("Jxx - SID filter cutoff, low byte"),
+	_T("H0x - SID filter mode"),
+	_T("Exy - SID envelope"),
+	_T("Y0x - SID test/ring/sync/gate"),
+	_T("Xxx - SID pulse width"), // _T("Xxx - AY8930 pulse width, values above 08 act as 08"),
 };
 
 // OLE copy and mix
@@ -1646,7 +1653,12 @@ bool CFamiTrackerView::PlayerGetNote(int Track, int Frame, int Channel, int Row,
 	}
 	else {
 		// These effects will pass even if the channel is muted
-		const int PASS_EFFECTS[] = {EF_HALT, EF_JUMP, EF_SPEED, EF_SKIP, EF_GROOVE};		// // //
+		const int PASS_EFFECTS[] = {
+			EF_HALT, EF_JUMP, EF_SPEED, EF_SKIP, EF_GROOVE,
+			EF_SID_FILTER_CUTOFF_HI,  EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_MODE, // Taken from E-FamiTracker by Euly
+			EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_NOISE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO
+			// i don't know if these ^ sunsoft effects are required to be passed?
+		};		// // //
 		int Columns = pDoc->GetEffColumns(Track, Channel) + 1;
 
 		NoteData.Note		= HALT;

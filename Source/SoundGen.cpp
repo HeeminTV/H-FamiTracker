@@ -1555,10 +1555,8 @@ static CString GetStateString(const stChannelState &State)
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
 	else if (
-		// VRC7
-			State.ChannelIndex >= CHANID_VRC7_CH1 && State.ChannelIndex <= CHANID_VRC7_CH6 ||
-			// YM2413
-			State.ChannelIndex >= CHANID_OPLL_CH1 && State.ChannelIndex <= CHANID_OPLL_CH9
+			State.ChannelIndex >= CHANID_VRC7_CH1 && State.ChannelIndex <= CHANID_VRC7_CH6 || // VRC7
+			State.ChannelIndex >= CHANID_OPLL_CH1 && State.ChannelIndex <= CHANID_OPLL_CH9 // YM2413
 		)
 		for (const auto &x : VRC7_EFFECTS) {
 			int p = State.Effect[x];
@@ -1587,6 +1585,13 @@ static CString GetStateString(const stChannelState &State)
 			if (p == effects[x].initial) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
+	else if (State.ChannelIndex >= CHANID_6581_CH1 && State.ChannelIndex <= CHANID_6581_CH3) // Taken from E-FamiTracker by Euly
+		for (const auto& x : SID_EFFECTS) {
+			int p = State.Effect[x];
+			if (p < 0) continue;
+			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
+		}
+
 	if (State.Effect_LengthCounter >= 0)
 		effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[EF_VOLUME], State.Effect_LengthCounter);
 	if (State.Effect_AutoFMMult >= 0)

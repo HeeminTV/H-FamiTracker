@@ -163,12 +163,12 @@ enum effect_t : unsigned char {
 	EF_PHASE_RESET,			// Reset waveform phase without retriggering note (VRC6-only so far)
 	EF_HARMONIC,			// Multiply the note pitch by an integer
 	EF_TARGET_VOLUME_SLIDE,	// // !! Target volume slide
-	EF_SID_FILTER_RESONANCE,// SID filter resonance
-	EF_SID_FILTER_CUTOFF_HI,// SID filter cutoff hi
-	EF_SID_FILTER_CUTOFF_LO,// SID filter cutoff lo
-	EF_SID_FILTER_MODE,		// SID filter mode
-	EF_SID_ENVELOPE,    // // // SID envelope parameters
-	EF_SID_RING,        // // // SID ringmod
+	EF_SID_FILTER_RESONANCE,// // // SID filter resonance (Taken from E-FamiTracker by Euly)
+	EF_SID_FILTER_CUTOFF_HI,// // // SID filter cutoff hi
+	EF_SID_FILTER_CUTOFF_LO,// // // SID filter cutoff lo
+	EF_SID_FILTER_MODE,		// // // SID filter mode
+	EF_SID_ENVELOPE,		// // // SID envelope parameters
+	EF_SID_RING,			// // // SID ringmod
 	EF_AY8930_PULSE_WIDTH,  // AY8930 pulse width
 
 	EF_COUNT
@@ -184,7 +184,6 @@ const effect_t FDS_EFFECTS[] = {EF_FDS_MOD_DEPTH, EF_FDS_MOD_SPEED_HI, EF_FDS_MO
 // const effect_t MMC5_EFFECTS[] = {};
 const effect_t N163_EFFECTS[] = {EF_N163_WAVE_BUFFER};
 const effect_t S5B_EFFECTS[] = {EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO, EF_SUNSOFT_NOISE};
-
 const effect_t SID_EFFECTS[] = { EF_AY8930_PULSE_WIDTH, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_CUTOFF_HI, EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_MODE, EF_SID_ENVELOPE, EF_SID_RING };
 
 // Effect checking = bool CTrackerChannel::IsEffectCompatible
@@ -240,8 +239,8 @@ const char EFF_CHAR[] = {
 	'I',	// EF_SID_FILTER_CUTOFF_HI
 	'J',	// EF_SID_FILTER_CUTOFF_LO
 	'H',	// EF_SID_FILTER_MODE
-	'E',  // EF_SID_ENVELOPE
-	'Y',  // EF_SID_RING
+	'E',	// EF_SID_ENVELOPE
+	'Y',	// EF_SID_RING
 	'X',   	// EF_AY8930_PULSE_WIDTH,
 };
 

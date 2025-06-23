@@ -32,7 +32,7 @@ public:
 	CInstrumentEditorSID(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CInstrumentEditorSID();
 	virtual int GetIDD() const { return IDD; };
-	virtual TCHAR* GetTitle() const { return _T("MOS Technology SID"); };
+	virtual TCHAR* GetTitle() const { return _T("MOS 6581"); };
 
 	// Public
 	virtual void SelectInstrument(std::shared_ptr<CInstrument> pInst);

@@ -84,7 +84,7 @@ bool CChannelHandler6581::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		break;
 	}
 	case EF_AY8930_PULSE_WIDTH: {
-		m_iPulseWidth = EffParam * 16;
+		m_iPulseWidth = EffParam << 4;
 		break;
 	}
 	case EF_SID_FILTER_RESONANCE: {

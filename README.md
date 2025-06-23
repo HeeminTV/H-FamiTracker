@@ -17,6 +17,20 @@ H-FamiTracker indirectly **succeeds** [E-FamiTracker](https://github.com/eulyder
 - [x] 5E01
 - [x] 6581
 
+H-FamiTracker also brings several features from some forks.
+
+Combined the codes as a sign of respect to the fork developers, @HeeminTV **does not own** the codes.
+
+- [**E-FamiTracker**](https://github.com/eulyderg/E-FamiTracker)
+
+- [0CC-LLTracker](https://www.patreon.com/posts/0cc-lltracker-57793427)
+
+- [SnevenTracker](https://github.com/HertzDevil/SnevenTracker/) (planned)
+
+
+
+*End of H-FamiTracker's description...*
+
 ![Dn-FamiTracker banner logotype](docs/dn_logo.svg)
 
 Dn-FamiTracker is a fork of 0CC-FamiTracker that incorporates numerous fixes and features.
@@ -77,9 +91,6 @@ Copyright (C) 2020-2024 D.P.C.M.
 - FDS and N163 sound emulator from Mesen
 	- Copyright (C) 2014-2024 Sour
 	- Licensed under [GPLv3](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html).
-- Atari TIA sound emulator from MAME 0.277
-	- Copyright (C) Ron Fries
-	- Licensed under [GPLv2+](https://scancode-licensedb.aboutcode.org/gpl-2.0-plus.html).
 - Blip_buffer 0.4.1
 	- Copyright (C) 2003-2006 Shay Green
 	- Licensed under [LGPLv2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)

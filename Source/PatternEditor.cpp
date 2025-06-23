@@ -2614,12 +2614,28 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	}
 
 	// SID
+	/*
+		00 01 02 03 04 05 06
+		07 08 09 0A 0B 0C 0D
+		0E 0F 10 11 12 13 14
+
+		LL HH PP P- W- AD SR
+		LL HH PP P- W- AD SR
+		LL HH PP P- W- AD SR
+	*/
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_6581)) {		// // //
 		DrawHeaderFunc(_T("6581"));		// // //
-		for (int i = 0; i < 4; ++i) {
-			GetRegsFunc(SNDCHIP_6581, [&](int x) { return 0xD400 + i * 7 + x; }, 8);
-			text.Format(_T("$%02X:"), i * 7);
+		for (int i = 0; i < 3; ++i) {
+			GetRegsFunc(SNDCHIP_6581, [&](int x) { return 0xD400 + i * 7 + x; }, 7);
+			text.Format(_T("$D4%02X:"), i * 7);
 			DrawRegFunc(text, 7);
+
+			int period = reg[0] | reg[1] << 8;
+			int freq = period / 9.373935130320996; // period / (256^3 / 1789773)
+
+			text.Format(_T("%s, adsr = $%04X"), GetPitchTextFunc(4, period, freq), reg[6] | reg[5] << 8);
+			DrawTextFunc(300, text);
+			DrawVolFunc(freq, 0x7F);
 		}
 
 	}

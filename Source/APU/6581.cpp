@@ -48,7 +48,7 @@ void C6581::Reset()
 
 	m_Sid.setSamplingParameters(CAPU::BASE_FREQ_ATARI, SamplingMethod::DECIMATE, 44100, 44100);
 	m_Sid.setFilter6581Curve(0.875);
-	m_Sid.setChipModel(MOS8580);
+	m_Sid.setChipModel(MOS6581);
 	m_Sid.enableFilter(true);
 
 }
