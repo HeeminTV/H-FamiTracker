@@ -242,7 +242,7 @@ public:
 	unsigned int	GetPlaybackRateType() const { return m_iPlaybackRateType; };
 
 	void			SelectExpansionChip(unsigned int Chip, bool Move = false);		// // //
-	unsigned char	GetExpansionChip() const { return m_iExpansionChip; };
+	unsigned int	GetExpansionChip() const { return m_iExpansionChip; };
 	bool			ExpansionEnabled(int Chip) const;
 	int				GetNamcoChannels() const;
 	void			SetNamcoChannels(int Channels, bool Move = false);		// // //
@@ -568,7 +568,7 @@ private:
 	CGroove			*m_pGrooveTable[MAX_GROOVE];				// // // Grooves
 
 	// Module properties
-	unsigned char	m_iExpansionChip;							// Expansion chip
+	unsigned int	m_iExpansionChip;							// Expansion chip
 	unsigned int	m_iNamcoChannels;
 	vibrato_t		m_iVibratoStyle;							// 0 = old style, 1 = new style
 	bool			m_bLinearPitch;

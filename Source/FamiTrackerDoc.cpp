@@ -882,6 +882,7 @@ bool CFamiTrackerDoc::WriteBlocks(CDocumentFile *pDocFile) const
 		&CFamiTrackerDoc::WriteBlock_SequencesVRC6,		// // //
 		&CFamiTrackerDoc::WriteBlock_SequencesN163,
 		&CFamiTrackerDoc::WriteBlock_SequencesS5B,
+		& CFamiTrackerDoc::WriteBlock_SequencesSID, // Taken from E-FamiTracker by Euly
 		&CFamiTrackerDoc::WriteBlock_ParamsExtra,		// // //
 		&CFamiTrackerDoc::WriteBlock_DetuneTables,		// // //
 		&CFamiTrackerDoc::WriteBlock_Grooves,			// // //
