@@ -53,13 +53,13 @@ const int CInstrumentEditDlg::KEYBOARD_HEIGHT = 58;
 
 const TCHAR *CInstrumentEditDlg::CHIP_NAMES[] = {
 	_T(""), 
-	_T("2A03"), 
-	_T("VRC6"), 
-	_T("YM2413"), 
-	_T("2C33"), 
-	_T("N163"), 
-	_T("5B"),
-	_T("6581"),
+	_T("Ricoh 2A03"), 
+	_T("Konami VRC6"), 
+	_T("Yamaha YM2413"), 
+	_T("Ricoh 2C33"), 
+	_T("Namco 163"), 
+	_T("Sunsoft 5B"),
+	_T("MOS Technology 6581"),
 };
 
 // CInstrumentEditDlg dialog
@@ -216,7 +216,7 @@ void CInstrumentEditDlg::SetCurrentInstrument(int Index)
 				break;
 			case INST_SID:
 				InsertPane(new CInstrumentEditorSID(), true);
-				InsertPane(new CInstrumentEditorSeq(NULL, _T("Macros"), CInstrumentSID::SEQUENCE_NAME, 15, 15, INST_SID), false);
+				// InsertPane(new CInstrumentEditorSeq(NULL, _T("Macros"), CInstrumentSID::SEQUENCE_NAME, 15, 15, INST_SID), false);
 				break;
 		}
 
@@ -374,11 +374,12 @@ void CInstrumentEditDlg::SwitchOnNote(int x, int y)
 	else {
 		chan_id_t First = CHANNELS;
 		switch (m_iSelectedInstType) {
-		case INST_VRC6: First = CHANID_VRC6_PULSE1; break;
-		case INST_N163: First = CHANID_N163_CH1; break;
-		case INST_FDS:  First = CHANID_FDS; break;
-		case INST_VRC7: First = CHANID_VRC7_CH1; break;
-		case INST_S5B:  First = CHANID_5B_CH1; break;
+			case INST_VRC6: First = CHANID_VRC6_PULSE1; break;
+			case INST_N163: First = CHANID_N163_CH1; break;
+			case INST_FDS:  First = CHANID_FDS; break;
+			case INST_VRC7: First = CHANID_VRC7_CH1; break;
+			case INST_S5B:  First = CHANID_5B_CH1; break;
+			case INST_SID:  First = CHANID_6581_CH1; break;
 		}
 		int Index = pDoc->GetChannelIndex(First);
 		if (Index != -1 && pDoc->GetChipType(Index) != pDoc->GetChipType(Channel))

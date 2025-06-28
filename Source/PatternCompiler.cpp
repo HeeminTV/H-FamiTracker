@@ -118,6 +118,7 @@ enum command_t {
 	CMD_EFF_SID_FILTER_MODE,
 	CMD_EFF_SID_ENVELOPE,
 	CMD_EFF_SID_RING,
+	CMD_EFF_SID_GATE_MODE,
 
 	CMD_EFF_AY8930_PULSE_WIDTH,
 };
@@ -791,6 +792,11 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 				case EF_SID_RING:		// // // 050B
 					if (ChipID == SNDCHIP_6581) {
 						WriteData(Command(CMD_EFF_SID_RING));
+						WriteData(EffParam & 0x0F);
+					}
+				case EF_SID_GATE_MODE:		// // // 050B
+					if (ChipID == SNDCHIP_6581) {
+						WriteData(Command(CMD_EFF_SID_GATE_MODE));
 						WriteData(EffParam & 0x0F);
 					}
 					break;

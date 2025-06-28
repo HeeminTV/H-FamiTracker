@@ -217,9 +217,9 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 				m_iChannelID != CHANID_2A03_DPCM &&
 				m_iChannelID != CHANID_5E01_DPCM && 
 				m_iChannelID != CHANID_7E02_DPCM &&
-				m_iChannelID != CHANID_MMC5_VOICE &&
+				m_iChannelID != CHANID_MMC5_VOICE && // Taken from E-FamiTracker by Euly
 				!(m_iChannelID >= CHANID_OPLL_CH1 && m_iChannelID <= CHANID_OPLL_CH9)
-			) return false; // Taken from E-FamiTracker by Euly
+			) return false;
 
 			int limit;
 			switch (EffNumber) {
@@ -253,6 +253,8 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_6581 && EffParam <= 0xFF;
 		case EF_SID_FILTER_RESONANCE: case EF_SID_FILTER_CUTOFF_HI: case EF_SID_FILTER_MODE:
 			return (m_iChip == SNDCHIP_6581 && EffParam <= 0x0F);
+		case EF_SID_GATE_MODE:
+			return (m_iChip == SNDCHIP_6581 && EffParam <= 0x02);
 		case EF_SID_FILTER_CUTOFF_LO:
 			return m_iChip == SNDCHIP_6581;
 		case EF_SID_ENVELOPE:

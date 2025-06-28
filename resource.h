@@ -970,6 +970,7 @@
 #define IDC_FILTER_MODE3				53328
 #define IDC_FILTER_MODE4				53329
 #define IDC_DISABLE_FILTER				53330
+#define IDI_INST_6581                   53331
 
 
 // Next default values for new objects

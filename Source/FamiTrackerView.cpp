@@ -119,6 +119,7 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("Exy - SID envelope"),
 	_T("Y0x - SID test/ring/sync/gate"),
 	_T("Xxx - SID pulse width"), // _T("Xxx - AY8930 pulse width, values above 08 act as 08"),
+	_T("Z0x - SID gate bit mode")
 };
 
 // OLE copy and mix
@@ -1655,7 +1656,7 @@ bool CFamiTrackerView::PlayerGetNote(int Track, int Frame, int Channel, int Row,
 		// These effects will pass even if the channel is muted
 		const int PASS_EFFECTS[] = {
 			EF_HALT, EF_JUMP, EF_SPEED, EF_SKIP, EF_GROOVE,
-			EF_SID_FILTER_CUTOFF_HI,  EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_MODE, // Taken from E-FamiTracker by Euly
+			EF_SID_FILTER_CUTOFF_HI,  EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_MODE, EF_SID_GATE_MODE,
 			EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_NOISE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO
 			// i don't know if these ^ sunsoft effects are required to be passed?
 		};		// // //

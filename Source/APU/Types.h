@@ -32,7 +32,7 @@ const int SNDCHIP_5B	= 32;			// Sunsoft 5B
 const int SNDCHIP_OPLL	= 64;			// Yamaha YM2413
 const int SNDCHIP_7E02	= 128;			// Saeyahn 7E02
 const int SNDCHIP_5E01	= 256;			// Eulous 5E01			// eft compatible
-const int SNDCHIP_6581	= 512;			// MOS 6581				// eft compatible
+const int SNDCHIP_6581	= 512;			// MOS Technology 6581	// eft compatible
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,

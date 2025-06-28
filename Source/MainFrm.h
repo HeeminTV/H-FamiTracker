@@ -345,6 +345,7 @@ public:
 	afx_msg void OnAddInstrument5E01();
 	afx_msg void OnAddInstrument7E02();
 	afx_msg void OnAddInstrumentOPLL();
+	afx_msg void OnAddInstrument6581();
 	afx_msg void OnEditUndo();
 	afx_msg void OnEditRedo();
 	afx_msg void OnEditCut();

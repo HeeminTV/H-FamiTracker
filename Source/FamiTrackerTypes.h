@@ -170,6 +170,7 @@ enum effect_t : unsigned char {
 	EF_SID_ENVELOPE,		// // // SID envelope parameters
 	EF_SID_RING,			// // // SID ringmod
 	EF_AY8930_PULSE_WIDTH,  // AY8930 pulse width
+	EF_SID_GATE_MODE,		// SID gate mode
 
 	EF_COUNT
 };
@@ -184,7 +185,7 @@ const effect_t FDS_EFFECTS[] = {EF_FDS_MOD_DEPTH, EF_FDS_MOD_SPEED_HI, EF_FDS_MO
 // const effect_t MMC5_EFFECTS[] = {};
 const effect_t N163_EFFECTS[] = {EF_N163_WAVE_BUFFER};
 const effect_t S5B_EFFECTS[] = {EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO, EF_SUNSOFT_NOISE};
-const effect_t SID_EFFECTS[] = { EF_AY8930_PULSE_WIDTH, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_CUTOFF_HI, EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_MODE, EF_SID_ENVELOPE, EF_SID_RING };
+const effect_t SID_EFFECTS[] = { EF_AY8930_PULSE_WIDTH, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_CUTOFF_HI, EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_MODE, EF_SID_ENVELOPE, EF_SID_RING, EF_SID_GATE_MODE };
 
 // Effect checking = bool CTrackerChannel::IsEffectCompatible
 
@@ -241,7 +242,8 @@ const char EFF_CHAR[] = {
 	'H',	// EF_SID_FILTER_MODE
 	'E',	// EF_SID_ENVELOPE
 	'Y',	// EF_SID_RING
-	'X',   	// EF_AY8930_PULSE_WIDTH,
+	'X',   	// EF_AY8930_PULSE_WIDTH
+	'Z',	// EF_SID_GATE_MODE
 };
 
 struct Effect {

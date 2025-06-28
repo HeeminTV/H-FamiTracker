@@ -302,7 +302,7 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 8"), _T("YM8"), SNDCHIP_OPLL, CHANID_OPLL_CH8));
 	AssignChannel(new CTrackerChannel(_T("YM2413 FM 9"), _T("YM9"), SNDCHIP_OPLL, CHANID_OPLL_CH9));
 
-	// MOS 6581
+	// MOS Technology 6581
 	AssignChannel(new CTrackerChannel(_T("6581 SID 1"), _T("SI1"), SNDCHIP_6581, CHANID_6581_CH1));
 	AssignChannel(new CTrackerChannel(_T("6581 SID 2"), _T("SI2"), SNDCHIP_6581, CHANID_6581_CH2));
 	AssignChannel(new CTrackerChannel(_T("6581 SID 3"), _T("SI3"), SNDCHIP_6581, CHANID_6581_CH3));

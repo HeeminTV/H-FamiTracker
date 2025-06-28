@@ -54,7 +54,7 @@ void CChannelMap::SetupSoundChips()
 	AddChip(SNDCHIP_5E01, INST_2A03, _T("Eulous 5E01")); // Taken from E-FamiTracker by Euly
 	AddChip(SNDCHIP_7E02, INST_2A03, _T("Saeyahn 7E02"));
 	AddChip(SNDCHIP_OPLL, INST_VRC7, _T("Yamaha YM2413"));
-	AddChip(SNDCHIP_6581, INST_SID, _T("MOS 6581"));
+	AddChip(SNDCHIP_6581, INST_SID,  _T("MOS Technology 6581"));
 
 }
 

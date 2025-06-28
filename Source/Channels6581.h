@@ -65,6 +65,7 @@ protected:
 	static unsigned int  s_iFilterCutoff;
 	static unsigned char s_iFilterMode;
 	static unsigned char s_iFilterEnable;
+	static uint8_t s_iForceGate;
 
 	// Instance members
 protected:

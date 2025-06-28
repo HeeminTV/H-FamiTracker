@@ -197,6 +197,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_INSTRUMENT_ADD_5E01, OnAddInstrument5E01) // Taken from E-FamiTracker by Euly
 	ON_COMMAND(ID_INSTRUMENT_ADD_7E02, OnAddInstrument7E02)
 	ON_COMMAND(ID_INSTRUMENT_ADD_OPLL, OnAddInstrumentOPLL)
+	ON_COMMAND(ID_INSTRUMENT_ADD_6581, OnAddInstrument6581)
 	ON_COMMAND(ID_MODULE_MODULEPROPERTIES, OnModuleModuleproperties)
 	ON_COMMAND(ID_MODULE_CHANNELS, OnModuleChannels)
 	ON_COMMAND(ID_MODULE_COMMENTS, OnModuleComments)
@@ -627,6 +628,7 @@ bool CMainFrame::CreateDialogPanels()
 	m_pImageList->Add(theApp.LoadIcon(IDI_INST_FDS));
 	m_pImageList->Add(theApp.LoadIcon(IDI_INST_N163));
 	m_pImageList->Add(theApp.LoadIcon(IDI_INST_S5B));		// // //
+	m_pImageList->Add(theApp.LoadIcon(IDI_INST_6581));
 
 	m_pInstrumentList->SetImageList(m_pImageList, LVSIL_NORMAL);
 	m_pInstrumentList->SetImageList(m_pImageList, LVSIL_SMALL);
@@ -1222,6 +1224,11 @@ void CMainFrame::OnAddInstrumentOPLL()
 	NewInstrument(SNDCHIP_OPLL);
 }
 
+void CMainFrame::OnAddInstrument6581()
+{
+	NewInstrument(SNDCHIP_6581);
+}
+
 void CMainFrame::OnAddInstrument()
 {
 	// Add new instrument to module
@@ -1698,6 +1705,9 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 			case SNDCHIP_OPLL:
 				String = _T(" Yamaha YM2413");
 				break;
+			case SNDCHIP_6581:
+				String = _T(" MOS Technology 6581");
+				break;
 
 		}
 	else {
@@ -1731,6 +1741,9 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 				break;
 			case 8:
 				String += _T(" + YM2413");
+				break;
+			case 9:
+				String += _T(" + 6581");
 				break;
 		}
 		String.Delete(0, 3);
@@ -2746,6 +2759,10 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_7E02, _T("New 7E02 instrument"));
 	if (Chip & SNDCHIP_OPLL)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_OPLL, _T("New YM2413 instrument"));
+	if (Chip & SNDCHIP_6581)
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_6581, _T("New 6581 instrument"));
+	// if (Chip & SNDCHIP_8580)
+	//	menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_8580, _T("New 8580 instrument"));
 
 	switch (SelectedChip) {
 		case SNDCHIP_NONE:
@@ -2780,6 +2797,9 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 			break;
 		case SNDCHIP_OPLL:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_OPLL);
+			break;
+		case SNDCHIP_6581:
+			menu.SetDefaultItem(ID_INSTRUMENT_ADD_6581);
 			break;
 	}
 

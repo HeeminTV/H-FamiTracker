@@ -5483,7 +5483,7 @@ stFullState *CFamiTrackerDoc::RetrieveSoundState(unsigned int Track, unsigned in
 				case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE:
 				case EF_N163_WAVE_BUFFER:
 				case EF_VRC7_PORT:
-				case EF_SID_FILTER_RESONANCE: case EF_SID_FILTER_CUTOFF_HI: case EF_SID_FILTER_CUTOFF_LO: case EF_SID_FILTER_MODE: case EF_SID_ENVELOPE: case EF_SID_RING: // Taken from E-FamiTracker by Euly
+				case EF_SID_FILTER_RESONANCE: case EF_SID_FILTER_CUTOFF_HI: case EF_SID_FILTER_CUTOFF_LO: case EF_SID_FILTER_MODE: case EF_SID_ENVELOPE: case EF_SID_RING: case EF_SID_GATE_MODE:
 					if (!ch->IsEffectCompatible(fx, xy)) continue;
 				case EF_DUTY_CYCLE:
 					if (ch->GetChip() == SNDCHIP_VRC7 || ch->GetChip() == SNDCHIP_OPLL) continue;		// // // 050B

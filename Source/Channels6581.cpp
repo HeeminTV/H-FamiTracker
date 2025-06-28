@@ -43,6 +43,7 @@ unsigned char			  CChannelHandler6581::s_iFilterResonance = 0;
 unsigned int			  CChannelHandler6581::s_iFilterCutoff = 0;
 unsigned char			  CChannelHandler6581::s_iFilterMode = 0;
 unsigned char			  CChannelHandler6581::s_iFilterEnable = 0;
+uint8_t					  CChannelHandler6581::s_iForceGate = 2;
 
 // Class functions
 
@@ -128,6 +129,9 @@ bool CChannelHandler6581::HandleEffect(effect_t EffNum, unsigned char EffParam)
 		m_iSyncBit = (EffParam & 0b0010) >> 1;
 		m_iGateBit = (EffParam & 0b0001) >> 0;
 		break;
+	}
+	case EF_SID_GATE_MODE: {
+		s_iForceGate = EffParam <= 2 ? EffParam : 2;
 	}
 	default: return CChannelHandler::HandleEffect(EffNum, EffParam);
 	}
@@ -218,6 +222,7 @@ void CChannelHandler6581::ResetChannel()
 	s_iFilterCutoff = 0;
 	s_iFilterMode = 0;
 	s_iFilterEnable = 0;
+	s_iForceGate = 2;
 	m_iEnvAD = 0;
 	m_iEnvSR = 0;
 	m_iCurVol = m_iVolume;
@@ -300,7 +305,9 @@ void CChannelHandler6581::RefreshChannel()
 
 
 	unsigned char Waveform = (m_iDutyPeriod & 15) << 4;
-	Waveform |= m_iGateBit | (m_iSyncBit << 1) | (m_iRingBit << 2) | (m_iTestBit << 3);
+	Waveform |= 
+		s_iForceGate == 0x02 ? m_iGateBit : s_iForceGate
+	| (m_iSyncBit << 1) | (m_iRingBit << 2) | (m_iTestBit << 3);
 
 	WriteReg(0x00 + Offset, LoFreq);
 	WriteReg(0x01 + Offset, HiFreq);
