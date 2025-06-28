@@ -92,7 +92,13 @@ void CSeqInstHandler::UpdateInstrument()
 {
 	if (!m_pInterface->IsActive()) return;
 	for (std::size_t i = 0; i < sizeof(m_pSequence) / sizeof(CSequence*); i++) {
-		if (m_pSequence[i] == nullptr || m_pSequence[i]->GetItemCount() == 0) continue;
+		if (m_pSequence[i] == nullptr || m_pSequence[i]->GetItemCount() == 0) {
+			if (i == 0) m_pInterface->SetInstVolMacroEnabled(false);
+			continue;
+		} else {
+			// goofy way but works....... please i'm suck at this platform
+			if (i == 0) m_pInterface->SetInstVolMacroEnabled(true);
+		}
 		int Value;
 		switch (m_iSeqState[i]) {
 		case SEQ_STATE_RUNNING:

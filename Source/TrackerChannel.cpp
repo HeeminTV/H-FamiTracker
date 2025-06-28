@@ -161,8 +161,8 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 				case INST_N163:
 				case INST_S5B:
 				case INST_FDS:
-				return true;
-			default: return false;
+					return true;
+				default: return false;
 			}
 		case SNDCHIP_VRC7: case SNDCHIP_OPLL:
 			return Type == INST_VRC7;
@@ -290,7 +290,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			if (m_iChannelID == CHANID_MMC5_VOICE) return false; // neither this PCM channel
 			// VRC7 and S5B is not supported yet.
 			if (m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL) return false;
-			if (m_iChip == SNDCHIP_5B) return false;
+			if (m_iChip == SNDCHIP_5B || m_iChip == SNDCHIP_6581) return false;
 			return EffParam == 0x00;
 		case EF_HARMONIC:
 			// VRC7 is not supported yet.

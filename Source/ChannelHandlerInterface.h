@@ -36,6 +36,7 @@ public:
 	virtual void	SetPeriod(int) = 0;
 	virtual void	SetNote(int) = 0;
 	virtual void	SetDutyPeriod(int) = 0;
+	virtual void	SetInstVolMacroEnabled(bool) = 0;
 
 	virtual int		GetChannelVolume() const = 0;
 	virtual int		GetVolume() const = 0;

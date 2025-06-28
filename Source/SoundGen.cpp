@@ -1042,6 +1042,7 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_7E02_APU1, float(pSettings->ChipLevels.iLevel7E02_APU1 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_7E02_APU2, float(pSettings->ChipLevels.iLevel7E02_APU2 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_OPLL, float(pSettings->ChipLevels.iLevelOPLL / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_6581, float(pSettings->ChipLevels.iLevel6581 / 10.0f));
 		}
 	}
 

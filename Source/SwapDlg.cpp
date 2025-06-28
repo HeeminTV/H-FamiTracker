@@ -159,11 +159,11 @@ int CSwapDlg::GetFinalChannel(unsigned int Channel, unsigned int Chip) const
 		case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
 		case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
 		case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
-		case SNDCHIP_5B:  Channel += CHANID_5B_CH1; break;
+		case SNDCHIP_5B:   Channel += CHANID_5B_CH1; break;
 		case SNDCHIP_5E01: Channel += CHANID_5E01_SQUARE1; break;
-		case SNDCHIP_7E02:  Channel += CHANID_7E02_SQUARE1; break;
-		case SNDCHIP_OPLL:  Channel += CHANID_OPLL_CH1; break;
-		case SNDCHIP_6581:  Channel += CHANID_6581_CH1; break;
+		case SNDCHIP_7E02: Channel += CHANID_7E02_SQUARE1; break;
+		case SNDCHIP_OPLL: Channel += CHANID_OPLL_CH1; break;
+		case SNDCHIP_6581: Channel += CHANID_6581_CH1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);

@@ -1108,6 +1108,11 @@ bool CChannelHandler::IsReleasing() const
 	return m_bRelease;
 }
 
+void CChannelHandler::SetInstVolMacroEnabled(bool Stat)
+{
+	m_iInstVolMacroEnabled = Stat;
+}
+
 /*
  * Class FrequencyChannelHandler
  *

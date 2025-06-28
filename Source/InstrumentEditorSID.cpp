@@ -62,14 +62,12 @@ void CInstrumentEditorSID::SelectInstrument(std::shared_ptr<CInstrument> pInst)
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_PWM_START))->SetRange(0, 4095);
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_PWM_END))->SetRange(0, 4095);
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_PWM_SPEED))->SetRange(0, 255);
-
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_PWM_START_SPIN))->SetRange(0, 4095);
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_PWM_END_SPIN))->SetRange(0, 4095);
 
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_FILTER_START))->SetRange(0, 4095);
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_FILTER_END))->SetRange(0, 4095);
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_FILTER_SPEED))->SetRange(0, 255);
-
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_FILTER_START_SPIN))->SetRange(0, 4095);
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_FILTER_END_SPIN))->SetRange(0, 4095);
 
@@ -81,33 +79,31 @@ void CInstrumentEditorSID::SelectInstrument(std::shared_ptr<CInstrument> pInst)
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_PWM_START))->SetPos(m_pInstrument->GetPWMStart());
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_PWM_END))->SetPos(m_pInstrument->GetPWMEnd());
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_PWM_SPEED))->SetPos(255 - m_pInstrument->GetPWMSpeed());
-
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_PWM_START_SPIN))->SetPos(m_pInstrument->GetPWMStart());
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_PWM_END_SPIN))->SetPos(m_pInstrument->GetPWMEnd());
 
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_FILTER_START))->SetPos(m_pInstrument->GetFilterStart());
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_FILTER_END))->SetPos(m_pInstrument->GetFilterEnd());
 	static_cast<CSliderCtrl*>(GetDlgItem(IDC_FILTER_SPEED))->SetPos(255 - m_pInstrument->GetFilterSpeed());
-
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_FILTER_START_SPIN))->SetPos(m_pInstrument->GetFilterStart());
 	static_cast<CSpinButtonCtrl*>(GetDlgItem(IDC_FILTER_END_SPIN))->SetPos(m_pInstrument->GetFilterEnd());
 
 
 	int mode = m_pInstrument->GetPWMMode();
 	switch (mode) {
-	case PWM_DISABLED: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_DISABLE_PWM); EnablePWM(false); break;
-	case PWM_LOOP: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE1); EnablePWM(); break;
-	case PWM_PINGPONG: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE2); EnablePWM(); break;
-	case PWM_ONCE: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE3); EnablePWM(); break;
-	case PWM_SUSTAIN: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE4); EnablePWM(false); break;
+		case PWM_DISABLED: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_DISABLE_PWM); EnablePWM(false); break;
+		case PWM_LOOP: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE1); EnablePWM(); break;
+		case PWM_PINGPONG: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE2); EnablePWM(); break;
+		case PWM_ONCE: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE3); EnablePWM(); break;
+		case PWM_SUSTAIN: CheckRadioButton(IDC_PWM_MODE1, IDC_DISABLE_PWM, IDC_PWM_MODE4); EnablePWM(false); break;
 	}
 	mode = m_pInstrument->GetFilterMode();
 	switch (mode) {
-	case PWM_DISABLED: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_DISABLE_FILTER); EnableFilter(false); break;
-	case PWM_LOOP: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE1); EnableFilter(); break;
-	case PWM_PINGPONG: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE2); EnableFilter(); break;
-	case PWM_ONCE: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE3); EnableFilter(); break;
-	case PWM_SUSTAIN: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE4); EnableFilter(false); break;
+		case PWM_DISABLED: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_DISABLE_FILTER); EnableFilter(false); break;
+		case PWM_LOOP: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE1); EnableFilter(); break;
+		case PWM_PINGPONG: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE2); EnableFilter(); break;
+		case PWM_ONCE: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE3); EnableFilter(); break;
+		case PWM_SUSTAIN: CheckRadioButton(IDC_FILTER_MODE1, IDC_DISABLE_FILTER, IDC_FILTER_MODE4); EnableFilter(false); break;
 	}
 
 	CString ratetext = _T("Rate: ");
@@ -191,11 +187,11 @@ void CInstrumentEditorSID::OnPWMEndSpinChange()
 	if (m_pInstrument)
 		m_pInstrument->SetPWMEnd(pos);
 }
-void CInstrumentEditorSID::OnPWMDisableClicked() { EnablePWM(false); m_pInstrument->SetPWMMode(PWM_DISABLED); }
-void CInstrumentEditorSID::OnPWMLoopClicked() { EnablePWM(); m_pInstrument->SetPWMMode(PWM_LOOP); }
-void CInstrumentEditorSID::OnPWMPingPongClicked() { EnablePWM(); m_pInstrument->SetPWMMode(PWM_PINGPONG); }
-void CInstrumentEditorSID::OnPWMOnceClicked() { EnablePWM(); m_pInstrument->SetPWMMode(PWM_ONCE); }
-void CInstrumentEditorSID::OnPWMSustainClicked() { EnablePWM(false); m_pInstrument->SetPWMMode(PWM_SUSTAIN); }
+void CInstrumentEditorSID::OnPWMDisableClicked()	{ EnablePWM(false); m_pInstrument->SetPWMMode(PWM_DISABLED);	 }
+void CInstrumentEditorSID::OnPWMLoopClicked()		{ EnablePWM(); m_pInstrument->SetPWMMode(PWM_LOOP);				 }
+void CInstrumentEditorSID::OnPWMPingPongClicked()	{ EnablePWM(); m_pInstrument->SetPWMMode(PWM_PINGPONG);			 }
+void CInstrumentEditorSID::OnPWMOnceClicked()		{ EnablePWM(); m_pInstrument->SetPWMMode(PWM_ONCE);				 }
+void CInstrumentEditorSID::OnPWMSustainClicked()	{ EnablePWM(false); m_pInstrument->SetPWMMode(PWM_SUSTAIN);		 }
 
 
 void CInstrumentEditorSID::OnFilterStartSpinChange()
@@ -212,11 +208,11 @@ void CInstrumentEditorSID::OnFilterEndSpinChange()
 	if (m_pInstrument)
 		m_pInstrument->SetFilterEnd(pos);
 }
-void CInstrumentEditorSID::OnFilterDisableClicked() { EnableFilter(false); m_pInstrument->SetFilterMode(PWM_DISABLED); }
-void CInstrumentEditorSID::OnFilterLoopClicked() { EnableFilter(); m_pInstrument->SetFilterMode(PWM_LOOP); }
-void CInstrumentEditorSID::OnFilterPingPongClicked() { EnableFilter(); m_pInstrument->SetFilterMode(PWM_PINGPONG); }
-void CInstrumentEditorSID::OnFilterOnceClicked() { EnableFilter(); m_pInstrument->SetFilterMode(PWM_ONCE); }
-void CInstrumentEditorSID::OnFilterSustainClicked() { EnableFilter(false); m_pInstrument->SetFilterMode(PWM_SUSTAIN); }
+void CInstrumentEditorSID::OnFilterDisableClicked()	 { EnableFilter(false); m_pInstrument->SetFilterMode(PWM_DISABLED);	 }
+void CInstrumentEditorSID::OnFilterLoopClicked()	 { EnableFilter(); m_pInstrument->SetFilterMode(PWM_LOOP);			 }
+void CInstrumentEditorSID::OnFilterPingPongClicked() { EnableFilter(); m_pInstrument->SetFilterMode(PWM_PINGPONG);		 }
+void CInstrumentEditorSID::OnFilterOnceClicked()	 { EnableFilter(); m_pInstrument->SetFilterMode(PWM_ONCE);			 }
+void CInstrumentEditorSID::OnFilterSustainClicked()  { EnableFilter(false); m_pInstrument->SetFilterMode(PWM_SUSTAIN);	 }
 
 
 

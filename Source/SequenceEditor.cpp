@@ -237,6 +237,8 @@ void CSequenceEditor::SelectSequence(CSequence *pSequence, int Type, int Instrum
 		case SEQ_VOLUME:
 			if (m_iInstrumentType == INST_VRC6 && m_iSelectedSetting == SEQ_VOLUME && pSequence->GetSetting() == SETTING_VOL_64_STEPS)
 				m_pGraphEditor = new CBarGraphEditor(pSequence, 0x3F);		// // //
+			else if (m_iInstrumentType == INST_SID)
+				m_pGraphEditor = new CBarGraphEditor(pSequence, 127);
 			else
 				m_pGraphEditor = new CBarGraphEditor(pSequence, m_iMaxVol);
 			break;

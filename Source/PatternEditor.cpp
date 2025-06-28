@@ -1880,17 +1880,18 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	int line = -1;		// // //
 	CString text;
 
-	const int BAR_OFFSET = LINE_HEIGHT * (3 + 7 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_VRC6) * 5 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_MMC5) * 5 +
+	const int BAR_OFFSET = LINE_HEIGHT * (10 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_VRC6) * 5  +
+		m_pDocument->ExpansionEnabled(SNDCHIP_MMC5) * 5  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_N163) * 18 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_FDS) * 13 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_5B) * 8 +		// // //
-		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 11 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_6581) * 5
+		m_pDocument->ExpansionEnabled(SNDCHIP_FDS)  * 13 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9  +
+		m_pDocument->ExpansionEnabled(SNDCHIP_5B)   * 8  +		// // //
+		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7  +
+		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8  +
+		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 12 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_6581) * 5  +
+		0
 	);
 	int vis_line = 0;
 
@@ -2574,8 +2575,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 
 		}
 
-		++line; y += LINE_HEIGHT;		// // //
-		DrawTextFunc(180, text);
+		// ++line; y += LINE_HEIGHT;		// // //
+		// DrawTextFunc(180, text);
 	}
 
 	// YM2413
@@ -2613,7 +2614,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		}
 	}
 
-	// SID
+	// 6581
 	/*
 		00 01 02 03 04 05 06
 		07 08 09 0A 0B 0C 0D
@@ -4543,7 +4544,7 @@ void CPatternEditor::GetSelectionAsPPMCK(CString &str) const		// // //
 		case SNDCHIP_FDS:  Type += 'F' - CHANID_FDS; break;
 		case SNDCHIP_MMC5: Type += 'a' - CHANID_MMC5_SQUARE1; break;
 		case SNDCHIP_N163: Type += 'P' - CHANID_N163_CH1; break;
-		case SNDCHIP_5B:  Type += 'X' - CHANID_5B_CH1; break;
+		case SNDCHIP_5B:   Type += 'X' - CHANID_5B_CH1; break;
 		}
 		str.AppendFormat(_T("%c\t"), Type);
 

@@ -38,7 +38,7 @@ inline int modulo(int i, int n) {
 }
 
 
-LPCTSTR CInstrumentSID::SEQUENCE_NAME[] = {_T("Global Volume"), _T("Arpeggio"), _T("Pitch"), _T("Hi-pitch"), _T("Waveform"), _T("Pulse Width")};
+LPCTSTR CInstrumentSID::SEQUENCE_NAME[] = {_T("Pulse Width"), _T("Arpeggio"), _T("Pitch"), _T("Hi-pitch"), _T("Waveform")};
 
 CInstrumentSID::CInstrumentSID() : CSeqInstrument(INST_SID), // // //
 m_pEnvelopeAD(0x0A),
@@ -76,6 +76,7 @@ void CInstrumentSID::CloneFrom(const CInstrument *pInst)
 		SetPWMEnd(pNew->GetPWMEnd());
 		SetPWMSpeed(pNew->GetPWMSpeed());
 		SetPWMMode(pNew->GetPWMMode());
+
 		SetFilterStart(pNew->GetFilterStart());
 		SetFilterEnd(pNew->GetFilterEnd());
 		SetFilterSpeed(pNew->GetFilterSpeed());
@@ -88,16 +89,17 @@ void CInstrumentSID::Setup()
 {
 }
 
-void CInstrumentSID::Store(CDocumentFile *pDocFile)
-{
+void CInstrumentSID::Store(CDocumentFile *pDocFile) {
 
 	pDocFile->WriteBlockInt(4);
 	pDocFile->WriteBlockChar(m_pEnvelopeAD);
 	pDocFile->WriteBlockChar(m_pEnvelopeSR);
+
 	pDocFile->WriteBlockInt(m_pPWMStart);
 	pDocFile->WriteBlockInt(m_pPWMEnd);
 	pDocFile->WriteBlockChar(m_pPWMSpeed);
 	pDocFile->WriteBlockChar(m_pPWMMode);
+
 	pDocFile->WriteBlockInt(m_pFilterStart);
 	pDocFile->WriteBlockInt(m_pFilterEnd);
 	pDocFile->WriteBlockChar(m_pFilterSpeed);
@@ -107,40 +109,23 @@ void CInstrumentSID::Store(CDocumentFile *pDocFile)
 	CSeqInstrument::Store(pDocFile);		// // //
 }
 
-bool CInstrumentSID::Load(CDocumentFile *pDocFile)
-{
-	
-	unsigned int instversion = pDocFile->GetBlockInt();
-	if (instversion <= 255) {
-		m_pEnvelopeAD = pDocFile->GetBlockChar();
-		m_pEnvelopeSR = pDocFile->GetBlockChar();
-		if (instversion >= 2) {
-			m_pPWMStart = pDocFile->GetBlockInt();
-			m_pPWMEnd = pDocFile->GetBlockInt();
-			m_pPWMSpeed = pDocFile->GetBlockChar();
-			m_pPWMMode = pDocFile->GetBlockChar();
-		}
-		if (instversion >= 3) {
-			m_pFilterStart = pDocFile->GetBlockInt();
-			m_pFilterEnd = pDocFile->GetBlockInt();
-			m_pFilterSpeed = pDocFile->GetBlockChar();
-			m_pFilterMode = pDocFile->GetBlockChar();
-		}
-		if (instversion >= 4) {
-			CSeqInstrument::Load(pDocFile);
-		}
-	} else {
-		pDocFile->RollbackPointer(4);
-		unsigned int a = pDocFile->GetBlockInt();
-		unsigned int b = pDocFile->GetBlockInt();
-		pDocFile->RollbackPointer(8);
-		if (a < 256 && (b & 0xFF) != 0x00) {
-		}
-		else {
-		}
-	}
+bool CInstrumentSID::Load(CDocumentFile *pDocFile) {
 
-//	}
+	unsigned int instversion = pDocFile->GetBlockInt();
+	m_pEnvelopeAD = pDocFile->GetBlockChar();
+	m_pEnvelopeSR = pDocFile->GetBlockChar();
+		
+	m_pPWMStart		 = pDocFile->GetBlockInt();
+	m_pPWMEnd		 = pDocFile->GetBlockInt();
+	m_pPWMSpeed		 = pDocFile->GetBlockChar();
+	m_pPWMMode		 = pDocFile->GetBlockChar();
+		
+	m_pFilterStart	 = pDocFile->GetBlockInt();
+	m_pFilterEnd	 = pDocFile->GetBlockInt();
+	m_pFilterSpeed	 = pDocFile->GetBlockChar();
+	m_pFilterMode	 = pDocFile->GetBlockChar();	
+
+	CSeqInstrument::Load(pDocFile);
 
 	// Older files was 0-15, new is 0-31
 	//if (pDocFile->GetBlockVersion() <= 3) DoubleVolume();

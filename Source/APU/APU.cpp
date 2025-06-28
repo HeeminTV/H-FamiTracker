@@ -369,6 +369,7 @@ void CAPU::ChangeMachineRate(int Machine, int FrameRate)		// // //
 	m_pMixer->SetClockRate(BaseFreq);
 	m_pVRC7->SetSampleSpeed(m_iSampleRate, BaseFreq, FrameRate);
 	m_pOPLL->SetSampleSpeed(m_iSampleRate, BaseFreq, FrameRate);
+	m_p6581->SetSampleSpeed(m_iSampleRate);
 	m_iFrameCycleCount = BaseFreq / FrameRate;
 }
 

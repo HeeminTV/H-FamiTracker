@@ -171,25 +171,25 @@ unsigned int CDetuneDlg::FreqToPeriod(double Freq, int Chip, int Octave)
 {
 	switch (Chip) {
 	default:
-	case 0: return m_pDetuneNTSC->FrequencyToPeriod(Freq, Octave, 0); break;
-	case 1: return m_pDetunePAL->FrequencyToPeriod(Freq, Octave, 0); break;
-	case 2: return m_pDetuneSaw->FrequencyToPeriod(Freq, Octave, 0); break;
-	case 3: return m_pDetuneVRC7->FrequencyToPeriod(Freq, Octave, 0); break;
-	case 4: return m_pDetuneFDS->FrequencyToPeriod(Freq, Octave, 0); break;
-	case 5: return m_pDetuneN163->FrequencyToPeriod(Freq, Octave, m_pDocument->GetNamcoChannels()); break;
+		case 0: return m_pDetuneNTSC->FrequencyToPeriod(Freq, Octave, 0); break;
+		case 1: return m_pDetunePAL->FrequencyToPeriod(Freq, Octave, 0); break;
+		case 2: return m_pDetuneSaw->FrequencyToPeriod(Freq, Octave, 0); break;
+		case 3: return m_pDetuneVRC7->FrequencyToPeriod(Freq, Octave, 0); break;
+		case 4: return m_pDetuneFDS->FrequencyToPeriod(Freq, Octave, 0); break;
+		case 5: return m_pDetuneN163->FrequencyToPeriod(Freq, Octave, m_pDocument->GetNamcoChannels()); break;
 	}
 }
 
 double CDetuneDlg::PeriodToFreq(unsigned int Period, int Chip, int Octave)
 {
 	switch (Chip) {
-	default:
-	case 0: return m_pDetuneNTSC->PeriodToFrequency(Period, Octave, 0); break;
-	case 1: return m_pDetunePAL->PeriodToFrequency(Period, Octave, 0); break;
-	case 2: return m_pDetuneSaw->PeriodToFrequency(Period, Octave, 0); break;
-	case 3: return m_pDetuneVRC7->PeriodToFrequency(Period, Octave, 0); break;
-	case 4: return m_pDetuneFDS->PeriodToFrequency(Period, Octave, 0); break;
-	case 5: return m_pDetuneN163->PeriodToFrequency(Period, Octave, m_pDocument->GetNamcoChannels()); break;
+		default:
+		case 0: return m_pDetuneNTSC->PeriodToFrequency(Period, Octave, 0); break;
+		case 1: return m_pDetunePAL->PeriodToFrequency(Period, Octave, 0); break;
+		case 2: return m_pDetuneSaw->PeriodToFrequency(Period, Octave, 0); break;
+		case 3: return m_pDetuneVRC7->PeriodToFrequency(Period, Octave, 0); break;
+		case 4: return m_pDetuneFDS->PeriodToFrequency(Period, Octave, 0); break;
+		case 5: return m_pDetuneN163->PeriodToFrequency(Period, Octave, m_pDocument->GetNamcoChannels()); break;
 	}
 }
 
@@ -198,13 +198,13 @@ double CDetuneDlg::NoteToFreq(double Note, int Chip)
 	// I could instead create a pointer directly to CDetuneTable,
 	// but these pointers to its children are already available.
 	switch (Chip) {
-	default:
-	case 0: return m_pDetuneNTSC->NoteToFreq(Note); break;
-	case 1: return m_pDetunePAL->NoteToFreq(Note); break;
-	case 2: return m_pDetuneSaw->NoteToFreq(Note); break;
-	case 3: return m_pDetuneVRC7->NoteToFreq(Note); break;
-	case 4: return m_pDetuneFDS->NoteToFreq(Note); break;
-	case 5: return m_pDetuneN163->NoteToFreq(Note); break;
+		default:
+		case 0: return m_pDetuneNTSC->NoteToFreq(Note); break;
+		case 1: return m_pDetunePAL->NoteToFreq(Note); break;
+		case 2: return m_pDetuneSaw->NoteToFreq(Note); break;
+		case 3: return m_pDetuneVRC7->NoteToFreq(Note); break;
+		case 4: return m_pDetuneFDS->NoteToFreq(Note); break;
+		case 5: return m_pDetuneN163->NoteToFreq(Note); break;
 	}
 }
 

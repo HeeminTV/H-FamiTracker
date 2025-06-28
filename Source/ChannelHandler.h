@@ -334,6 +334,9 @@ public:		// // //
 	 * Used to mark invalid Vxx red in the GUI.
 	 * @return Valid duty cycles are 0 <= duty <= getDutyMax().
 	 */
+
+	void	SetInstVolMacroEnabled(bool Stat);
+
 	virtual int getDutyMax() const;
 
 	unsigned char GetArpParam() const override;		// // //
@@ -536,6 +539,9 @@ protected:
 	int				m_iMaxPeriod;
 	/*!	\brief The maximum instrument volume of the channel. */
 	int				m_iMaxVolume;
+
+	// returns true if the instrument has volume macro enabled.
+	int				m_iInstVolMacroEnabled;
 };
 
 // Channel handler for channels with frequency registers

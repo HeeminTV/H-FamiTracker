@@ -58,6 +58,10 @@ void C6581::UpdateFilter(blip_eq_t eq)
 	Synth6581.treble_eq(eq);
 }
 
+void C6581::SetSampleSpeed(uint32_t SampleRate) {
+	m_Sid.setSamplingParameters(CAPU::BASE_FREQ_ATARI, SamplingMethod::DECIMATE, SampleRate, SampleRate);
+}
+
 void C6581::Process(uint32_t Time, Blip_Buffer& Output)
 {
 	uint32_t now = 0;

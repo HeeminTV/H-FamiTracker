@@ -612,7 +612,7 @@ private:
 	//
 
 	// Thread synchronization
-private:
+public: // Taken from E-FamiTracker by Euly
 	mutable CMutex			 m_csDocumentLock;
 
 // Operations

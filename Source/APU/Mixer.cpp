@@ -124,51 +124,51 @@ void CMixer::ExternalSound(int Chip)
 void CMixer::SetChipLevel(chip_level_t Chip, float Level)
 {
 	switch (Chip) {
-	case CHIP_LEVEL_APU1:
-		m_fLevelAPU1 = Level;
-		break;
-	case CHIP_LEVEL_APU2:
-		m_fLevelAPU2 = Level;
-		break;
-	case CHIP_LEVEL_VRC6:
-		m_fLevelVRC6 = Level;
-		break;
-	case CHIP_LEVEL_VRC7:
-		m_fLevelVRC7 = Level;
-		break;
-	case CHIP_LEVEL_FDS:
-		m_fLevelFDS = Level;
-		break;
-	case CHIP_LEVEL_MMC5:
-		m_fLevelMMC5 = Level;
-		break;
-	case CHIP_LEVEL_N163:
-		m_fLevelN163 = Level;
-		break;
-	case CHIP_LEVEL_5B:		// // // 050B
-		m_fLevel5B = Level;
-		break;
-	case CHIP_LEVEL_5E01_APU1:
-		m_fLevel5E01_APU1 = Level;
-		break;
-	case CHIP_LEVEL_5E01_APU2:
-		m_fLevel5E01_APU2 = Level;
-		break;
-	case CHIP_LEVEL_7E02_APU1:
-		m_fLevel7E02_APU1 = Level;
-		break;
-	case CHIP_LEVEL_7E02_APU2:
-		m_fLevel7E02_APU2 = Level;
-		break;
-	case CHIP_LEVEL_OPLL:
-		m_fLevelOPLL = Level;
-		break;
-	case CHIP_LEVEL_6581:
-		m_fLevel6581 = Level;
-		break;
+		case CHIP_LEVEL_APU1:
+			m_fLevelAPU1 = Level;
+			break;
+		case CHIP_LEVEL_APU2:
+			m_fLevelAPU2 = Level;
+			break;
+		case CHIP_LEVEL_VRC6:
+			m_fLevelVRC6 = Level;
+			break;
+		case CHIP_LEVEL_VRC7:
+			m_fLevelVRC7 = Level;
+			break;
+		case CHIP_LEVEL_FDS:
+			m_fLevelFDS = Level;
+			break;
+		case CHIP_LEVEL_MMC5:
+			m_fLevelMMC5 = Level;
+			break;
+		case CHIP_LEVEL_N163:
+			m_fLevelN163 = Level;
+			break;
+		case CHIP_LEVEL_5B:		// // // 050B
+			m_fLevel5B = Level;
+			break;
+		case CHIP_LEVEL_5E01_APU1:
+			m_fLevel5E01_APU1 = Level;
+			break;
+		case CHIP_LEVEL_5E01_APU2:
+			m_fLevel5E01_APU2 = Level;
+			break;
+		case CHIP_LEVEL_7E02_APU1:
+			m_fLevel7E02_APU1 = Level;
+			break;
+		case CHIP_LEVEL_7E02_APU2:
+			m_fLevel7E02_APU2 = Level;
+			break;
+		case CHIP_LEVEL_OPLL:
+			m_fLevelOPLL = Level;
+			break;
+		case CHIP_LEVEL_6581:
+			m_fLevel6581 = Level;
+			break;
 
-	case CHIP_LEVEL_COUNT:
-		break;
+		case CHIP_LEVEL_COUNT:
+			break;
 	}
 }
 
@@ -512,9 +512,6 @@ void CMixer::StoreChannelLevel(int Channel, int Value)
 
 	if (Channel == CHANID_MMC5_VOICE) // Taken from E-FamiTracker by Euly
 		AbsVol = (AbsVol * 2) / 36;
-
-	if (Channel == CHANID_MMC5_SQUARE1 || Channel == CHANID_MMC5_SQUARE2) // I don't know what it does...
-		AbsVol = (AbsVol) / 6;
 
 
 	if (Channel >= CHANID_5B_CH1 && Channel <= CHANID_5B_CH3) {

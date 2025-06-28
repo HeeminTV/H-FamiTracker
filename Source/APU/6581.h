@@ -38,6 +38,7 @@ public:
 	void UpdateFilter(blip_eq_t eq) override;
 	void Process(uint32_t Time, Blip_Buffer& Output) override;
 	void EndFrame(Blip_Buffer& Output, gsl::span<int16_t> TempBuffer) override;
+	void SetSampleSpeed(uint32_t SampleRate);
 
 	void Write(uint16_t Address, uint8_t Value) override;
 	uint8_t Read(uint16_t Address, bool& Mapped) override;

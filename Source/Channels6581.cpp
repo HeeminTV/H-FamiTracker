@@ -23,7 +23,7 @@
 // MOS Technology 6581
 
 #include "stdafx.h"
-#include "FamiTracker.h" // Heemin modification
+#include "FamiTracker.h" // HFT modification
 #include "FamiTrackerTypes.h"		// // //
 #include "APU/Types.h"		// // //
 #include "Sequence.h"		// // //
@@ -279,8 +279,13 @@ void CChannelHandler6581::RefreshChannel()
 	unsigned char LoFreq = (Period & 0xFF);
 	unsigned char HiFreq = (Period >> 8);
 
-	unsigned char LoPW = (m_iPulseWidth & 0xFF);
-	unsigned char HiPW = (m_iPulseWidth >> 8);
+	uint16_t InstPWM = m_iInstVolume << 5;
+
+	uint8_t LoPWM = m_iInstVolMacroEnabled ? InstPWM & 0xFF : m_iPulseWidth & 0xFF;
+	uint8_t HiPWM = m_iInstVolMacroEnabled ? InstPWM >> 8   : m_iPulseWidth >> 8;
+
+	// unsigned char LoPWM = (m_iPulseWidth & 0xFF);
+	// unsigned char HiPWM = (m_iPulseWidth >> 8);
 
 	WriteReg(0x05 + Offset, m_iEnvAD);
 	WriteReg(0x06 + Offset, m_iEnvSR);
@@ -311,8 +316,8 @@ void CChannelHandler6581::RefreshChannel()
 
 	WriteReg(0x00 + Offset, LoFreq);
 	WriteReg(0x01 + Offset, HiFreq);
-	WriteReg(0x02 + Offset, LoPW);
-	WriteReg(0x03 + Offset, HiPW);
+	WriteReg(0x02 + Offset, LoPWM);
+	WriteReg(0x03 + Offset, HiPWM);
 	WriteReg(0x04 + Offset, Waveform);
 	WriteReg(0x15, (s_iFilterCutoff & 0xF));
 	WriteReg(0x16, (s_iFilterCutoff & 0xFF0) >> 4);

@@ -30,7 +30,7 @@
 #include "DSampleManager.h"
 
 const int CInstrumentManager::MAX_INSTRUMENTS = 64;
-const int CInstrumentManager::SEQ_MANAGER_COUNT = 5;
+const int CInstrumentManager::SEQ_MANAGER_COUNT = 6;
 
 CInstrumentManager::CInstrumentManager(CFTMComponentInterface *pInterface) :
 	m_pDSampleManager(new CDSampleManager()),
@@ -168,12 +168,13 @@ CSequenceManager *const CInstrumentManager::GetSequenceManager(int InstType) con
 {
 	int Index = -1;
 	switch (InstType) {
-	case INST_2A03: Index = 0; break;
-	case INST_VRC6: Index = 1; break;
-	case INST_FDS:  Index = 2; break;
-	case INST_N163: Index = 3; break;
-	case INST_S5B:  Index = 4; break;
-	default: return nullptr;
+		case INST_2A03: Index = 0; break;
+		case INST_VRC6: Index = 1; break;
+		case INST_FDS:  Index = 2; break;
+		case INST_N163: Index = 3; break;
+		case INST_S5B:  Index = 4; break;
+		case INST_SID:  Index = 5; break; // Taken from E-FamiTracker by Euly
+		default: return nullptr;
 	}
 	return m_pSequenceManager[Index].get();
 }

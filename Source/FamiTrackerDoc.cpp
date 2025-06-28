@@ -882,7 +882,7 @@ bool CFamiTrackerDoc::WriteBlocks(CDocumentFile *pDocFile) const
 		&CFamiTrackerDoc::WriteBlock_SequencesVRC6,		// // //
 		&CFamiTrackerDoc::WriteBlock_SequencesN163,
 		&CFamiTrackerDoc::WriteBlock_SequencesS5B,
-		& CFamiTrackerDoc::WriteBlock_SequencesSID, // Taken from E-FamiTracker by Euly
+		&CFamiTrackerDoc::WriteBlock_SequencesSID, // Taken from E-FamiTracker by Euly
 		&CFamiTrackerDoc::WriteBlock_ParamsExtra,		// // //
 		&CFamiTrackerDoc::WriteBlock_DetuneTables,		// // //
 		&CFamiTrackerDoc::WriteBlock_Grooves,			// // //
@@ -2940,12 +2940,14 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 	int SequenceTableVRC6[MAX_SEQUENCES][SEQ_COUNT];
 	int SequenceTableN163[MAX_SEQUENCES][SEQ_COUNT];
 	int SequenceTableS5B[MAX_SEQUENCES][SEQ_COUNT];		// // //
+	int SequenceTableSID[MAX_SEQUENCES][SEQ_COUNT];
 
 	memset(SamplesTable, 0, sizeof(int) * MAX_DSAMPLES);
 	memset(SequenceTable2A03, 0, sizeof(int) * MAX_SEQUENCES * SEQ_COUNT);
 	memset(SequenceTableVRC6, 0, sizeof(int) * MAX_SEQUENCES * SEQ_COUNT);
 	memset(SequenceTableN163, 0, sizeof(int) * MAX_SEQUENCES * SEQ_COUNT);
 	memset(SequenceTableS5B, 0, sizeof(int) * MAX_SEQUENCES * SEQ_COUNT);		// // //
+	memset(SequenceTableSID, 0, sizeof(int) * MAX_SEQUENCES * SEQ_COUNT);
 
 	// Check instrument count
 	if (GetInstrumentCount() + pImported->GetInstrumentCount() > MAX_INSTRUMENTS) {
@@ -2954,9 +2956,9 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 		return false;
 	}
 
-	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B};		// // //
-	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B};
-	int (*seqTable[])[SEQ_COUNT] = {SequenceTable2A03, SequenceTableVRC6, SequenceTableN163, SequenceTableS5B};
+	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B, INST_SID};		// // //
+	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B, SNDCHIP_6581};
+	int (*seqTable[])[SEQ_COUNT] = {SequenceTable2A03, SequenceTableVRC6, SequenceTableN163, SequenceTableS5B, SequenceTableSID};
 
 	// Copy sequences
 	for (size_t i = 0; i < sizeof(chip); i++) for (int t = 0; t < SEQ_COUNT; ++t) {
@@ -3009,7 +3011,7 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 			inst_type_t Type = pInst->GetType();
 			// Update references
 			switch (Type) {
-			case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B:		// // //
+			case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_SID:
 				{
 					// Update sequence references
 					CSeqInstrument *pInstrument = static_cast<CSeqInstrument*>(pInst);
@@ -4528,27 +4530,31 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned int Chip)		// // /
 {
 	// TODO: use information from the current channel map instead
 	unsigned int pos = Channel;
-	//if (pos == CHANID_MMC5_VOICE) return -1;
 
 	if (!(Chip & SNDCHIP_5B)) {
 		if (pos > CHANID_5B_CH3) pos -= 3;
 		else if (pos >= CHANID_5B_CH1) return -1;
 	}
+
 	if (!(Chip & SNDCHIP_VRC7)) {
 		if (pos > CHANID_VRC7_CH6) pos -= 6;
 		else if (pos >= CHANID_VRC7_CH1) return -1;
 	}
+
 	if (!(Chip & SNDCHIP_FDS)) {
 		if (pos > CHANID_FDS) pos -= 1;
 		else if (pos >= CHANID_FDS) return -1;
 	}
+
 	if (pos > CHANID_N163_CH8) pos -= 8 - (!(Chip & SNDCHIP_N163) ? 0 : m_iNamcoChannels);
 	else if (pos > CHANID_MMC5_VOICE + (!(Chip & SNDCHIP_N163) ? 0 : m_iNamcoChannels)) return -1;
 	//if (pos > CHANID_MMC5_VOICE) pos -= 1; // Taken form E-FamiTracker by Euly
+
 	if (!(Chip & SNDCHIP_MMC5)) {
 		if (pos > CHANID_MMC5_VOICE) pos -= 3;
 		else if (pos >= CHANID_MMC5_SQUARE1) return -1;
 	}
+
 	if (!(Chip & SNDCHIP_VRC6)) {
 		if (pos > CHANID_VRC6_SAWTOOTH) pos -= 3;
 		else if (pos >= CHANID_VRC6_PULSE1) return -1;
@@ -4564,14 +4570,17 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned int Chip)		// // /
 		if (pos > CHANID_7E02_DPCM) pos -= 5;
 		else if (pos >= CHANID_7E02_SQUARE1) return -1;
 	}
+
 	if (!(Chip & SNDCHIP_OPLL)) {
 		if (pos > CHANID_OPLL_CH9) pos -= 9	; // TODO fix this to 9 later
 		else if (pos >= CHANID_OPLL_CH1) return -1;
 	}
+
 	if (!(Chip & SNDCHIP_6581)) {
 		if (pos > CHANID_6581_CH3) pos -= 3;
 		else if (pos >= CHANID_6581_CH1) return -1;
 	}
+
 	return pos;
 }
 

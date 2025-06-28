@@ -87,12 +87,10 @@ const int ECHO_BUFFER_LENGTH = 3;
 // Taken from E-FamiTracker by Eu- wait I wrote this by myself.
 // huh
 // 
-// 2A03 + VRC6 + MMC5 + N163 + 2C33 + VRC7 + 5B + 5E01 + 7E02 + YM2413 + SID
+// 2A03 + VRC6 + MMC5 + N163 + 2C33 + VRC7 + 5B + 5E01 + 7E02 + YM2413 + 6581
 const int MAX_CHANNELS	 = 5 + 3 + 3 + 8 + 1 + 6 + 3 + 5 + 5 + 9 + 3;
 
 const int CHANNELS_DEFAULT = 5;
-const int CHANNELS_VRC6	   = 3;
-const int CHANNELS_VRC7	   = 6;
 
 const int OCTAVE_RANGE = 8;
 const int NOTE_RANGE   = 12;
