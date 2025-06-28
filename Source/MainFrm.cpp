@@ -40,7 +40,7 @@
 #include "ConfigSound.h"
 #include "ConfigShortcuts.h"
 #include "ConfigWindow.h"
-#include "ConfigMixer.h"
+// #include "ConfigMixer.h"
 #include "ConfigEmulation.h"	// // !!
 #include "ConfigGUI.h"
 #include "Settings.h"
@@ -1957,7 +1957,7 @@ void CMainFrame::OnFileGeneralsettings()
 	CConfigMIDI			TabMIDI;
 	CConfigSound		TabSound;
 	CConfigShortcuts	TabShortcuts;
-	CConfigMixer		TabMixer;
+	// CConfigMixer		TabMixer;
 	CConfigEmulation	TabEmulation;	// // !!
 	CConfigGUI			TabGUI;
 
@@ -1968,7 +1968,7 @@ void CMainFrame::OnFileGeneralsettings()
 	TabMIDI.m_psp.dwFlags		&= ~PSP_HASHELP;
 	TabSound.m_psp.dwFlags		&= ~PSP_HASHELP;
 	TabShortcuts.m_psp.dwFlags	&= ~PSP_HASHELP;
-	TabMixer.m_psp.dwFlags		&= ~PSP_HASHELP;
+	// TabMixer.m_psp.dwFlags		&= ~PSP_HASHELP;
 	TabEmulation.m_psp.dwFlags	&= ~PSP_HASHELP;
 	TabGUI.m_psp.dwFlags		&= ~PSP_HASHELP;
 
@@ -1978,7 +1978,7 @@ void CMainFrame::OnFileGeneralsettings()
 	ConfigWindow.AddPage(&TabMIDI);
 	ConfigWindow.AddPage(&TabSound);
 	ConfigWindow.AddPage(&TabShortcuts);
-	ConfigWindow.AddPage(&TabMixer);
+	// ConfigWindow.AddPage(&TabMixer);
 	ConfigWindow.AddPage(&TabEmulation);
 	ConfigWindow.AddPage(&TabGUI);
 

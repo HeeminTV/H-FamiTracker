@@ -274,7 +274,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_FDS && (EffParam <= 0x7F || EffParam == 0xE0);
 		case EF_VRC7_PORT: case EF_VRC7_WRITE:		// // // 050B
 			return m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL;
-		// case EF_OPLL_PERCUSSION:
+		//case EF_YAMAHA_PERC_ENABLE:
 		// 	return m_iChip == SNDCHIP_OPLL;
 		case EF_PHASE_RESET:
 			// Triangle and noise can't reset phase during runtime.

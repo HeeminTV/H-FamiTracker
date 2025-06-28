@@ -723,6 +723,8 @@ void CAPUConfig::SetChipLevel(chip_level_t Chip, float LeveldB, bool SurveyMix)
 			-13,	// 7E02 APU2
 
 			776,	// OPLL
+
+			0,		// 6581
 		};
 		LevelLinear = powf(10, (LeveldB +
 			((static_cast<float>(dblevelcorrection[Chip]) / 100.0f)) +

@@ -1875,7 +1875,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 		pTrack->SetSongSpeed(pDocFile->GetBlockInt());
 	}
 	else
-		m_iExpansionChip = pDocFile->GetBlockChar();
+		m_iExpansionChip = pDocFile->GetBlockInt();
 
 	m_iChannelsAvailable = AssertRange(pDocFile->GetBlockInt(), 1, MAX_CHANNELS, "Channel count");		// // //
 
