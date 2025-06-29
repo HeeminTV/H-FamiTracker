@@ -35,6 +35,7 @@
 #include "InstrumentFDS.h"
 #include "InstrumentN163.h"
 #include "InstrumentVRC7.h"
+#include "InstrumentSID.h"
 #include "InstrumentFactory.h"
 
 #define DEBUG_OUT(...) { CString s__; s__.Format(__VA_ARGS__); OutputDebugString(s__); }
@@ -52,7 +53,7 @@ enum
 	// PARAMS block
 	CT_MACHINE,			// uint (0=NTSC, 1=PAL)
 	CT_FRAMERATE,		// uint (0=default)
-	CT_EXPANSION,		// uint (0=none, 1=VRC6, 2=VRC7, 4=FDS, 8=MMC5, 16=N163, 32=S5B)
+	CT_EXPANSION,		// uint (check APU\Types.h)
 	CT_VIBRATO,			// uint (0=old, 1=new)
 	CT_SPLIT,			// uint (32=default)
 	// // // 050B
@@ -65,6 +66,7 @@ enum
 	CT_MACROVRC6,		// uint (type) uint (index) int (loop) int (release) int (setting) : int_list
 	CT_MACRON163,		// uint (type) uint (index) int (loop) int (release) int (setting) : int_list
 	CT_MACROS5B,		// uint (type) uint (index) int (loop) int (release) int (setting) : int_list
+	CT_MACROSID,		// uint (type) uint (index) int (loop) int (release) int (setting) : int_list
 	// DPCM SAMPLES block
 	CT_DPCMDEF,			// uint (index) uint (size) string (name)
 	CT_DPCM,			// : hex_list
@@ -80,6 +82,7 @@ enum
 	CT_INSTFDS,			// uint (index) int (mod enable) int (m speed) int (m depth) int (m delay) string (name)
 	CT_INSTN163,		// uint (index) int int int int int uint (w size) uint (w pos) uint (w count) string (name)
 	CT_INSTS5B,			// uint (index) int int int int int  string (name)
+	CT_INSTSID,			// uint (index) int int int int int uint (AD) uint (SR) uint (PWM, Filter sweep mode), uint, uint, uint, uint, uint, uint (PWM, Filter. Start, End, Rate)
 
 	CT_KEYDPCM,			// uint (inst) uint (oct) uint (note) uint (sample) uint (pitch) uint (loop) uint (loop_point)
 	CT_FDSWAVE,			// uint (inst) : uint_list x 64
@@ -133,6 +136,7 @@ static const TCHAR* CT[CT_COUNT] =
 	_T("MACROVRC6"),
 	_T("MACRON163"),
 	_T("MACROS5B"),
+	_T("MACROSID"),
 	// DPCM SAMPLES block
 	_T("DPCMDEF"),
 	_T("DPCM"),
@@ -148,6 +152,7 @@ static const TCHAR* CT[CT_COUNT] =
 	_T("INSTFDS"),
 	_T("INSTN163"),
 	_T("INSTS5B"),
+	_T("INSTSID"),
 
 	_T("KEYDPCM"),
 	_T("FDSWAVE"),
@@ -753,7 +758,7 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 				CHECK(t.ReadEOL(&sResult));
 				break;
 			case CT_EXPANSION:
-				CHECK(t.ReadInt(i,0,255,&sResult));
+				CHECK(t.ReadInt(i,0,2147483647,&sResult));
 				pDoc->SelectExpansionChip(i);
 				CHECK(t.ReadEOL(&sResult));
 				break;
@@ -803,8 +808,9 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 			case CT_MACROVRC6:
 			case CT_MACRON163:
 			case CT_MACROS5B:
+			case CT_MACROSID:
 				{
-					static const inst_type_t CHIP_MACRO[4] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };		// // //
+					static const inst_type_t CHIP_MACRO[5] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B, INST_SID };		// // //
 					int chip = c - CT_MACRO;
 
 					int mt, loop, release;
@@ -916,10 +922,10 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 				{
 					inst_type_t Type = INST_NONE;
 					switch (c) {
-					case CT_INST2A03: Type = INST_2A03; break;
-					case CT_INSTVRC6: Type = INST_VRC6; break;
-					case CT_INSTN163: Type = INST_N163; break;
-					case CT_INSTS5B:  Type = INST_S5B; break;
+						case CT_INST2A03: Type = INST_2A03; break;
+						case CT_INSTVRC6: Type = INST_VRC6; break;
+						case CT_INSTN163: Type = INST_N163; break;
+						case CT_INSTS5B:  Type = INST_S5B;  break;
 					}
 					CHECK(t.ReadInt(i,0,MAX_INSTRUMENTS-1,&sResult));
 					auto seqInst = dynamic_cast<CSeqInstrument*>(CInstrumentFactory::CreateNew(Type));		// // //
@@ -972,6 +978,53 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 					pInst->SetModulationDepth(i);
 					CHECK(t.ReadInt(i,0,255,&sResult));
 					pInst->SetModulationDelay(i);
+					pInst->SetName(Charify(t.ReadToken()));
+					CHECK(t.ReadEOL(&sResult));
+				}
+				break;
+			case CT_INSTSID:
+				{
+					CHECK(t.ReadInt(i, 0, MAX_INSTRUMENTS - 1, &sResult));
+					CInstrumentSID* pInst = new CInstrumentSID();
+					pDoc->AddInstrument(pInst, i);
+
+					// Macros
+					for (int s = 0; s < SEQ_COUNT; ++s)
+					{
+						CHECK(t.ReadInt(i, -1, MAX_SEQUENCES - 1, &sResult));
+						pInst->SetSeqEnable(s, (i == -1) ? 0 : 1);
+						pInst->SetSeqIndex(s, (i == -1) ? 0 : i);
+					}
+
+					// ADSR
+					CHECK(t.ReadInt(i, 0, 255, &sResult));
+					pInst->SetEnvParam(ENV_ATTACK, i >> 4);
+					pInst->SetEnvParam(ENV_DECAY, i & 0x0F);
+					CHECK(t.ReadInt(i, 0, 255, &sResult));
+					pInst->SetEnvParam(ENV_SUSTAIN, i >> 4);
+					pInst->SetEnvParam(ENV_RELEASE, i & 0x0F);
+
+					// PWM / Filter sweep mode
+					CHECK(t.ReadInt(i, 0, 63, &sResult));
+					pInst->SetPWMMode(i >> 3);
+					pInst->SetFilterMode(i & 0x07);
+
+					// PWM sweep values
+					CHECK(t.ReadInt(i, 0, 4095, &sResult));
+					pInst->SetPWMStart(i);
+					CHECK(t.ReadInt(i, 0, 4095, &sResult));
+					pInst->SetPWMEnd(i);
+					CHECK(t.ReadInt(i, 0, 255, &sResult));
+					pInst->SetPWMSpeed(i);
+
+					// Filter sweep values
+					CHECK(t.ReadInt(i, 0, 4095, &sResult));
+					pInst->SetFilterStart(i);
+					CHECK(t.ReadInt(i, 0, 4095, &sResult));
+					pInst->SetFilterEnd(i);
+					CHECK(t.ReadInt(i, 0, 255, &sResult));
+					pInst->SetFilterSpeed(i);
+
 					pInst->SetName(Charify(t.ReadToken()));
 					CHECK(t.ReadEOL(&sResult));
 				}
@@ -1388,9 +1441,9 @@ const CString& CTextExport::ExportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 	}
 
 	f.WriteString(_T("# SEQUENCES block\n"));
-	for (int c=0; c<4; ++c)
+	for (int c=0; c<5; ++c)
 	{
-		const inst_type_t CHIP_MACRO[4] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B };
+		const inst_type_t CHIP_MACRO[5] = { INST_2A03, INST_VRC6, INST_N163, INST_S5B, INST_SID };
 
 		for (int st=0; st < SEQ_COUNT; ++st)
 		for (int seq=0; seq < MAX_SEQUENCES; ++seq)
@@ -1499,6 +1552,7 @@ const CString& CTextExport::ExportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 		case INST_FDS:	CTstr = CT[CT_INSTFDS];  break;
 		case INST_N163:	CTstr = CT[CT_INSTN163]; break;
 		case INST_S5B:	CTstr = CT[CT_INSTS5B];  break;
+		case INST_SID:	CTstr = CT[CT_INSTSID];  break;
 		case INST_NONE: default:
 			pDoc->GetInstrument(i).reset(); continue;
 		}
@@ -1545,6 +1599,25 @@ const CString& CTextExport::ExportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 				f.WriteString(s);
 			}
 			break;
+		case INST_SID:
+			{
+			auto pDI = std::static_pointer_cast<CInstrumentSID>(pInst);
+			s.Format(_T("%4d %4d %4d %4d %4d %4d %4d %4d %4d "),
+				(pDI->GetEnvParam(ENV_ATTACK) << 4 | pDI->GetEnvParam(ENV_DECAY)),
+				(pDI->GetEnvParam(ENV_SUSTAIN) << 4 | pDI->GetEnvParam(ENV_RELEASE)),
+
+				(pDI->GetPWMMode() << 3 | pDI->GetFilterMode()),
+
+				pDI->GetPWMStart(),
+				pDI->GetPWMEnd(),
+				pDI->GetPWMSpeed(),
+
+				pDI->GetFilterStart(),
+				pDI->GetFilterEnd(),
+				pDI->GetFilterSpeed()
+			);
+			f.WriteString(s);
+			}
 		}
 
 		f.WriteString(ExportString(pInst->GetName()));
