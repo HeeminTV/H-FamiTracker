@@ -858,6 +858,7 @@ bool CFamiTrackerDoc::WriteBlocks(CDocumentFile *pDocFile) const
 		6,		// SequencesVRC6
 		1,		// SequencesN163
 		1,		// SequencesS5B
+		4,		// SequencesSID
 		// 0cc-ft
 		2,		// ParamsExtra
 		1,		// DetuneTables
@@ -905,7 +906,7 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	pDocFile->CreateBlock(FILE_BLOCK_PARAMS, Version);
 	
 	if (Version >= 2)
-		pDocFile->WriteBlockInt(m_iExpansionChip);		// Taken from E-FamiTracker by Euly. you're a god.
+		pDocFile->WriteBlockInt(m_iExpansionChip);
 	else
 		pDocFile->WriteBlockInt(GetTrack(0)->GetSongSpeed());
 
@@ -2957,7 +2958,7 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 	}
 
 	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B, INST_SID};		// // //
-	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B, SNDCHIP_6581};
+	static const int chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B, SNDCHIP_6581};
 	int (*seqTable[])[SEQ_COUNT] = {SequenceTable2A03, SequenceTableVRC6, SequenceTableN163, SequenceTableS5B, SequenceTableSID};
 
 	// Copy sequences
@@ -3038,6 +3039,10 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 						pInstrument->SetSampleIndex(o, n, SamplesTable[Sample - 1] + 1);
 				}
 			}
+			// if (Type == INST_SID) {
+			// 	CInstrumentSID* pInstrument = static_cast<CInstrumentSID*>(pInst);
+			//	pInstrument->SetEnvParam(ENV_ATTACK, );
+			// }
 			// Update samples
 			int Index = AddInstrument(pInst);
 			// Save a reference to this instrument
@@ -4572,7 +4577,7 @@ int CFamiTrackerDoc::GetChannelPosition(int Channel, unsigned int Chip)		// // /
 	}
 
 	if (!(Chip & SNDCHIP_OPLL)) {
-		if (pos > CHANID_OPLL_CH9) pos -= 9	; // TODO fix this to 9 later
+		if (pos > CHANID_OPLL_CH9) pos -= 9	;
 		else if (pos >= CHANID_OPLL_CH1) return -1;
 	}
 
@@ -4708,18 +4713,18 @@ void CFamiTrackerDoc::SetOPLLPatchSet(int patchset)
 				m_iOPLLPatchBytes[(8 * i) + j] = 0;
 		}
 		switch (patchset) {
-		case 7:
-			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_YM2413[i];
-			break;
-		case 8:
-			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_YMF281B[i];
-			break;
-		case 9:
-			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_HM[i];
-			break;
-		default:
-			m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_VRC7[i];
-			break;
+			case 7:
+				m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_YM2413[i];
+				break;
+			case 8:
+				m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_YMF281B[i];
+				break;
+			case 9:
+				m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_HM[i];
+				break;
+			default:
+				m_strVRC7PatchNames[i] = CAPU::OPLL_PATCHNAME_VRC7[i];
+				break;
 		}
 	}
 }
@@ -5183,8 +5188,8 @@ void CFamiTrackerDoc::RemoveUnusedInstruments()
 		}
 	}
 
-	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B};
-	static const uint8_t chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B};
+	static const inst_type_t inst[] = {INST_2A03, INST_VRC6, INST_N163, INST_S5B, INST_SID};
+	static const int chip[] = {SNDCHIP_NONE, SNDCHIP_VRC6, SNDCHIP_N163, SNDCHIP_5B, SNDCHIP_6581};
 
 	// Also remove unused sequences
 	for (unsigned int i = 0; i < MAX_SEQUENCES; ++i) for (int j = 0; j < SEQ_COUNT; ++j) {

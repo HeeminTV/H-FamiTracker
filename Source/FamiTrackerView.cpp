@@ -1657,9 +1657,9 @@ bool CFamiTrackerView::PlayerGetNote(int Track, int Frame, int Channel, int Row,
 		const int PASS_EFFECTS[] = {
 			EF_HALT, EF_JUMP, EF_SPEED, EF_SKIP, EF_GROOVE,
 			EF_SID_FILTER_CUTOFF_HI,  EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_MODE, EF_SID_GATE_MODE,
-			EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_NOISE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO
-			// i don't know if these ^ sunsoft effects are required to be passed?
-		};		// // //
+			EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_NOISE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO,
+			EF_N163_WAVE_BUFFER
+		};
 		int Columns = pDoc->GetEffColumns(Track, Channel) + 1;
 
 		NoteData.Note		= HALT;
@@ -2502,14 +2502,15 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 			m_pNoteQueue->AddMap({CHANID_VRC6_PULSE1, CHANID_VRC6_PULSE2});
 			m_pNoteQueue->AddMap({CHANID_VRC6_SAWTOOTH});
 		}
-		if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
-			m_pNoteQueue->AddMap({CHANID_VRC7_CH1, CHANID_VRC7_CH2, CHANID_VRC7_CH3, CHANID_VRC7_CH4, CHANID_VRC7_CH5, CHANID_VRC7_CH6});
+
 		if (pDoc->ExpansionEnabled(SNDCHIP_FDS))
 			m_pNoteQueue->AddMap({CHANID_FDS});
+
 		if (pDoc->ExpansionEnabled(SNDCHIP_MMC5))
 			m_pNoteQueue->AddMap({CHANID_2A03_SQUARE1, CHANID_2A03_SQUARE2, CHANID_MMC5_SQUARE1, CHANID_MMC5_SQUARE2});
 		else
 			m_pNoteQueue->AddMap({CHANID_2A03_SQUARE1, CHANID_2A03_SQUARE2});
+
 		if (pDoc->ExpansionEnabled(SNDCHIP_N163)) {
 			std::vector<unsigned> n;
 			int Channels = pDoc->GetNamcoChannels();
@@ -2517,18 +2518,31 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 				n.push_back(CHANID_N163_CH1 + i);
 			m_pNoteQueue->AddMap(n);
 		}
+
 		if (pDoc->ExpansionEnabled(SNDCHIP_5B))
 			m_pNoteQueue->AddMap({CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3});
 
-		// Taken from E-FamiTracker by Euly
-		if (pDoc->ExpansionEnabled(SNDCHIP_5E01))
-			m_pNoteQueue->AddMap({ CHANID_5E01_SQUARE1, CHANID_5E01_SQUARE2, CHANID_5E01_WAVEFORM, CHANID_5E01_NOISE, CHANID_5E01_DPCM });
+		if (pDoc->ExpansionEnabled(SNDCHIP_5E01)) {
+			m_pNoteQueue->AddMap({ CHANID_5E01_SQUARE1, CHANID_5E01_SQUARE2 });
+			for (unsigned int i = 0; i < 3; ++i)
+				m_pNoteQueue->AddMap({ CHANID_5E01_WAVEFORM + i });
+		}
 
-		if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
-			m_pNoteQueue->AddMap({ CHANID_7E02_SQUARE1, CHANID_7E02_SQUARE2, CHANID_7E02_WAVEFORM, CHANID_7E02_NOISE, CHANID_7E02_DPCM });
+		if (pDoc->ExpansionEnabled(SNDCHIP_7E02)) {
+			m_pNoteQueue->AddMap({ CHANID_7E02_SQUARE1, CHANID_7E02_SQUARE2 });
+			for (unsigned int i = 0; i < 3; ++i)
+				m_pNoteQueue->AddMap({ CHANID_7E02_WAVEFORM + i });
+		}
 
-		if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
-			m_pNoteQueue->AddMap({ CHANID_OPLL_CH1, CHANID_OPLL_CH2, CHANID_OPLL_CH3, CHANID_OPLL_CH4, CHANID_OPLL_CH5, CHANID_OPLL_CH6, CHANID_OPLL_CH7, CHANID_OPLL_CH8, CHANID_OPLL_CH9 });
+		if (pDoc->ExpansionEnabled(SNDCHIP_VRC7) && pDoc->ExpansionEnabled(SNDCHIP_OPLL)) {
+			m_pNoteQueue->AddMap({ CHANID_VRC7_CH1, CHANID_VRC7_CH2, CHANID_VRC7_CH3, CHANID_VRC7_CH4, CHANID_VRC7_CH5, CHANID_VRC7_CH6, CHANID_OPLL_CH1, CHANID_OPLL_CH2, CHANID_OPLL_CH3, CHANID_OPLL_CH4, CHANID_OPLL_CH5, CHANID_OPLL_CH6, CHANID_OPLL_CH7, CHANID_OPLL_CH8, CHANID_OPLL_CH9 });
+		} else {
+			if (pDoc->ExpansionEnabled(SNDCHIP_VRC7))
+				m_pNoteQueue->AddMap({ CHANID_VRC7_CH1, CHANID_VRC7_CH2, CHANID_VRC7_CH3, CHANID_VRC7_CH4, CHANID_VRC7_CH5, CHANID_VRC7_CH6 });
+
+			if (pDoc->ExpansionEnabled(SNDCHIP_OPLL))
+				m_pNoteQueue->AddMap({ CHANID_OPLL_CH1, CHANID_OPLL_CH2, CHANID_OPLL_CH3, CHANID_OPLL_CH4, CHANID_OPLL_CH5, CHANID_OPLL_CH6, CHANID_OPLL_CH7, CHANID_OPLL_CH8, CHANID_OPLL_CH9 });
+		}
 
 		if (pDoc->ExpansionEnabled(SNDCHIP_6581))
 			m_pNoteQueue->AddMap({ CHANID_6581_CH1, CHANID_6581_CH2, CHANID_6581_CH3 });

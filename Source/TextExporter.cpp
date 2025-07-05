@@ -774,7 +774,7 @@ const CString& CTextExport::ImportFile(LPCTSTR FileName, CFamiTrackerDoc *pDoc)
 				break;
 			case CT_PLAYBACKRATE:		// // // 050B
 			{
-				CHECK(t.ReadInt(i, 0, 2, &sResult));
+				CHECK(t.ReadInt(i, 0, 0xFFFF, &sResult)); // it... does nothing...?
 				int rate = 0;
 				CHECK(t.ReadInt(rate, 0, 0xFFFF, &sResult));
 				pDoc->SetPlaybackRate(i, rate);

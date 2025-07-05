@@ -4,8 +4,6 @@
 
 H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**ipnotico".
 
-H-FamiTracker indirectly **succeeds** [E-FamiTracker](https://github.com/eulyderg/E-FamiTracker) and provides additional features.
-
 ## To do list
 - [x] 7E02
 - [x] 2A03
@@ -15,6 +13,7 @@ H-FamiTracker indirectly **succeeds** [E-FamiTracker](https://github.com/eulyder
 - [x] 5E01
 - [x] 6581
 - [ ] 8580
+- [ ] Atari TIA
 - [ ] Konami VRC7 / Yamaha YM2413 instrument macro
 - [x] MMC5 PCM
 - [ ] PCM importer via DPCM instrument

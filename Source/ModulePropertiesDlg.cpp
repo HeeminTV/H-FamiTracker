@@ -947,22 +947,18 @@ void CModulePropertiesDlg::strFromLevel(CString &target, int16_t Level)
 
 void CModulePropertiesDlg::updateN163ChannelCountUI()
 {
-	CString N163RAMDisplayStr;
-	CString N163ChannelCountStr;
-	N163RAMDisplayStr.LoadString(IDS_PROPERTIES_TOTALRAM);
-	N163ChannelCountStr.LoadString(IDS_PROPERTIES_CHANNELS);
+	CString channelsStr;
+	channelsStr.LoadString(IDS_PROPERTIES_CHANNELS);
 
 	// Is N163 enabled?
 	bool N163Enabled = m_iExpansions & SNDCHIP_N163;
 	if (N163Enabled) {
 		if (!m_iN163Channels) m_iN163Channels = 1;		// // //
-		N163RAMDisplayStr.AppendFormat(_T(" %i"), 256 - 16 * m_iN163Channels);
-		N163ChannelCountStr.AppendFormat(_T(" %i"), m_iN163Channels);
-	}
-	else {
+		channelsStr.AppendFormat(_T(" %i"), m_iN163Channels);
+	} else {
 		m_iN163Channels = 0;
-		N163RAMDisplayStr.Append(_T(" N/A"));
-		N163ChannelCountStr.Append(_T(" N/A"));
+		channelsStr.Append(_T(" N/A"));
+
 	}
 	
 	// Enable/disable UI.
@@ -972,8 +968,7 @@ void CModulePropertiesDlg::updateN163ChannelCountUI()
 	// Redraw UI.
 	m_cChanSlider.SetPos(m_iN163Channels);
 
-	// SetDlgItemText(IDC_CHANNELS_NTR, N163RAMDisplayStr);
-	SetDlgItemText(IDC_CHANNELS_NR, N163ChannelCountStr);
+	SetDlgItemText(IDC_CHANNELS_NR, channelsStr);
 }
 
 void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
