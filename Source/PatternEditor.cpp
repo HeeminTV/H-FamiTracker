@@ -1760,16 +1760,18 @@ void CPatternEditor::DrawHeader(CDC *pDC)
 
 void CPatternEditor::DrawMeters(CDC *pDC)
 {
-	const COLORREF COL_DARK			= 0x989C98;
-	const COLORREF COL_LIGHT		= 0x20F040;
-	const COLORREF COL_DARK_SHADOW  = DIM(COL_DARK, 80);
+	const COLORREF COL_DARK = 0x989C98;
+	const COLORREF COL_LIGHT = 0x20F040;
+	const COLORREF COL_DARK_SHADOW = DIM(COL_DARK, 80);
 	const COLORREF DPCM_STATE_COLOR = 0x00404040;
 
-	const int BAR_TOP	 = DPI::SY(5 + 18 + HEADER_CHAN_START);
-	const int BAR_SIZE	 = m_bCompactMode ? (GetColumnSpace(C_NOTE) - 2) / 16 : (GetChannelWidth(0) - 6) / 16;		// // //
-	const int BAR_LEFT	 = m_bCompactMode ? m_iRowColumnWidth + (GetColumnSpace(C_NOTE) - 16 * BAR_SIZE + 3) / 2 : m_iRowColumnWidth + 7;
-	const int BAR_SPACE	 = 1;
+	const int BAR_TOP = DPI::SY(5 + 18 + HEADER_CHAN_START);
+	      int BAR_SIZE = m_bCompactMode ? (GetColumnSpace(C_NOTE) - 2) / 16 : (GetChannelWidth(0) - 6) / 16;		// // //
+	const int BAR_LEFT = m_bCompactMode ? m_iRowColumnWidth + (GetColumnSpace(C_NOTE) - 16 * BAR_SIZE + 3) / 2 : m_iRowColumnWidth + 7;
+	const int BAR_SPACE = 1;
 	const int BAR_HEIGHT = DPI::SY(5);
+
+	BAR_SIZE = BAR_SIZE / 2;
 
 	static COLORREF colors[15];
 	static COLORREF colors_dim[15];
@@ -1782,11 +1784,12 @@ void CPatternEditor::DrawMeters(CDC *pDC)
 
 	int Offset = BAR_LEFT;
 
-	CFont *pOldFont = pDC->SelectObject(&m_fontHeader);
+	CFont* pOldFont = pDC->SelectObject(&m_fontHeader);
 
 	if (colors[0] == 0) {
 		for (int i = 0; i < 15; ++i) {
 			// Cache colors
+
 			colors[i] = BLEND(COL_LIGHT, 0x00F0F0, (100 - (i * i) / 3));
 			colors_shadow[i] = DIM(colors[i], 60);
 			colors_dim[i] = DIM(colors[i], 90);
@@ -1795,27 +1798,33 @@ void CPatternEditor::DrawMeters(CDC *pDC)
 
 	for (int i = 0; i < m_iChannelsVisible; ++i) {
 		int Channel = i + m_iFirstChannel;
-		CTrackerChannel *pChannel = m_pDocument->GetChannel(Channel);
+		CTrackerChannel* pChannel = m_pDocument->GetChannel(Channel);
 		int level = pChannel->GetVolumeMeter();
 
 		for (int j = 0; j < 15; ++j) {
-			int x = Offset + (j * BAR_SIZE);
+			int xL = Offset + ((15 - j) * BAR_SIZE);
+			int xR = Offset + ((j + 16) * BAR_SIZE);
 			COLORREF shadowCol = j < level ? colors_shadow[j] : COL_DARK_SHADOW;		// // //
 			if (BAR_SIZE > 2) {
-				pDC->FillSolidRect(x + BAR_SIZE - 1, BAR_TOP + 1, BAR_SPACE, BAR_HEIGHT, shadowCol);
-				pDC->FillSolidRect(x + 1, BAR_TOP + BAR_HEIGHT, BAR_SIZE - 1, 1, shadowCol);
-				pDC->FillSolidRect(x, BAR_TOP, BAR_SIZE - BAR_SPACE, BAR_HEIGHT, j < level ? colors[j] : COL_DARK);
+				pDC->FillSolidRect(xL + BAR_SIZE - 1, BAR_TOP + 1, BAR_SPACE, BAR_HEIGHT, shadowCol);
+				pDC->FillSolidRect(xL + 1, BAR_TOP + BAR_HEIGHT, BAR_SIZE - 1, 1, shadowCol);
+				pDC->FillSolidRect(xL, BAR_TOP, BAR_SIZE - BAR_SPACE, BAR_HEIGHT, j < level ? colors[j] : COL_DARK);
+
+				pDC->FillSolidRect(xR + BAR_SIZE - 1, BAR_TOP + 1, BAR_SPACE, BAR_HEIGHT, shadowCol);
+				pDC->FillSolidRect(xR + 1, BAR_TOP + BAR_HEIGHT, BAR_SIZE - 1, 1, shadowCol);
+				pDC->FillSolidRect(xR, BAR_TOP, BAR_SIZE - BAR_SPACE, BAR_HEIGHT, j < level ? colors[j] : COL_DARK);
 			}
 			else {
-				pDC->FillSolidRect(x, BAR_TOP, BAR_SIZE, BAR_HEIGHT + 1, shadowCol);
-				pDC->FillSolidRect(x, BAR_TOP, BAR_SIZE, BAR_HEIGHT, j < level ? colors[j] : COL_DARK);
+				pDC->FillSolidRect(xR, BAR_TOP, BAR_SIZE, BAR_HEIGHT + 1, shadowCol);
+				pDC->FillSolidRect(xR, BAR_TOP, BAR_SIZE, BAR_HEIGHT, j < level ? colors[j] : COL_DARK);
 			}
 			if (j < level && BAR_SIZE > 2)
-				pDC->Draw3dRect(x, BAR_TOP, BAR_SIZE - BAR_SPACE, BAR_HEIGHT, colors[j], colors_dim[j]);
+				pDC->Draw3dRect(xR, BAR_TOP, BAR_SIZE - BAR_SPACE, BAR_HEIGHT, colors[j], colors_dim[j]);
 		}
 
 		Offset += m_iChannelWidths[Channel];
 	}
+
 
 	// // //
 #ifdef DRAW_REGS
