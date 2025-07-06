@@ -167,18 +167,30 @@ std::pair<EffTable, EffTable> MakeEffectConversion(std::initializer_list<std::pa
 // respect FT 050B+'s effect type order? we can't do anything to change it, now.
 // https://github.com/Dn-Programming-Core-Management/Dn-FamiTracker/wiki/0CC-vs-FT-effects-type-order
 static const auto EFF_CONVERSION_050 = MakeEffectConversion({
-//	{EF_SUNSOFT_ENV_LO,		EF_SUNSOFT_ENV_TYPE},
-//	{EF_SUNSOFT_ENV_TYPE,	EF_SUNSOFT_ENV_LO},
-	{EF_SUNSOFT_NOISE,		EF_NOTE_RELEASE},
-	{EF_VRC7_PORT,			EF_GROOVE},
-	{EF_VRC7_WRITE,			EF_TRANSPOSE},
-	{EF_NOTE_RELEASE,		EF_N163_WAVE_BUFFER},
-	{EF_GROOVE,				EF_FDS_VOLUME},
-	{EF_TRANSPOSE,			EF_FDS_MOD_BIAS},
-	{EF_N163_WAVE_BUFFER,	EF_SUNSOFT_NOISE},
-	{EF_FDS_VOLUME,			EF_VRC7_PORT},
-	{EF_FDS_MOD_BIAS,		EF_VRC7_WRITE},
-	// {EF_OPLL_PORT,			EF_OPLL_WRITE}
+//	{EF_SUNSOFT_ENV_LO,			EF_SUNSOFT_ENV_TYPE},
+//	{EF_SUNSOFT_ENV_TYPE,		EF_SUNSOFT_ENV_LO},
+	{EF_SUNSOFT_NOISE,			EF_NOTE_RELEASE},
+	{EF_VRC7_PORT,				EF_GROOVE},
+	{EF_VRC7_WRITE,				EF_TRANSPOSE},
+	{EF_NOTE_RELEASE,			EF_N163_WAVE_BUFFER},
+	{EF_GROOVE,					EF_FDS_VOLUME},
+	{EF_TRANSPOSE,				EF_FDS_MOD_BIAS},
+	{EF_N163_WAVE_BUFFER,		EF_SUNSOFT_NOISE},
+	{EF_FDS_VOLUME,				EF_VRC7_PORT},
+	{EF_FDS_MOD_BIAS,			EF_VRC7_WRITE},
+});
+
+static const auto EFF_CONVERSION_EFT = MakeEffectConversion({
+	{EF_TRANSPOSE,				EF_VRC7_PORT},
+	{EF_N163_WAVE_BUFFER,		EF_VRC7_WRITE},
+	{EF_FDS_VOLUME,				EF_NOTE_RELEASE},
+	{EF_FDS_MOD_BIAS,			EF_GROOVE},
+	{EF_PHASE_RESET,			EF_TRANSPOSE},
+	{EF_HARMONIC,				EF_N163_WAVE_BUFFER},
+	{EF_TARGET_VOLUME_SLIDE,	EF_FDS_VOLUME},
+	{EF_SID_FILTER_RESONANCE,	EF_FDS_MOD_BIAS},
+	{EF_SID_FILTER_CUTOFF_HI,	EF_PHASE_RESET},
+	{EF_SID_FILTER_CUTOFF_LO,	EF_HARMONIC},
 });
 
 //
@@ -2439,7 +2451,14 @@ void CFamiTrackerDoc::ReadBlock_Frames(CDocumentFile *pDocFile, const int Versio
 				for (unsigned j = 0; j < m_iChannelsAvailable; ++j) {
 					// Read pattern index
 					int Pattern = static_cast<unsigned char>(pDocFile->GetBlockChar());
-					pTrack->SetFramePattern(i, j, AssertRange(Pattern, 0, MAX_PATTERN - 1, "Pattern index"));
+					pTrack->SetFramePattern(i, j, 
+						m_cFileHFTModule != 2 && // if it's not HFT module (which doesn't have a channel for MMC5 PCM,
+						m_iExpansionChip & SNDCHIP_MMC5 && // and there's MMC5,
+						j == (m_iExpansionChip & SNDCHIP_VRC6 ? 10 : 7) // and it's the MMC5 PCM channel (also considering that the VRC6's channels can be located before the MMC5 channels),
+						?
+						0xFF : // fill with 0x00
+						AssertRange(Pattern, 0, MAX_PATTERN - 1, "Pattern index") // otherwise go as usual.
+					);
 				}
 			}
 		}
@@ -2458,6 +2477,8 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 		pTrack->SetPatternLength(PatternLen);
 	}
 
+	// bool SkippedMMC5Vocal = false;
+
 	while (!pDocFile->BlockDone()) {
 		unsigned Track;
 		if (Version > 1)
@@ -2467,7 +2488,54 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 
 		unsigned Channel = AssertRange(pDocFile->GetBlockInt(), 0, MAX_CHANNELS - 1, "Pattern channel index");
 		unsigned Pattern = AssertRange(pDocFile->GetBlockInt(), 0, MAX_PATTERN - 1, "Pattern index");
-		unsigned Items	= AssertRange(pDocFile->GetBlockInt(), 0, MAX_PATTERN_LENGTH, "Pattern data count");
+		unsigned Items	 = AssertRange(pDocFile->GetBlockInt(), 0, MAX_PATTERN_LENGTH, "Pattern data count");
+
+		if (			
+			m_cFileHFTModule != 2 && // if it's not HFT module (which doesn't have a channel for MMC5 PCM),
+			ExpansionEnabled(SNDCHIP_MMC5) && // and there's MMC5,
+			GetChannelType(Channel) >= CHANID_MMC5_VOICE // and it's the MMC5 PCM channel
+			// !SkippedMMC5Vocal && False
+		   ) {
+			// Channel++;
+			// Pattern++;
+			// SkippedMMC5Vocal = true;
+			// pDocFile->RollbackPointer(12 + Version > 1 ? 4 : 0);
+			// pDocFile->RollbackFilePointer(12 + Version > 1 ? 4 : 0);
+			/*
+			// Important: even if we're gotta ignore the data on this channel, the file pointer must be moving forward correctly...
+			// otherwise, the next while loop will read the data from the wrong place and cause a parsing error.
+			// this shit now does "Dummy Reads" which just moves the pointer, and nothing else.
+
+			SkippedMMC5Vocal = true; // do not check here again
+
+			// idk what it does so just calls it
+			CPatternData* pTrackDummy = GetTrack(Track);
+
+			for (unsigned i = 0; i < Items; ++i) {
+				if (m_iFileVersion == 0x0200 || Version >= 6)
+					pDocFile->GetBlockChar();
+				else
+					pDocFile->GetBlockInt();
+
+				pDocFile->GetBlockChar(); // note
+				pDocFile->GetBlockChar(); // octave
+				pDocFile->GetBlockChar(); // instrument
+				pDocFile->GetBlockChar(); // volume
+
+				int FX = m_iFileVersion == 0x200 ? 1 : Version >= 6 ? MAX_EFFECT_COLUMNS : (pTrackDummy->GetEffectColumnCount(Channel) + 1);
+				for (int n = 0; n < FX; ++n) {
+					unsigned char EffectNumberDummy = pDocFile->GetBlockChar();
+					if (EffectNumberDummy || Version < 6) {
+						pDocFile->GetBlockChar();
+					}
+				}
+			}
+			
+			// now it read the fucking useless shits.
+			// fuck just go ahead.
+			*/
+			// continue;
+		}
 
 		CPatternData *pTrack = GetTrack(Track);
 
@@ -2524,7 +2592,7 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 	//				Note->Vol &= 0x0F;
 
 				// Specific for version 2.0
-				if (m_iFileVersion == 0x0200) {
+				if (m_iFileVersion == 0x200) {
 
 					if (Note->EffNumber[0] == EF_SPEED && Note->EffParam[0] < 20)
 						Note->EffParam[0]++;
@@ -2541,9 +2609,10 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 				}
 
 				if (ExpansionEnabled(SNDCHIP_N163) && GetChipType(Channel) == SNDCHIP_N163) {		// // //
-					for (int n = 0; n < MAX_EFFECT_COLUMNS; ++n)
+					for (int n = 0; n < MAX_EFFECT_COLUMNS; ++n) {
 						if (Note->EffNumber[n] == EF_SAMPLE_OFFSET)
 							Note->EffNumber[n] = EF_N163_WAVE_BUFFER;
+					}
 				}
 
 				if (Version == 3) {
@@ -2573,12 +2642,16 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 					}
 				}
 
-				// TODO: Dn-FamiTracker compatibility modes
 				if (m_iFileVersion < 0x450 || m_cFileHFTModule >= 1) {		// // // 050B
 					for (auto &x : Note->EffNumber)
 						if (x < EF_COUNT)
 							// read FamiTracker 0.5.0 beta+ effect type order as 0CC effect type order
 							x = EFF_CONVERSION_050.first[x];
+				} else if (m_iFileVersion == 0x460) { // if the module is EFT module,
+					for (auto& x : Note->EffNumber)
+						if (x < EF_COUNT)
+							// load EFT, convert as HFT's ones (almost identical to dn-famitracker's one)
+							x = EFF_CONVERSION_EFT.first[x];
 				}
 				/*
 				if (Version < 6) {
@@ -4825,7 +4898,10 @@ CString CFamiTrackerDoc::GetFileTitle() const
 	// Return file name without extension
 	CString FileName = GetTitle();
 
-	static const LPCSTR EXT[] = {_T(".ftm"), _T(".0cc"), _T(".hnm"), _T(".eft"), _T(".ftm.bak"), _T(".0cc.bak"), _T(".hnm.bak"), _T(".eft.bak")};		// // //
+	static const LPCSTR EXT[] = {
+		_T(".ftm"),		_T(".0cc"),		_T(".hnm"),		_T(".eft"),		_T(".dnm"),
+		_T(".ftm.bak"), _T(".0cc.bak"), _T(".hnm.bak"), _T(".eft.bak"), _T(".dnm.bak")
+	};		// // //
 	// Remove extension
 
 	for (size_t i = 0; i < sizeof(EXT) / sizeof(LPCSTR); ++i) {

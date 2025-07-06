@@ -537,7 +537,7 @@ private:
 	bool			m_bFileLoaded;			// Is a file loaded?
 	bool			m_bFileLoadFailed;		// Last file load operation failed
 	unsigned int	m_iFileVersion;			// Loaded file version
-	char			m_cFileHFTModule;		// module type (0 = vanilla, 1 = dn, 2 = h / e)
+	char			m_cFileHFTModule;		// module type (0 = vanilla / e, 1 = dn, 2 = h)
 
 	bool			m_bForceBackup;
 	bool			m_bBackupDone;
