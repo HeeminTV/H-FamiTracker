@@ -1895,7 +1895,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 		m_iExpansionChip = pDocFile->GetBlockInt();
 	} else {
 		// Others including 0.5.0 BETA (8-9) 
-		//      (NOT 0.4.x BETA)
+		//      (NOT 0.4.x BETA (7))
 		// 
 		// yes EFT does conflict with BETA modules which is not pretty good
 		m_iExpansionChip = pDocFile->GetBlockChar();
@@ -1928,7 +1928,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 		m_iEngineSpeed = pDocFile->GetBlockInt();
 	}
 
-	if (Version > 2)
+	if (Version >= 3)
 		m_iVibratoStyle = (vibrato_t)pDocFile->GetBlockInt();
 	else
 		m_iVibratoStyle = VIBRATO_OLD;
@@ -1949,7 +1949,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 	if (m_iChannelsAvailable == 5)
 		m_iExpansionChip = 0;
 
-	if (m_iFileVersion == 0x0200) {
+	if (m_iFileVersion == 0x200) {
 		int Speed = pTrack->GetSongSpeed();
 		if (Speed < 20)
 			pTrack->SetSongSpeed(Speed + 1);
@@ -2019,8 +2019,7 @@ void CFamiTrackerDoc::ReadBlock_Header(CDocumentFile *pDocFile, const int Versio
 			e->AppendError("At channel %d", i + 1);
 			throw;
 		}
-	}
-	else if (Version >= 2) {
+	} else if (Version >= 2) {
 		// Multiple tracks
 		m_iTrackCount = AssertRange(pDocFile->GetBlockChar() + 1, 1, static_cast<int>(MAX_TRACKS), "Track count");	// 0 means one track
 
@@ -2106,8 +2105,7 @@ void CFamiTrackerDoc::ReadBlock_Instruments(CDocumentFile *pDocFile, const int V
 			pDocFile->GetBlock(Name, size);
 			Name[size] = 0;
 			pInstrument->SetName(Name);
-		}
-		catch (CModuleException *e) {
+		} catch (CModuleException *e) {
 			pDocFile->SetDefaultFooter(e);
 			e->AppendError("At instrument %02X,", index);
 			m_pInstrumentManager->RemoveInstrument(index);
@@ -2451,14 +2449,19 @@ void CFamiTrackerDoc::ReadBlock_Frames(CDocumentFile *pDocFile, const int Versio
 				for (unsigned j = 0; j < m_iChannelsAvailable; ++j) {
 					// Read pattern index
 					int Pattern = static_cast<unsigned char>(pDocFile->GetBlockChar());
-					pTrack->SetFramePattern(i, j, 
-						m_cFileHFTModule != 2 && // if it's not HFT module (which doesn't have a channel for MMC5 PCM,
+					/*pTrack->SetFramePattern(i, j,
+						m_cFileHFTModule != 2 && // if it's not HFT module (which doesn't have a channel for MMC5 PCM),
 						m_iExpansionChip & SNDCHIP_MMC5 && // and there's MMC5,
 						j == (m_iExpansionChip & SNDCHIP_VRC6 ? 10 : 7) // and it's the MMC5 PCM channel (also considering that the VRC6's channels can be located before the MMC5 channels),
 						?
 						0xFF : // fill with 0x00
 						AssertRange(Pattern, 0, MAX_PATTERN - 1, "Pattern index") // otherwise go as usual.
+
+						// TODO
 					);
+					*/
+
+					pTrack->SetFramePattern(i, j, AssertRange(Pattern, 0, MAX_PATTERN - 1, "Pattern index"));
 				}
 			}
 		}
@@ -2477,8 +2480,6 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 		pTrack->SetPatternLength(PatternLen);
 	}
 
-	// bool SkippedMMC5Vocal = false;
-
 	while (!pDocFile->BlockDone()) {
 		unsigned Track;
 		if (Version > 1)
@@ -2494,47 +2495,9 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 			m_cFileHFTModule != 2 && // if it's not HFT module (which doesn't have a channel for MMC5 PCM),
 			ExpansionEnabled(SNDCHIP_MMC5) && // and there's MMC5,
 			GetChannelType(Channel) >= CHANID_MMC5_VOICE // and it's the MMC5 PCM channel
-			// !SkippedMMC5Vocal && False
-		   ) {
-			// Channel++;
-			// Pattern++;
-			// SkippedMMC5Vocal = true;
-			// pDocFile->RollbackPointer(12 + Version > 1 ? 4 : 0);
-			// pDocFile->RollbackFilePointer(12 + Version > 1 ? 4 : 0);
-			/*
-			// Important: even if we're gotta ignore the data on this channel, the file pointer must be moving forward correctly...
-			// otherwise, the next while loop will read the data from the wrong place and cause a parsing error.
-			// this shit now does "Dummy Reads" which just moves the pointer, and nothing else.
-
-			SkippedMMC5Vocal = true; // do not check here again
-
-			// idk what it does so just calls it
-			CPatternData* pTrackDummy = GetTrack(Track);
-
-			for (unsigned i = 0; i < Items; ++i) {
-				if (m_iFileVersion == 0x0200 || Version >= 6)
-					pDocFile->GetBlockChar();
-				else
-					pDocFile->GetBlockInt();
-
-				pDocFile->GetBlockChar(); // note
-				pDocFile->GetBlockChar(); // octave
-				pDocFile->GetBlockChar(); // instrument
-				pDocFile->GetBlockChar(); // volume
-
-				int FX = m_iFileVersion == 0x200 ? 1 : Version >= 6 ? MAX_EFFECT_COLUMNS : (pTrackDummy->GetEffectColumnCount(Channel) + 1);
-				for (int n = 0; n < FX; ++n) {
-					unsigned char EffectNumberDummy = pDocFile->GetBlockChar();
-					if (EffectNumberDummy || Version < 6) {
-						pDocFile->GetBlockChar();
-					}
-				}
-			}
-			
-			// now it read the fucking useless shits.
-			// fuck just go ahead.
-			*/
-			// continue;
+		   ) 
+		{
+			// TODO
 		}
 
 		CPatternData *pTrack = GetTrack(Track);
@@ -2650,7 +2613,7 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 				} else if (m_iFileVersion == 0x460) { // if the module is EFT module,
 					for (auto& x : Note->EffNumber)
 						if (x < EF_COUNT)
-							// load EFT, convert as HFT's ones (almost identical to dn-famitracker's one)
+							// load EFT, convert as HFT's ones (HFT's one is almost identical to dn-famitracker's one)
 							x = EFF_CONVERSION_EFT.first[x];
 				}
 				/*
@@ -3126,10 +3089,7 @@ bool CFamiTrackerDoc::ImportInstruments(CFamiTrackerDoc *pImported, int *pInstTa
 						pInstrument->SetSampleIndex(o, n, SamplesTable[Sample - 1] + 1);
 				}
 			}
-			// if (Type == INST_SID) {
-			// 	CInstrumentSID* pInstrument = static_cast<CInstrumentSID*>(pInst);
-			//	pInstrument->SetEnvParam(ENV_ATTACK, );
-			// }
+			
 			// Update samples
 			int Index = AddInstrument(pInst);
 			// Save a reference to this instrument

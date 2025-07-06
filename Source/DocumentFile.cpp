@@ -21,6 +21,7 @@
 #include "stdafx.h"
 #include "ModuleException.h"
 #include "DocumentFile.h"
+// #include <Windows.h>
 
 //
 // This class is based on CFile and has some simple extensions to create and read FTM files
@@ -29,13 +30,13 @@
 // No unicode allowed here
 
 // Class constants
-const unsigned int CDocumentFile::FILE_VER		 = 0x0450;			// Current file version (4.50)
-const unsigned int CDocumentFile::COMPATIBLE_FORWARD_VER = 0x460;	// Forwards compatible file version (4.50), 4.60 is for EFT
+const unsigned int CDocumentFile::FILE_VER		 = 0x450;			// Current file version (4.50)
+const unsigned int CDocumentFile::COMPATIBLE_FORWARD_VER = 0x460;	// Forwards compatible file version (4.60), 4.60 is for EFT
 const unsigned int CDocumentFile::COMPATIBLE_VER = 0x0100;			// Backwards compatible file version (1.0)
 
-const char *CDocumentFile::FILE_HEADER_ID = "FamiTracker Module";
-const char *CDocumentFile::FILE_HEADER_ID_HFT = "H-FamiTracker Module";
-const char* CDocumentFile::FILE_HEADER_ID_DNFT = "Dn-FamiTracker Module";
+const char *CDocumentFile::FILE_HEADER_ID		= "FamiTracker Module";
+const char *CDocumentFile::FILE_HEADER_ID_HFT	= "H-FamiTracker Module";
+const char* CDocumentFile::FILE_HEADER_ID_DNFT	= "Dn-FamiTracker Module";
 const char *CDocumentFile::FILE_END_ID	  = "END";
 
 const unsigned int CDocumentFile::MAX_BLOCK_SIZE = 0x80000;
@@ -210,8 +211,6 @@ void CDocumentFile::ValidateFile()
 	Read(Buffer, int(strlen(FILE_HEADER_ID)));
 
 	if (memcmp(Buffer, FILE_HEADER_ID, strlen(FILE_HEADER_ID)) != 0) {
-		// if it wasn't the vanilla FamiTracker's header,
-		// return pointers
 		RollbackPointer(int(strlen(FILE_HEADER_ID)));
 		RollbackFilePointer(int(strlen(FILE_HEADER_ID)));
 
@@ -219,20 +218,16 @@ void CDocumentFile::ValidateFile()
 		Read(Buffer, int(strlen(FILE_HEADER_ID_HFT)));
 
 		if (memcmp(Buffer, FILE_HEADER_ID_HFT, strlen(FILE_HEADER_ID_HFT)) != 0) {
-			// if it wasn't even a HFT module...
-			// ...
-			// oh then it's a Dn-FT module right?
-			// whoosh! pointer return!
+
 			RollbackPointer(int(strlen(FILE_HEADER_ID_HFT)));
 			RollbackFilePointer(int(strlen(FILE_HEADER_ID_HFT)));
 
-			// lemme see... hmm
 			Read(Buffer, int(strlen(FILE_HEADER_ID_DNFT)));
 
 			if (memcmp(Buffer, FILE_HEADER_ID_DNFT, strlen(FILE_HEADER_ID_DNFT)) != 0) {
-				// huh?? where are you from? get out!! you spy!!
 				RaiseModuleException("File is not recognized a compatible module");
 			} else {
+				// m_cFileHFTModule = MessageBox(NULL, _T("Warning : H-FamiTracker's .dnm import is currently unstable.\r\nIt's recommended to backup your module first."), _T("H-FamiTracker"), MB_ICONWARNING | MB_OK);
 				m_cFileHFTModule = 1;
 			}
 		} else {

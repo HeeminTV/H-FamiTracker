@@ -5,18 +5,24 @@
 H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**ipnotico".
 
 ## To do list
+
+Organized by priority
+
 - [x] 7E02
 - [x] 2A03
 - [x] YM2413 **expansion**
-- [ ] SN76489
-- [ ] YM2149F
 - [x] 5E01
 - [x] 6581
+- [ ] AY8930
+- [ ] SAA1099
 - [ ] 8580
-- [ ] Atari TIA
+- [ ] YM2149F
+- [ ] AY-3-8910
+- [ ] SN76489
 - [ ] Konami VRC7 / Yamaha YM2413 instrument macro
-- [x] MMC5 PCM
 - [ ] PCM importer via DPCM instrument
+- [ ] Atari TIA
+- [x] MMC5 PCM
 
 H-FamiTracker also brings several features from some forks.
 
