@@ -30,11 +30,12 @@
 
 // Class constants
 const unsigned int CDocumentFile::FILE_VER		 = 0x0450;			// Current file version (4.50)
-const unsigned int CDocumentFile::COMPATIBLE_FORWARD_VER = 0x450;	// Forwards compatible file version (4.50)
+const unsigned int CDocumentFile::COMPATIBLE_FORWARD_VER = 0x460;	// Forwards compatible file version (4.50)
 const unsigned int CDocumentFile::COMPATIBLE_VER = 0x0100;			// Backwards compatible file version (1.0)
 
 const char *CDocumentFile::FILE_HEADER_ID = "FamiTracker Module";
-const char *CDocumentFile::FILE_HEADER_ID_DN = "H-FamiTracker Module";
+const char *CDocumentFile::FILE_HEADER_ID_HFT = "H-FamiTracker Module";
+const char* CDocumentFile::FILE_HEADER_ID_DNFT = "Dn-FamiTracker Module";
 const char *CDocumentFile::FILE_END_ID	  = "END";
 
 const unsigned int CDocumentFile::MAX_BLOCK_SIZE = 0x80000;
@@ -64,7 +65,7 @@ bool CDocumentFile::BeginDocument(bool isDnModule)
 	try {
 		// TODO: Dn-FamiTracker compatibility modes
 		if (isDnModule)
-			Write(FILE_HEADER_ID_DN, int(strlen(FILE_HEADER_ID_DN)));
+			Write(FILE_HEADER_ID_HFT, int(strlen(FILE_HEADER_ID_HFT)));
 		else
 			Write(FILE_HEADER_ID, int(strlen(FILE_HEADER_ID)));
 		Write(&FILE_VER, sizeof(unsigned int));
@@ -201,26 +202,42 @@ void CDocumentFile::ValidateFile()
 
 	char Buffer[256]{};
 
-	m_bFileDnModule = false;
+	m_cFileHFTModule = 0;
 
 	CModuleException* e = new CModuleException();		// // // blank
 
 	// Check ident string
-	// TODO: Dn-FamiTracker compatibility modes
 	Read(Buffer, int(strlen(FILE_HEADER_ID)));
 
-	// TODO: avoid using RollbackPointer()
 	if (memcmp(Buffer, FILE_HEADER_ID, strlen(FILE_HEADER_ID)) != 0) {
-		// might be a Dn-FT module, try again
+		// if it wasn't the vanilla FamiTracker's header,
+		// return pointers
 		RollbackPointer(int(strlen(FILE_HEADER_ID)));
 		RollbackFilePointer(int(strlen(FILE_HEADER_ID)));
 
-		Read(Buffer, int(strlen(FILE_HEADER_ID_DN)));
+		// might be a H-FT module, try again
+		Read(Buffer, int(strlen(FILE_HEADER_ID_HFT)));
 
-		if (memcmp(Buffer, FILE_HEADER_ID_DN, strlen(FILE_HEADER_ID_DN)) != 0)
-			RaiseModuleException("File is not recognized a H-FamiTracker module");
-		else
-			m_bFileDnModule = true;
+		if (memcmp(Buffer, FILE_HEADER_ID_HFT, strlen(FILE_HEADER_ID_HFT)) != 0) {
+			// if it wasn't even a HFT module...
+			// ...
+			// oh then it's a Dn-FT module right?
+			// whoosh! pointer return!
+			RollbackPointer(int(strlen(FILE_HEADER_ID_HFT)));
+			RollbackFilePointer(int(strlen(FILE_HEADER_ID_HFT)));
+
+			// lemme see... hmm
+			Read(Buffer, int(strlen(FILE_HEADER_ID_DNFT)));
+
+			if (memcmp(Buffer, FILE_HEADER_ID_DNFT, strlen(FILE_HEADER_ID_DNFT)) != 0) {
+				// huh?? where are you from? get out!! you spy!!
+				RaiseModuleException("File is not recognized a compatible module");
+			} else {
+				m_cFileHFTModule = 1;
+			}
+		} else {
+			m_cFileHFTModule = 2;
+		}
 	}
 
 	// Read file version
@@ -248,9 +265,9 @@ unsigned int CDocumentFile::GetFileVersion() const
 	return m_iFileVersion & 0xFFFF;
 }
 
-bool CDocumentFile::GetModuleType() const
+char CDocumentFile::GetModuleType() const
 {
-	return m_bFileDnModule;
+	return m_cFileHFTModule;
 }
 
 bool CDocumentFile::ReadBlock()

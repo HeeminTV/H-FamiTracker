@@ -91,7 +91,7 @@ void CInstrumentSID::Setup()
 
 void CInstrumentSID::Store(CDocumentFile *pDocFile) {
 
-	pDocFile->WriteBlockInt(4);
+	pDocFile->WriteBlockInt(5);
 	pDocFile->WriteBlockChar(m_pEnvelopeAD);
 	pDocFile->WriteBlockChar(m_pEnvelopeSR);
 
@@ -109,29 +109,40 @@ void CInstrumentSID::Store(CDocumentFile *pDocFile) {
 	CSeqInstrument::Store(pDocFile);		// // //
 }
 
-bool CInstrumentSID::Load(CDocumentFile *pDocFile) {
-
+bool CInstrumentSID::Load(CDocumentFile *pDocFile) {	
 	unsigned int instversion = pDocFile->GetBlockInt();
-	m_pEnvelopeAD = pDocFile->GetBlockChar();
-	m_pEnvelopeSR = pDocFile->GetBlockChar();
-		
-	m_pPWMStart		 = pDocFile->GetBlockInt();
-	m_pPWMEnd		 = pDocFile->GetBlockInt();
-	m_pPWMSpeed		 = pDocFile->GetBlockChar();
-	m_pPWMMode		 = pDocFile->GetBlockChar();
-		
-	m_pFilterStart	 = pDocFile->GetBlockInt();
-	m_pFilterEnd	 = pDocFile->GetBlockInt();
-	m_pFilterSpeed	 = pDocFile->GetBlockChar();
-	m_pFilterMode	 = pDocFile->GetBlockChar();	
 
-	CSeqInstrument::Load(pDocFile);
+	if (instversion <= 255) {
+		m_pEnvelopeAD = pDocFile->GetBlockChar();
+		m_pEnvelopeSR = pDocFile->GetBlockChar();
 
-	// Older files was 0-15, new is 0-31
-	//if (pDocFile->GetBlockVersion() <= 3) DoubleVolume();
+		if (instversion >= 2) {
+			m_pPWMStart = pDocFile->GetBlockInt();
+			m_pPWMEnd = pDocFile->GetBlockInt();
+			m_pPWMSpeed = pDocFile->GetBlockChar();
+			m_pPWMMode = pDocFile->GetBlockChar();
+		}
+
+		if (instversion >= 3) {
+			m_pFilterStart = pDocFile->GetBlockInt();
+			m_pFilterEnd = pDocFile->GetBlockInt();
+			m_pFilterSpeed = pDocFile->GetBlockChar();
+			m_pFilterMode = pDocFile->GetBlockChar();
+		}
+
+		if (instversion >= 4) {
+			CSeqInstrument::Load(pDocFile);
+		}
+	} else {
+		pDocFile->RollbackPointer(4);
+		unsigned int a = pDocFile->GetBlockInt();
+		unsigned int b = pDocFile->GetBlockInt();
+		pDocFile->RollbackPointer(8);
+	}
 
 	return true;
 }
+
 
 void CInstrumentSID::SaveFile(CInstrumentFile *pFile)
 {

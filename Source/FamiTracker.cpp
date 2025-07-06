@@ -1103,7 +1103,7 @@ BOOL CDocManager0CC::DoPromptFileName(CString &fileName, UINT nIDSTitle, DWORD l
 	CString path = theApp.GetSettings()->GetPath(PATH_FTM) + _T("\\");
 
 	CFileDialog OpenFileDlg(bOpenFileDialog, _T("0cc"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-							_T(APP_NAME " modules (*.hnm;*.0cc;*.ftm)|*.hnm; *.0cc; *.ftm|All files (*.*)|*.*||"),
+							_T(APP_NAME " compatible modules (*.hnm;*.eft;*.0cc;*.ftm)|*.hnm; *.eft; *.0cc; *.ftm|All files (*.*)|*.*||"),
 							AfxGetMainWnd(), 0);
 	OpenFileDlg.m_ofn.Flags |= lFlags;
 	OpenFileDlg.m_ofn.lpstrFile = fileName.GetBuffer(_MAX_PATH);

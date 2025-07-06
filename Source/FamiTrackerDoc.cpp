@@ -81,7 +81,7 @@ const bool	CFamiTrackerDoc::DEFAULT_LINEAR_PITCH = false;
 
 // File I/O constants
 static const char *FILE_HEADER				= "FamiTracker Module";
-static const char *FILE_HEADER_DN			= "H-FamiTracker Module";
+static const char *FILE_HEADER_HFT			= "H-FamiTracker Module";
 static const char *FILE_BLOCK_PARAMS		= "PARAMS";
 static const char *FILE_BLOCK_TUNING		= "TUNING";
 static const char *FILE_BLOCK_INFO			= "INFO";
@@ -409,8 +409,8 @@ BOOL CFamiTrackerDoc::OnSaveDocument(LPCTSTR lpszPathName)
 
 	// TODO: Dn-FamiTracker compatibility modes
 
-	// to avoid conflicts with FamiTracker beta 0.5.0 modules, set as Dn-FT module
-	m_bFileDnModule = true;
+	// to avoid conflicts with FamiTracker beta 0.5.0 modules, set as HFT module
+	m_cFileHFTModule = 2;
 	if (!SaveDocument(lpszPathName))
 		return FALSE;
 
@@ -739,7 +739,7 @@ BOOL CFamiTrackerDoc::SaveDocument(LPCTSTR lpszPathName) const
 		return FALSE;
 	}
 
-	DocumentFile.BeginDocument(m_bFileDnModule);
+	DocumentFile.BeginDocument(m_cFileHFTModule >= 1);
 
 	if (!WriteBlocks(&DocumentFile)) {
 		// The save process failed, delete temp file
@@ -832,7 +832,7 @@ bool CFamiTrackerDoc::WriteBlocks(CDocumentFile *pDocFile) const
 	static const int DEFAULT_BLOCK_VERSION[] = {		// // // TODO: use version info
 #ifdef TRANSPOSE_FDS
 		// internal
-		6,		// Parameters
+		10,		// Parameters
 		1,		// Song Info
 		0,		// Tuning
 		3,		// Header
@@ -843,7 +843,7 @@ bool CFamiTrackerDoc::WriteBlocks(CDocumentFile *pDocFile) const
 		1,		// DSamples
 		1,		// Comments
 #else
-		6,		// Parameters
+		10,		// Parameters
 		1,		// Song Info
 		0,		// Tuning
 		3,		// Header
@@ -858,7 +858,7 @@ bool CFamiTrackerDoc::WriteBlocks(CDocumentFile *pDocFile) const
 		6,		// SequencesVRC6
 		1,		// SequencesN163
 		1,		// SequencesS5B
-		4,		// SequencesSID
+		5,		// SequencesSID
 		// 0cc-ft
 		2,		// ParamsExtra
 		1,		// DetuneTables
@@ -905,16 +905,20 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	// Module parameters
 	pDocFile->CreateBlock(FILE_BLOCK_PARAMS, Version);
 	
-	if (Version >= 2)
+	if (Version == 7 || Version == 10) {
+		// EFT or HFT
 		pDocFile->WriteBlockInt(m_iExpansionChip);
-	else
+	} else if (Version >= 2) {
+		pDocFile->WriteBlockChar(m_iExpansionChip);
+	} else {
 		pDocFile->WriteBlockInt(GetTrack(0)->GetSongSpeed());
+	}
 
 	pDocFile->WriteBlockInt(m_iChannelsAvailable);
 	pDocFile->WriteBlockInt(static_cast<int>(m_iMachine));
 
 
-	if (Version >= 7) {		// // // 050B
+	if (Version >= 7 && !(Version >= 10)) {		// // // 050B
 		pDocFile->WriteBlockInt(m_iPlaybackRateType);
 		pDocFile->WriteBlockInt(m_iPlaybackRate);
 	}
@@ -924,7 +928,7 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	if (Version >= 3) {
 		pDocFile->WriteBlockInt(m_iVibratoStyle);
 		// m_bLinearPitch is written in WriteBlock_ParamsExtra
-		if (Version >= 7)
+		if (Version >= 7 && !(Version >= 10))
 			pDocFile->WriteBlockInt(1);		// Hardware sweep pitch reset
 
 		if (Version > 3 && Version <= 6) {
@@ -941,7 +945,7 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 			pDocFile->WriteBlockInt(m_iSpeedSplitPoint);
 		}
 
-		if (Version == 8) {		// // // 050B 2015
+		if (Version == 8 || Version == 9) {		// // // 050B 2015
 			pDocFile->WriteBlockChar(m_iDetuneSemitone);
 			pDocFile->WriteBlockChar(m_iDetuneCent);
 		}
@@ -1510,7 +1514,7 @@ BOOL CFamiTrackerDoc::OpenDocument(LPCTSTR lpszPathName)
 		OpenFile.ValidateFile();
 
 		m_iFileVersion = OpenFile.GetFileVersion();
-		m_bFileDnModule = OpenFile.GetModuleType();
+		m_cFileHFTModule = OpenFile.GetModuleType();
 		DeleteContents();		// // //
 
 		if (m_iFileVersion < 0x0200U) {
@@ -1874,31 +1878,43 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 
 	if (Version == 1) {
 		pTrack->SetSongSpeed(pDocFile->GetBlockInt());
-	}
-	else
+	} else if (Version == 7 || Version == 10) {
+		// EFT (7) or HFT (10)
 		m_iExpansionChip = pDocFile->GetBlockInt();
+	} else {
+		// Others including 0.5.0 BETA (8-9) 
+		//      (NOT 0.4.x BETA)
+		// 
+		// yes EFT does conflict with BETA modules which is not pretty good
+		m_iExpansionChip = pDocFile->GetBlockChar();
+	}
+
+	// For compatibility with E-FamiTracker, 
+	//      FamiTracker BETA 0.4.x (7) is now NOT supported.
+	// 
+	// 0.5.0 still works fine.
 
 	m_iChannelsAvailable = AssertRange(pDocFile->GetBlockInt(), 1, MAX_CHANNELS, "Channel count");		// // //
 
 	m_iMachine = static_cast<machine_t>(pDocFile->GetBlockInt());
 	AssertFileData(m_iMachine == NTSC || m_iMachine == PAL, "Unknown machine");
 
-	if (Version >= 7) {		// // // 050B
+	if (Version == 8 || Version == 9) {		// // // 050B
 		m_iPlaybackRateType = AssertRange(pDocFile->GetBlockInt(), 0, 2, "Playback rate type");
 		// TODO: implement NSF rate
 		m_iPlaybackRate = AssertRange(pDocFile->GetBlockInt(), 0, 0xFFFF, "Playback rate");
 		switch (m_iPlaybackRateType) {
-		case 1:
-			// workaround for now
-			m_iEngineSpeed = static_cast<int>(1000000. / m_iPlaybackRate + .5);
-			break;
-		case 0: case 2:
-		default:
-			m_iEngineSpeed = 0;
+			case 1:
+				// workaround for now
+				m_iEngineSpeed = static_cast<int>(1000000. / m_iPlaybackRate + .5);
+				break;
+			case 0: case 2:
+			default:
+				m_iEngineSpeed = 0;
 		}
-	}
-	else
+	} else {
 		m_iEngineSpeed = pDocFile->GetBlockInt();
+	}
 
 	if (Version > 2)
 		m_iVibratoStyle = (vibrato_t)pDocFile->GetBlockInt();
@@ -1906,7 +1922,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 		m_iVibratoStyle = VIBRATO_OLD;
 
 	// m_bLinearPitch is read in ReadBlock_ParamsExtra()
-	if (Version >= 9) {		// // // 050B
+	if (Version == 9) {		// // // 050B
 		bool SweepReset = pDocFile->GetBlockInt() != 0;
 	}
 
@@ -1931,8 +1947,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 		if (pTrack->GetSongSpeed() > 19) {
 			pTrack->SetSongTempo(pTrack->GetSongSpeed());
 			pTrack->SetSongSpeed(6);
-		}
-		else {
+		} else {
 			pTrack->SetSongTempo(m_iMachine == NTSC ? DEFAULT_TEMPO_NTSC : DEFAULT_TEMPO_PAL);
 		}
 	}
@@ -1945,15 +1960,14 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 
 	if (Version >= 6) {
 		m_iSpeedSplitPoint = pDocFile->GetBlockInt();
-	}
-	else {
+	} else {
 		// Determine if new or old split point is preferred
 		m_iSpeedSplitPoint = OLD_SPEED_SPLIT_POINT;
 	}
 
 	AssertRange<MODULE_ERROR_STRICT>(m_iExpansionChip, 0, 0x3F, "Expansion chip flag");
 
-	if (Version == 8) {		// // // 050B 2015
+	if (Version == 8 || Version == 9) {		// // // 050B 2015
 		m_iDetuneSemitone = pDocFile->GetBlockChar();
 		m_iDetuneCent = pDocFile->GetBlockChar();
 	}
@@ -2560,7 +2574,7 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 				}
 
 				// TODO: Dn-FamiTracker compatibility modes
-				if (m_iFileVersion < 0x450 || m_bFileDnModule) {		// // // 050B
+				if (m_iFileVersion < 0x450 || m_cFileHFTModule >= 1) {		// // // 050B
 					for (auto &x : Note->EffNumber)
 						if (x < EF_COUNT)
 							// read FamiTracker 0.5.0 beta+ effect type order as 0CC effect type order
@@ -4811,7 +4825,7 @@ CString CFamiTrackerDoc::GetFileTitle() const
 	// Return file name without extension
 	CString FileName = GetTitle();
 
-	static const LPCSTR EXT[] = {_T(".ftm"), _T(".0cc"), _T(".hnm"), _T(".ftm.bak"), _T(".0cc.bak"), _T(".hnm.bak")};		// // //
+	static const LPCSTR EXT[] = {_T(".ftm"), _T(".0cc"), _T(".hnm"), _T(".eft"), _T(".ftm.bak"), _T(".0cc.bak"), _T(".hnm.bak"), _T(".eft.bak")};		// // //
 	// Remove extension
 
 	for (size_t i = 0; i < sizeof(EXT) / sizeof(LPCSTR); ++i) {

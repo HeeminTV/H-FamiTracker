@@ -1904,21 +1904,13 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 	);
 	int vis_line = 0;
 
-	int HeaderFuncCounter = 1;
-
 	const auto DrawHeaderFunc = [&] (CString Text) {
 		line += 2; 
 		y += LINE_HEIGHT * 2;
 		pDC->MoveTo(x, y);
 		pDC->SetBkColor(m_colEmptyBg);
-
-		CString DisplayText;
-		DisplayText.Format(_T("%d."), HeaderFuncCounter);
-
-		pDC->SetTextColor(0xC0C0C0); pDC->TextOut(x, y, DisplayText);
-		pDC->SetTextColor(0xFFAFAF); pDC->TextOut(x, y, _T("   ") + Text);
-
-		HeaderFuncCounter++;
+		pDC->SetTextColor(0xFFAFAF);
+		pDC->TextOut(x, y, Text + _T(" registers"));
 	};
 
 	const auto DrawRegFunc = [&] (CString Header, int Count) {
