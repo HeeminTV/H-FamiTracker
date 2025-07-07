@@ -107,11 +107,12 @@ public:
 	afx_msg void OnBnClickedExpansionFDS();
 	afx_msg void OnBnClickedExpansionMMC5();
 	afx_msg void OnBnClickedExpansionS5B();
+	afx_msg void OnBnClickedExpansionAY8930(); // Taken from E-FamiTracker by Euly
 	afx_msg void OnBnClickedExpansionN163();
-	afx_msg void OnBnClickedExpansion5E01(); // Taken from E-FamiTracker by Euly
+	afx_msg void OnBnClickedExpansion5E01();   // Taken from E-FamiTracker by Euly
 	afx_msg void OnBnClickedExpansion7E02();
 	afx_msg void OnBnClickedExpansionOPLL();
-	afx_msg void OnBnClickedExpansion6581(); // Taken from E-FamiTracker by Euly
+	afx_msg void OnBnClickedExpansion6581();   // Taken from E-FamiTracker by Euly
 
 	afx_msg void OnEnChangeApu1OffsetEdit();
 	afx_msg void OnEnChangeApu2OffsetEdit();
@@ -121,6 +122,7 @@ public:
 	afx_msg void OnEnChangeMmc5OffsetEdit();
 	afx_msg void OnEnChangeN163OffsetEdit();
 	afx_msg void OnEnChangeS5bOffsetEdit();
+	afx_msg void OnEnChangeAY8930OffsetEdit();
 	afx_msg void OnEnChange5E01_Apu1OffsetEdit();
 	afx_msg void OnEnChange5E01_Apu2OffsetEdit();
 	afx_msg void OnEnChange7E02_Apu1OffsetEdit();

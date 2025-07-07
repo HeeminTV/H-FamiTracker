@@ -84,6 +84,7 @@ struct stJSONOptionalData {
 	int16_t MMC5_OFFSET = 0;
 	int16_t N163_OFFSET = 0;
 	int16_t S5B_OFFSET = 0;
+	int16_t AY8930_OFFSET = 0;
 	int16_t _5E01_APU1_OFFSET = 0;
 	int16_t _5E01_APU2_OFFSET = 0;
 	int16_t _7E02_APU1_OFFSET = 0;

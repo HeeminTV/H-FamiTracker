@@ -76,6 +76,7 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_BN_CLICKED(IDC_EXPANSION_FDS, OnBnClickedExpansionFDS)
 	ON_BN_CLICKED(IDC_EXPANSION_MMC5, OnBnClickedExpansionMMC5)
 	ON_BN_CLICKED(IDC_EXPANSION_S5B, OnBnClickedExpansionS5B)
+	ON_BN_CLICKED(IDC_EXPANSION_AY8930, OnBnClickedExpansionAY8930) // Taken from E-FamiTracker by Euly
 	ON_BN_CLICKED(IDC_EXPANSION_N163, OnBnClickedExpansionN163)
 	ON_BN_CLICKED(IDC_EXPANSION_5E01, OnBnClickedExpansion5E01) // Taken from E-FamiTracker by Euly
 	ON_BN_CLICKED(IDC_EXPANSION_7E02, OnBnClickedExpansion7E02)
@@ -91,6 +92,7 @@ BEGIN_MESSAGE_MAP(CModulePropertiesDlg, CDialog)
 	ON_EN_CHANGE(IDC_MMC5_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeMmc5OffsetEdit)
 	ON_EN_CHANGE(IDC_N163_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeN163OffsetEdit)
 	ON_EN_CHANGE(IDC_S5B_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeS5bOffsetEdit)
+	ON_EN_CHANGE(IDC_AY8930_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChangeAY8930OffsetEdit)
 	ON_EN_CHANGE(IDC_5E01_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange5E01_Apu1OffsetEdit)
 	ON_EN_CHANGE(IDC_5E01_APU2_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange5E01_Apu2OffsetEdit)
 	ON_EN_CHANGE(IDC_7E02_APU1_OFFSET_EDIT, &CModulePropertiesDlg::OnEnChange7E02_Apu1OffsetEdit)
@@ -223,6 +225,7 @@ constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_DEVICE_OFFSET_EDIT = 
 	IDC_MMC5_OFFSET_EDIT,
 	IDC_N163_OFFSET_EDIT,
 	IDC_S5B_OFFSET_EDIT,
+	IDC_AY8930_OFFSET_EDIT,
 	IDC_5E01_APU1_OFFSET_EDIT,
 	IDC_5E01_APU2_OFFSET_EDIT,
 	IDC_7E02_APU1_OFFSET_EDIT,
@@ -240,6 +243,7 @@ constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_DEVICE_OFFSET_SLIDER 
 	IDC_MMC5_OFFSET_SLIDER,
 	IDC_N163_OFFSET_SLIDER,
 	IDC_S5B_OFFSET_SLIDER,
+	IDC_AY8930_OFFSET_SLIDER,
 	IDC_5E01_APU1_OFFSET_SLIDER,
 	IDC_5E01_APU2_OFFSET_SLIDER,
 	IDC_7E02_APU1_OFFSET_SLIDER,
@@ -257,14 +261,13 @@ constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_DEVICE_OFFSET_DB = {
 	IDC_MMC5_OFFSET_DB,
 	IDC_N163_OFFSET_DB,
 	IDC_S5B_OFFSET_DB,
+	IDC_AY8930_OFFSET_DB,
 	IDC_5E01_APU1_OFFSET_DB,
 	IDC_5E01_APU2_OFFSET_DB,
 	IDC_7E02_APU1_OFFSET_DB,
 	IDC_7E02_APU2_OFFSET_DB,
 	IDC_OPLL_OFFSET_DB,
 	IDC_6581_OFFSET_DB,
-	// #savedevelopersfromhardcording
-	// just kidding :}
 };
 
 constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_STATIC_DEVICE = {
@@ -276,6 +279,7 @@ constexpr std::array<unsigned int, GLOBAL_MIXER_COUNT> IDC_STATIC_DEVICE = {
 	IDC_STATIC_MMC5,
 	IDC_STATIC_N163,
 	IDC_STATIC_S5B,
+	IDC_STATIC_AY8930,
 	IDC_STATIC_5E01_APU1,
 	IDC_STATIC_5E01_APU2,
 	IDC_STATIC_7E02_APU1,
@@ -308,6 +312,7 @@ BOOL CModulePropertiesDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_EXPANSION_MMC5))->SetCheck((m_iExpansions & SNDCHIP_MMC5) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_N163))->SetCheck((m_iExpansions & SNDCHIP_N163) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_5B) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_AY8930))->SetCheck((m_iExpansions & SNDCHIP_AY8930) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_5E01))->SetCheck((m_iExpansions & SNDCHIP_5E01) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_7E02))->SetCheck((m_iExpansions & SNDCHIP_7E02) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_OPLL))->SetCheck((m_iExpansions & SNDCHIP_OPLL) != 0);
@@ -404,16 +409,17 @@ void CModulePropertiesDlg::OnBnClickedOk()
 		unsigned int Gone = m_pDocument->GetExpansionChip() & ~m_iExpansions;
 		for (int i = 0; i < GLOBAL_EXPANSION_COUNT; i++) {
 			if (Gone & (1 << i)) switch (i) {
-				case 0: str += _T("VRC6 "); break;
-				case 1: str += _T("VRC7 "); break;
-				case 2: str += _T("2C33 ");  break;
-				case 3: str += _T("MMC5 "); break;
-				case 4: str += _T("N163 "); break;
-				case 5: str += _T("5B ");   break;
-				case 6: str += _T("5E01 ");   break;
-				case 7: str += _T("7E02 ");   break;
-				case 8: str += _T("YM2413 "); break;
-				case 9: str += _T("6581 "); break;
+				case 0: str += _T("VRC6 ");		break;
+				case 1: str += _T("VRC7 ");		break;
+				case 2: str += _T("2C33 ");		break;
+				case 3: str += _T("MMC5 ");		break;
+				case 4: str += _T("N163 ");		break;
+				case 5: str += _T("5B ");		break;
+				case 6: str += _T("AY8930 ");   break;
+				case 7: str += _T("5E01 ");		break;
+				case 8: str += _T("7E02 ");		break;
+				case 9: str += _T("YM2413 ");	break;
+				case 10: str += _T("6581 ");	break;
 			}
 			if (i == 4 && m_pDocument->ExpansionEnabled(SNDCHIP_N163)
 				&& (m_iExpansions & SNDCHIP_N163) && m_iN163Channels < m_pDocument->GetNamcoChannels()) {
@@ -504,18 +510,20 @@ void CModulePropertiesDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrol
 		OffsetSlider(6, pos); break;
 	case IDC_S5B_OFFSET_SLIDER:
 		OffsetSlider(7, pos); break;
-	case IDC_5E01_APU1_OFFSET_SLIDER:
+	case IDC_AY8930_OFFSET_SLIDER:
 		OffsetSlider(8, pos); break;
-	case IDC_5E01_APU2_OFFSET_SLIDER:
+	case IDC_5E01_APU1_OFFSET_SLIDER:
 		OffsetSlider(9, pos); break;
-	case IDC_7E02_APU1_OFFSET_SLIDER:
+	case IDC_5E01_APU2_OFFSET_SLIDER:
 		OffsetSlider(10, pos); break;
-	case IDC_7E02_APU2_OFFSET_SLIDER:
+	case IDC_7E02_APU1_OFFSET_SLIDER:
 		OffsetSlider(11, pos); break;
-	case IDC_OPLL_OFFSET_SLIDER:
+	case IDC_7E02_APU2_OFFSET_SLIDER:
 		OffsetSlider(12, pos); break;
-	case IDC_6581_OFFSET_SLIDER:
+	case IDC_OPLL_OFFSET_SLIDER:
 		OffsetSlider(13, pos); break;
+	case IDC_6581_OFFSET_SLIDER:
+		OffsetSlider(14, pos); break;
 	}
 
 	UpdateData(TRUE);
@@ -730,6 +738,7 @@ void CModulePropertiesDlg::OnBnClickedSongImport()
 	((CButton*)GetDlgItem(IDC_EXPANSION_MMC5))->SetCheck((m_iExpansions & SNDCHIP_MMC5) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_N163))->SetCheck((m_iExpansions & SNDCHIP_N163) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_S5B))->SetCheck((m_iExpansions & SNDCHIP_5B) != 0);
+	((CButton*)GetDlgItem(IDC_EXPANSION_AY8930))->SetCheck((m_iExpansions & SNDCHIP_AY8930) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_5E01))->SetCheck((m_iExpansions & SNDCHIP_5E01) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_7E02))->SetCheck((m_iExpansions & SNDCHIP_7E02) != 0);
 	((CButton*)GetDlgItem(IDC_EXPANSION_OPLL))->SetCheck((m_iExpansions & SNDCHIP_OPLL) != 0);
@@ -849,28 +858,17 @@ void CModulePropertiesDlg::OnBnClickedExpansionMMC5()
 	updateDeviceMixOffsetUI(5);
 }
 
-void CModulePropertiesDlg::OnBnClickedExpansionS5B()
-{
-	CButton *pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_S5B);
-
-	if (pCheckBox->GetCheck() == BST_CHECKED)
-		m_iExpansions |= SNDCHIP_5B;
-	else
-		m_iExpansions &= ~SNDCHIP_5B;		// // //
-
-	updateDeviceMixOffsetUI(7);
-}
-
 void CModulePropertiesDlg::OnBnClickedExpansionN163()
 {
-	CButton *pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_N163);
-	
+	CButton* pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_N163);
+
 	if (pCheckBox->GetCheck() == BST_CHECKED) {
 		m_iExpansions |= SNDCHIP_N163;
-	} else {
+	}
+	else {
 		m_iExpansions &= ~SNDCHIP_N163;
 	}
-	
+
 	updateN163ChannelCountUI();
 	updateDeviceMixOffsetUI(6);
 }
@@ -883,10 +881,30 @@ void CModulePropertiesDlg::setN163NChannels(int nchan) {
 	text.LoadString(IDS_PROPERTIES_CHANNELS);
 	text.AppendFormat(_T(" %i"), nchan);
 	SetDlgItemText(IDC_CHANNELS_NR, text);
+}
 
-	// text.LoadString(IDS_PROPERTIES_TOTALRAM);
-	//text.AppendFormat(_T(" %i"), 256 - 16 * nchan);
-	// SetDlgItemText(IDC_CHANNELS_NTR, text);
+void CModulePropertiesDlg::OnBnClickedExpansionS5B()
+{
+	CButton *pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_S5B);
+
+	if (pCheckBox->GetCheck() == BST_CHECKED)
+		m_iExpansions |= SNDCHIP_5B;
+	else
+		m_iExpansions &= ~SNDCHIP_5B;		// // //
+
+	updateDeviceMixOffsetUI(7);
+}
+
+void CModulePropertiesDlg::OnBnClickedExpansionAY8930()
+{
+	CButton* pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_AY8930);
+
+	if (pCheckBox->GetCheck() == BST_CHECKED)
+		m_iExpansions |= SNDCHIP_AY8930;
+	else
+		m_iExpansions &= ~SNDCHIP_AY8930;		// // //
+
+	updateDeviceMixOffsetUI(8);
 }
 
 // Taken from Euly by E-FamiTracker
@@ -898,8 +916,8 @@ void CModulePropertiesDlg::OnBnClickedExpansion5E01()
 		m_iExpansions |= SNDCHIP_5E01;
 	else
 		m_iExpansions &= ~SNDCHIP_5E01;
-	updateDeviceMixOffsetUI(8);
 	updateDeviceMixOffsetUI(9);
+	updateDeviceMixOffsetUI(10);
 }
 
 void CModulePropertiesDlg::OnBnClickedExpansion7E02()
@@ -910,8 +928,8 @@ void CModulePropertiesDlg::OnBnClickedExpansion7E02()
 		m_iExpansions |= SNDCHIP_7E02;
 	else
 		m_iExpansions &= ~SNDCHIP_7E02;
-	updateDeviceMixOffsetUI(10);
 	updateDeviceMixOffsetUI(11);
+	updateDeviceMixOffsetUI(12);
 }
 
 void CModulePropertiesDlg::OnBnClickedExpansionOPLL()
@@ -923,7 +941,7 @@ void CModulePropertiesDlg::OnBnClickedExpansionOPLL()
 	else
 		m_iExpansions &= ~SNDCHIP_OPLL;
 
-	updateDeviceMixOffsetUI(12);
+	updateDeviceMixOffsetUI(13);
 }
 
 // Taken from E-FamiTracker by Euly
@@ -936,7 +954,7 @@ void CModulePropertiesDlg::OnBnClickedExpansion6581()
 	else
 		m_iExpansions &= ~SNDCHIP_6581;
 
-	updateDeviceMixOffsetUI(13);
+	updateDeviceMixOffsetUI(14);
 }
 
 // Device mix offset GUI
@@ -982,6 +1000,7 @@ void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 		SNDCHIP_MMC5,
 		SNDCHIP_N163,
 		SNDCHIP_5B,
+		SNDCHIP_AY8930,
 		SNDCHIP_5E01,
 		SNDCHIP_5E01,
 		SNDCHIP_7E02,
@@ -1089,34 +1108,39 @@ void CModulePropertiesDlg::OnEnChangeS5bOffsetEdit()
 	DeviceOffsetEdit(7);
 }
 
-void CModulePropertiesDlg::OnEnChange5E01_Apu1OffsetEdit()
+void CModulePropertiesDlg::OnEnChangeAY8930OffsetEdit()
 {
 	DeviceOffsetEdit(8);
 }
 
-void CModulePropertiesDlg::OnEnChange5E01_Apu2OffsetEdit()
+void CModulePropertiesDlg::OnEnChange5E01_Apu1OffsetEdit()
 {
 	DeviceOffsetEdit(9);
 }
 
-void CModulePropertiesDlg::OnEnChange7E02_Apu1OffsetEdit()
+void CModulePropertiesDlg::OnEnChange5E01_Apu2OffsetEdit()
 {
 	DeviceOffsetEdit(10);
 }
 
-void CModulePropertiesDlg::OnEnChange7E02_Apu2OffsetEdit()
+void CModulePropertiesDlg::OnEnChange7E02_Apu1OffsetEdit()
 {
 	DeviceOffsetEdit(11);
 }
 
-void CModulePropertiesDlg::OnEnChangeOPLLOffsetEdit()
+void CModulePropertiesDlg::OnEnChange7E02_Apu2OffsetEdit()
 {
 	DeviceOffsetEdit(12);
 }
 
-void CModulePropertiesDlg::OnEnChange6581OffsetEdit()
+void CModulePropertiesDlg::OnEnChangeOPLLOffsetEdit()
 {
 	DeviceOffsetEdit(13);
+}
+
+void CModulePropertiesDlg::OnEnChange6581OffsetEdit()
+{
+	DeviceOffsetEdit(14);
 }
 
 // Externall OPLL UI

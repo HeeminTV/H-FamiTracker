@@ -886,6 +886,7 @@
 #define ID_INSTRUMENT_ADD_VRC6          36869
 #define ID_INSTRUMENT_ADD_VRC7          36870
 #define ID_INSTRUMENT_ADD_5E01          36873
+#define ID_INSTRUMENT_ADD_AY8930		53334
 #define ID_INDICATOR_CHIP               53248
 #define ID_INDICATOR_INSTRUMENT         53249
 #define ID_INDICATOR_OCTAVE             53250
@@ -971,6 +972,13 @@
 #define IDC_FILTER_MODE4				53329
 #define IDC_DISABLE_FILTER				53330
 #define IDI_INST_6581                   53331
+#define IDC_EXPANSION_AY8930            53333
+#define IDC_CHIP_AY8930					53332
+#define IDC_LEVEL_AY8930                53334
+#define IDC_AY8930_OFFSET_EDIT          53335
+#define IDC_AY8930_OFFSET_SLIDER        53336
+#define IDC_AY8930_OFFSET_DB            53337
+#define IDC_STATIC_AY8930				53338
 
 
 // Next default values for new objects

@@ -194,6 +194,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_INSTRUMENT_ADD_MMC5, OnAddInstrumentMMC5)
 	ON_COMMAND(ID_INSTRUMENT_ADD_N163, OnAddInstrumentN163)
 	ON_COMMAND(ID_INSTRUMENT_ADD_S5B, OnAddInstrumentS5B)
+	ON_COMMAND(ID_INSTRUMENT_ADD_AY8930, OnAddInstrumentAY8930)
 	ON_COMMAND(ID_INSTRUMENT_ADD_5E01, OnAddInstrument5E01) // Taken from E-FamiTracker by Euly
 	ON_COMMAND(ID_INSTRUMENT_ADD_7E02, OnAddInstrument7E02)
 	ON_COMMAND(ID_INSTRUMENT_ADD_OPLL, OnAddInstrumentOPLL)
@@ -1209,6 +1210,11 @@ void CMainFrame::OnAddInstrumentS5B()
 }
 
 // Taken from E-FamiTracker by Euly
+void CMainFrame::OnAddInstrumentAY8930()
+{
+	NewInstrument(SNDCHIP_AY8930);
+}
+
 void CMainFrame::OnAddInstrument5E01()
 {
 	NewInstrument(SNDCHIP_5E01);
@@ -1696,6 +1702,9 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 				String = _T(" Sunsoft 5B");
 				break;
 			// Taken from E-FamiTracker by Euly
+			case SNDCHIP_AY8930:
+				String = _T(" Microchip AY8930");
+				break;
 			case SNDCHIP_5E01:
 				String = _T(" Eulous 5E01");
 				break;
@@ -1730,19 +1739,19 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 			case 5:
 				String += _T(" + 5B");
 				break;
-
-			// Taken from E-FamiTracker by Euly
 			case 6:
+				String += _T(" + AY8930");
+				break;
+			case 7:
 				String += _T(" + 5E01");
 				break;
-
-			case 7:
+			case 8:
 				String += _T(" + 7E02");
 				break;
-			case 8:
+			case 9:
 				String += _T(" + YM2413");
 				break;
-			case 9:
+			case 10:
 				String += _T(" + 6581");
 				break;
 		}
@@ -2750,6 +2759,8 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_N163, _T("New N163 instrument"));
 	if (Chip & SNDCHIP_5B)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_S5B, _T("New 5B instrument"));
+	if (Chip & SNDCHIP_AY8930)
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_AY8930, _T("New AY8930 instrument"));
 
 	// Taken from E-FamiTracker by Euly
 	if (Chip & SNDCHIP_5E01)
@@ -2786,12 +2797,12 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 		case SNDCHIP_5B:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_S5B);
 			break;
-
-		// Taken from E-FamiTracker by Euly
+		case SNDCHIP_AY8930:
+			menu.SetDefaultItem(ID_INSTRUMENT_ADD_AY8930);
+			break;
 		case SNDCHIP_5E01:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_5E01);
 			break;
-
 		case SNDCHIP_7E02:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_7E02);
 			break;

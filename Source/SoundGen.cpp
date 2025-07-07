@@ -250,7 +250,7 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("MMC5 Pulse 2"), _T("PU2"), SNDCHIP_MMC5, CHANID_MMC5_SQUARE2));
 	AssignChannel(new CTrackerChannel(_T("MMC5 PCM"), _T("PCM"), SNDCHIP_MMC5, CHANID_MMC5_VOICE));
 
-	// Namco N163 it's technically C163 
+	// Namco N163
 	AssignChannel(new CTrackerChannel(_T("N163 Waveform 1"), _T("NA1"), SNDCHIP_N163, CHANID_N163_CH1));
 	AssignChannel(new CTrackerChannel(_T("N163 Waveform 2"), _T("NA2"), SNDCHIP_N163, CHANID_N163_CH2));
 	AssignChannel(new CTrackerChannel(_T("N163 Waveform 3"), _T("NA3"), SNDCHIP_N163, CHANID_N163_CH3));
@@ -276,8 +276,12 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("5B SSG 2"), _T("5B2"), SNDCHIP_5B, CHANID_5B_CH2));
 	AssignChannel(new CTrackerChannel(_T("5B SSG 3"), _T("5B3"), SNDCHIP_5B, CHANID_5B_CH3));
 
-	// Taken from E-FamiTracker by Euly
-	// // // Eulous 5E01
+	// Microchip AY8930
+	AssignChannel(new CTrackerChannel(_T("AY8930 EPSG 1"), _T("AY1"), SNDCHIP_AY8930, CHANID_AY8930_CH1));
+	AssignChannel(new CTrackerChannel(_T("AY8930 EPSG 2"), _T("AY2"), SNDCHIP_AY8930, CHANID_AY8930_CH2));
+	AssignChannel(new CTrackerChannel(_T("AY8930 EPSG 3"), _T("AY3"), SNDCHIP_AY8930, CHANID_AY8930_CH3));
+
+	// Eulous 5E01
 	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 1"), _T("PU1"), SNDCHIP_5E01, CHANID_5E01_SQUARE1));
 	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 2"), _T("PU2"), SNDCHIP_5E01, CHANID_5E01_SQUARE2));
 	AssignChannel(new CTrackerChannel(_T("5E01 Waveform"), _T("WAV"), SNDCHIP_5E01, CHANID_5E01_WAVEFORM));
@@ -605,23 +609,32 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 		case CHANID_5E01_SQUARE1: case CHANID_5E01_SQUARE2: case CHANID_5E01_WAVEFORM: // Taken from E-FamiTracker by Euly
 		case CHANID_7E02_SQUARE1: case CHANID_7E02_SQUARE2: case CHANID_7E02_WAVEFORM:
 			Table = Machine == PAL ? m_iNoteLookupTablePAL : m_iNoteLookupTableNTSC; break;
+
 		case CHANID_VRC6_PULSE1: case CHANID_VRC6_PULSE2:
 		case CHANID_MMC5_SQUARE1: case CHANID_MMC5_SQUARE2:
 			Table = m_iNoteLookupTableNTSC; break;
+
 		case CHANID_VRC6_SAWTOOTH:
 			Table = m_iNoteLookupTableSaw; break;
+
 		case CHANID_VRC7_CH1: case CHANID_VRC7_CH2: case CHANID_VRC7_CH3: case CHANID_VRC7_CH4: case CHANID_VRC7_CH5: case CHANID_VRC7_CH6: // VRC7
 		case CHANID_OPLL_CH1: case CHANID_OPLL_CH2: case CHANID_OPLL_CH3: case CHANID_OPLL_CH4: case CHANID_OPLL_CH5: case CHANID_OPLL_CH6: case CHANID_OPLL_CH7: case CHANID_OPLL_CH8: case CHANID_OPLL_CH9: // YM2413
 			Table = m_iNoteLookupTableVRC7; break;
+
 		case CHANID_FDS:
 			Table = m_iNoteLookupTableFDS; break;
+
 		case CHANID_N163_CH1: case CHANID_N163_CH2: case CHANID_N163_CH3: case CHANID_N163_CH4:
 		case CHANID_N163_CH5: case CHANID_N163_CH6: case CHANID_N163_CH7: case CHANID_N163_CH8:
 			Table = m_iNoteLookupTableN163; break;
-		case CHANID_5B_CH1: case CHANID_5B_CH2: case CHANID_5B_CH3:
+
+		case CHANID_5B_CH1: case CHANID_5B_CH2: case CHANID_5B_CH3: // 5B
+		case CHANID_AY8930_CH1: case CHANID_AY8930_CH2: case CHANID_AY8930_CH3: // AY8930
 			Table = m_iNoteLookupTableS5B; break;
+
 		case CHANID_MMC5_VOICE: // Taken from E-FamiTracker by Euly
 			Table = m_iNoteLookupTablePCM; break;
+
 		case CHANID_6581_CH1: case CHANID_6581_CH2: case CHANID_6581_CH3:
 			Table = m_iNoteLookupTableSID; break;
 
@@ -652,6 +665,7 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 	SurveyMixLevels.at(CHIP_LEVEL_MMC5) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixMMC5);
 	SurveyMixLevels.at(CHIP_LEVEL_N163) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixN163);
 	SurveyMixLevels.at(CHIP_LEVEL_5B) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixS5B);
+	SurveyMixLevels.at(CHIP_LEVEL_AY8930) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixAY8930);
 	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU1);
 	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU2) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU2);
 	SurveyMixLevels.at(CHIP_LEVEL_7E02_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix7E02_APU1);
@@ -1037,6 +1051,7 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_MMC5, float(pSettings->ChipLevels.iLevelMMC5 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_N163, float(pSettings->ChipLevels.iLevelN163 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5B, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_AY8930, float(pSettings->ChipLevels.iLevelAY8930 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU1, float(pSettings->ChipLevels.iLevel5E01_APU1 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU2, float(pSettings->ChipLevels.iLevel5E01_APU2 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_7E02_APU1, float(pSettings->ChipLevels.iLevel7E02_APU1 / 10.0f));
@@ -1557,7 +1572,7 @@ static CString GetStateString(const stChannelState &State)
 		}
 	else if (
 			State.ChannelIndex >= CHANID_VRC7_CH1 && State.ChannelIndex <= CHANID_VRC7_CH6 || // VRC7
-			State.ChannelIndex >= CHANID_OPLL_CH1 && State.ChannelIndex <= CHANID_OPLL_CH9 // YM2413
+			State.ChannelIndex >= CHANID_OPLL_CH1 && State.ChannelIndex <= CHANID_OPLL_CH9    // YM2413
 		)
 		for (const auto &x : VRC7_EFFECTS) {
 			int p = State.Effect[x];
@@ -1575,6 +1590,12 @@ static CString GetStateString(const stChannelState &State)
 		}
 	else if (State.ChannelIndex >= CHANID_5B_CH1 && State.ChannelIndex <= CHANID_5B_CH3)
 		for (const auto &x : S5B_EFFECTS) {
+			int p = State.Effect[x];
+			if (p < 0) continue;
+			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
+		}
+	else if (State.ChannelIndex >= CHANID_AY8930_CH1 && State.ChannelIndex <= CHANID_AY8930_CH3)
+		for (const auto& x : AY8930_EFFECTS) {
 			int p = State.Effect[x];
 			if (p < 0) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
@@ -1737,7 +1758,7 @@ void CSoundGen::ResetAPU()
 	m_pAPU->Reset();
 
 	// Enable all channels
-	// 2A03 parties
+	// 2A03 series
 	WriteRegister(0x4015, 0x0F); WriteRegister(0x4017, 0x00);
 
 	WriteRegister(0x4115, 0x0F); WriteRegister(0x4117, 0x00);

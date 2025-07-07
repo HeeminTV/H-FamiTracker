@@ -34,11 +34,11 @@ const TCHAR *ROOT_ITEMS[] = {
 	_T("2A03/2A07"), 
 	_T("Konami VRC6"), 
 	_T("Konami VRC7"), 
-	_T("Nintendo FDS"), 
+	_T("Nintendo 2C33"), 
 	_T("Nintendo MMC5"), 
-	_T("Namco 106"), 
+	_T("Namco N163"), 
 	_T("Sunsoft 5B"),
-	// _T("5E01") // wait, where are these all used??
+	_T("Microchip AY8930"),
 };
 
 const int CHILD_ITEMS_ID[ROOT_ITEM_COUNT][9] = {

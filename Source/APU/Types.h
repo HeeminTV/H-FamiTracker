@@ -22,18 +22,24 @@
 
 #include <cstdint>
 
-const int SNDCHIP_NONE	= 0;			// 2A03 Only
-const int SNDCHIP_VRC6	= 1;			// Konami VRCVI
-const int SNDCHIP_VRC7	= 2;			// Konami VRCVII
-const int SNDCHIP_FDS	= 4;			// Famicom Disk Sound
-const int SNDCHIP_MMC5	= 8;			// Nintendo MMC5
-const int SNDCHIP_N163	= 16;			// Namco N163
-const int SNDCHIP_5B	= 32;			// Sunsoft 5B
-const int SNDCHIP_OPLL	= 64;			// Yamaha YM2413
-const int SNDCHIP_7E02	= 128;			// Saeyahn 7E02
-const int SNDCHIP_5E01	= 256;			// Eulous 5E01			// eft compatible
-const int SNDCHIP_6581	= 512;			// MOS Technology 6581	// eft compatible
-const int SNDCHIP_8580  = 1024;			// MOS Technology 8580
+const int SNDCHIP_NONE		= 0;			// 2A03 Only
+const int SNDCHIP_VRC6		= 1;			// Konami VRCVI
+const int SNDCHIP_VRC7		= 2;			// Konami VRCVII
+const int SNDCHIP_FDS		= 4;			// Famicom Disk Sound
+const int SNDCHIP_MMC5		= 8;			// Nintendo MMC5
+const int SNDCHIP_N163		= 16;			// Namco N163
+const int SNDCHIP_5B		= 32;			// Sunsoft 5B
+const int SNDCHIP_AY8930	= 64;			// Microchip AY8930		// eft compatible
+const int SNDCHIP_SAA1099	= 128;			// Philips SAA1099		// eft compatible
+const int SNDCHIP_5E01		= 256;			// Eulous 5E01			// eft compatible
+const int SNDCHIP_6581		= 512;			// MOS Technology 6581	// eft compatible
+const int SNDCHIP_8580		= 1024;			// MOS Technology 8580	// eft compatible
+const int SNDCHIP_VCS		= 2048;			// CO10444
+const int SNDCHIP_OPLL		= 4096;			// Yamaha YM2413
+const int SNDCHIP_7E02		= 8192;			// Saeyahn 7E02
+const int SNDCHIP_DCSG		= 16384;		// Texas Instruments SN76489
+const int SNDCHIP_SSG		= 32768;		// Yamaha YM2149F
+const int SNDCHIP_AY		= 65536;		// General Instrument AY-3-8910
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,
@@ -71,6 +77,10 @@ enum chan_id_t {
 	CHANID_5B_CH1,
 	CHANID_5B_CH2,
 	CHANID_5B_CH3,
+
+	CHANID_AY8930_CH1,
+	CHANID_AY8930_CH2,
+	CHANID_AY8930_CH3,
 
 	CHANID_5E01_SQUARE1,
 	CHANID_5E01_SQUARE2,

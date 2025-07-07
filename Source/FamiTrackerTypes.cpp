@@ -66,17 +66,17 @@ effect_t GetEffectFromChar(char ch, int Chip, bool *bValid)		// // //
 			if (ch == EFF_CHAR[x])
 				return x;
 		break;
+	case SNDCHIP_AY8930:
+		for (const auto& x : AY8930_EFFECTS)
+			if (ch == EFF_CHAR[x])
+				return x;
+		break;
 	case SNDCHIP_VRC7: case SNDCHIP_OPLL:
 		for (const auto &x : VRC7_EFFECTS)
 			if (ch == EFF_CHAR[x])
 				return x;
-		break;
-	/*case SNDCHIP_OPLL:
-		for (const auto& x : OPLL_EFFECTS)
-			if (ch == EFF_CHAR[x])
-				return x;
-		break;
-		*/
+		break;//k;
+		//*/
 	case SNDCHIP_6581:
 		for (const auto& x : SID_EFFECTS)
 			if (ch == EFF_CHAR[x])

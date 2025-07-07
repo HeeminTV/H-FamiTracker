@@ -88,6 +88,8 @@ BOOL CSwapDlg::OnInitDialog()
 		m_cChipFirst->AddString(_T("N163"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_5B))
 		m_cChipFirst->AddString(_T("5B"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_AY8930))
+		m_cChipFirst->AddString(_T("AY8930"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_5E01))
 		m_cChipFirst->AddString(_T("5E01"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
@@ -137,6 +139,8 @@ int CSwapDlg::GetChipFromString(const CString str)
 		return SNDCHIP_N163;
 	else if (str == _T("5B"))
 		return SNDCHIP_5B;
+	else if (str == _T("AY8930"))
+		return SNDCHIP_AY8930;
 	else if (str == _T("5E01"))
 		return SNDCHIP_5E01;
 	else if (str == _T("7E02"))
@@ -154,16 +158,17 @@ int CSwapDlg::GetFinalChannel(unsigned int Channel, unsigned int Chip) const
 	CFamiTrackerDoc *pDoc = CFamiTrackerDoc::GetDoc();
 
 	switch (Chip) {
-		case SNDCHIP_VRC6: Channel += CHANID_VRC6_PULSE1; break;
-		case SNDCHIP_VRC7: Channel += CHANID_VRC7_CH1; break;
-		case SNDCHIP_FDS:  Channel += CHANID_FDS; break;
-		case SNDCHIP_MMC5: Channel += CHANID_MMC5_SQUARE1; break;
-		case SNDCHIP_N163: Channel += CHANID_N163_CH1; break;
-		case SNDCHIP_5B:   Channel += CHANID_5B_CH1; break;
-		case SNDCHIP_5E01: Channel += CHANID_5E01_SQUARE1; break;
-		case SNDCHIP_7E02: Channel += CHANID_7E02_SQUARE1; break;
-		case SNDCHIP_OPLL: Channel += CHANID_OPLL_CH1; break;
-		case SNDCHIP_6581: Channel += CHANID_6581_CH1; break;
+		case SNDCHIP_VRC6:		Channel += CHANID_VRC6_PULSE1; break;
+		case SNDCHIP_VRC7:		Channel += CHANID_VRC7_CH1; break;
+		case SNDCHIP_FDS:		Channel += CHANID_FDS; break;
+		case SNDCHIP_MMC5:		Channel += CHANID_MMC5_SQUARE1; break;
+		case SNDCHIP_N163:		Channel += CHANID_N163_CH1; break;
+		case SNDCHIP_5B:		Channel += CHANID_5B_CH1; break;
+		case SNDCHIP_AY8930:    Channel += CHANID_AY8930_CH1; break;
+		case SNDCHIP_5E01:		Channel += CHANID_5E01_SQUARE1; break;
+		case SNDCHIP_7E02:		Channel += CHANID_7E02_SQUARE1; break;
+		case SNDCHIP_OPLL:		Channel += CHANID_OPLL_CH1; break;
+		case SNDCHIP_6581:		Channel += CHANID_6581_CH1; break;
 	}
 
 	return pDoc->GetChannelIndex(Channel);

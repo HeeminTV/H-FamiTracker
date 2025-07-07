@@ -151,6 +151,7 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 		case SNDCHIP_MMC5:
 		case SNDCHIP_N163:		// // //
 		case SNDCHIP_5B:
+		case SNDCHIP_AY8930:
 		case SNDCHIP_VRC6:
 		case SNDCHIP_FDS:
 		case SNDCHIP_5E01: // Taken from E-FamiTracker by Euly
@@ -248,9 +249,6 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			int limit = channelHandler->getDutyMax();
 			return EffParam <= limit;
 		}
-		case EF_AY8930_PULSE_WIDTH: // Taken from E-FamiTracker by Euly
-			// return (m_iChip == SNDCHIP_AY8930 && EffParam <= 0x0F) || (m_iChip == SNDCHIP_6581 && EffParam <= 0xFF);
-			return m_iChip == SNDCHIP_6581 && EffParam <= 0xFF;
 		case EF_SID_FILTER_RESONANCE: case EF_SID_FILTER_CUTOFF_HI: case EF_SID_FILTER_MODE:
 			return (m_iChip == SNDCHIP_6581 && EffParam <= 0x0F);
 		case EF_SID_GATE_MODE:
@@ -265,9 +263,14 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			return m_iChip == SNDCHIP_FDS && (EffParam <= 0x3F || EffParam >= 0x80);
 		case EF_FDS_MOD_SPEED_HI: case EF_FDS_MOD_SPEED_LO: case EF_FDS_MOD_BIAS:
 			return m_iChip == SNDCHIP_FDS;
-		case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE:
-		case EF_SUNSOFT_NOISE:		// // // 050B
-			return m_iChip == SNDCHIP_5B;
+		case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE: case EF_SUNSOFT_NOISE:
+			return m_iChip == SNDCHIP_5B || m_iChip == SNDCHIP_AY8930;
+		case EF_AY8930_AND_MASK: case EF_AY8930_OR_MASK:
+			return m_iChip == SNDCHIP_AY8930;
+		case EF_AY8930_PULSE_WIDTH:
+			return (m_iChip == SNDCHIP_AY8930 && EffParam <= 0x0F) || (m_iChip == SNDCHIP_6581 && EffParam <= 0xFF);
+		case EF_AY8930_VOL:
+			return m_iChip == SNDCHIP_AY8930 && EffParam <= 0x01;
 		case EF_N163_WAVE_BUFFER:
 			return m_iChip == SNDCHIP_N163 && EffParam <= 0x7F;
 		case EF_FDS_VOLUME:

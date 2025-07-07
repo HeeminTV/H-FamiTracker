@@ -118,7 +118,10 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("H0x - SID filter mode"),
 	_T("Exy - SID envelope"),
 	_T("Y0x - SID test/ring/sync/gate"),
-	_T("Xxx - SID pulse width"), // _T("Xxx - AY8930 pulse width, values above 08 act as 08"),
+	_T("Xxx - AY8930 pulse width, values above 08 act as 08"),
+	_T("Yxx - AY8930 noise AND mask"),
+	_T("Zxx - AY8930 noise OR mask"),
+	_T("5xx - AY8930 least significant volume bit"),
 	_T("Z0x - SID gate bit mode")
 };
 
@@ -2522,6 +2525,9 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 		if (pDoc->ExpansionEnabled(SNDCHIP_5B))
 			m_pNoteQueue->AddMap({CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3});
 
+		if (pDoc->ExpansionEnabled(SNDCHIP_AY8930))
+			m_pNoteQueue->AddMap({ CHANID_AY8930_CH1, CHANID_AY8930_CH2, CHANID_AY8930_CH3 });
+
 		if (pDoc->ExpansionEnabled(SNDCHIP_5E01)) {
 			m_pNoteQueue->AddMap({ CHANID_5E01_SQUARE1, CHANID_5E01_SQUARE2 });
 			for (unsigned int i = 0; i < 3; ++i)
@@ -3849,11 +3855,11 @@ void CFamiTrackerView::OnTrackerRecordToInst()		// // //
 	if (Chip != SNDCHIP_FDS) {
 		inst_type_t Type = INST_NONE;
 		switch (Chip) {
-		case SNDCHIP_NONE: case SNDCHIP_MMC5: case SNDCHIP_5E01: case SNDCHIP_7E02: Type = INST_2A03; break;
-		case SNDCHIP_VRC6: Type = INST_VRC6; break;
-		case SNDCHIP_N163: Type = INST_N163; break;
-		case SNDCHIP_5B:  Type = INST_S5B; break;
-		case SNDCHIP_6581: Type = INST_SID; break; // Taken from E-FamiTracker by Euly
+			case SNDCHIP_NONE:	case SNDCHIP_MMC5: case SNDCHIP_5E01: case SNDCHIP_7E02:Type = INST_2A03; break;
+			case SNDCHIP_VRC6:															Type = INST_VRC6; break;
+			case SNDCHIP_N163:															Type = INST_N163; break;
+			case SNDCHIP_5B:	case SNDCHIP_AY8930:									Type = INST_S5B;  break;
+			case SNDCHIP_6581:															Type = INST_SID;  break; // Taken from E-FamiTracker by Euly
 		}
 		if (Type != INST_NONE) for (int i = 0; i < SEQ_COUNT; i++)
 			if (pDoc->GetFreeSequence(Type, i) == -1) {
@@ -4235,6 +4241,7 @@ CString	CFamiTrackerView::GetEffectHint(const stChanNote &Note, int Column) cons
 	if (Index > EF_FDS_MOD_DEPTH || (Index == EF_FDS_MOD_DEPTH && Param >= 0x80)) ++Index;
 	if (Index > EF_NOTE_CUT || (Index == EF_NOTE_CUT && Param >= 0x80 && Channel == CHANID_2A03_TRIANGLE)) ++Index;
 	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && (Chip == SNDCHIP_VRC7 || Chip == SNDCHIP_OPLL || Chip == SNDCHIP_N163))) ++Index;
+	// TODO: add hints for the added chips
 	if (Index > EF_DUTY_CYCLE || (Index == EF_DUTY_CYCLE && Chip == SNDCHIP_N163)) ++Index;
 	if (Index > EF_VOLUME || (Index == EF_VOLUME && Param >= 0xE0)) ++Index;
 	if (Index > EF_SPEED || (Index == EF_SPEED && Param >= GetDocument()->GetSpeedSplitPoint())) ++Index;

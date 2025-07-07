@@ -35,6 +35,7 @@
 #include "5E01.h" // Taken from E-FamiTracker by Euly
 #include "7E02.h"
 #include "OPLL.h"
+#include "AY8930.h"
 #include "6581.h"
 
 #include "SoundChip.h"
@@ -185,6 +186,7 @@ CAPU::CAPU(IAudioCallback *pCallback) :		// // //
 	m_pMMC5 = new CMMC5(m_pMixer);
 	m_pVRC6 = new CVRC6(m_pMixer);
 	m_pS5B  = new CS5B(m_pMixer);
+	m_pAY8930 = new CAY8930(m_pMixer);
 
 	m_fLevelVRC7 = 1.0f;
 	m_fLevelOPLL = 1.0f;
@@ -200,6 +202,7 @@ CAPU::~CAPU()
 	SAFE_RELEASE(m_pMMC5);
 	SAFE_RELEASE(m_pVRC6);
 	SAFE_RELEASE(m_pS5B);
+	SAFE_RELEASE(m_pAY8930);
 
 	SAFE_RELEASE(m_pMixer);
 
@@ -329,6 +332,8 @@ void CAPU::SetExternalSound(int Chip)
 		m_SoundChips2.push_back(m_pN163.get());
 	if (Chip & SNDCHIP_5B)
 		m_SoundChips.push_back(m_pS5B);
+	if (Chip & SNDCHIP_AY8930)
+		m_SoundChips.push_back(m_pAY8930);
 	if (Chip & SNDCHIP_5E01) // Taken from E-FamiTracker by Euly
 		m_SoundChips2.push_back(m_p5E01.get());
 	if (Chip & SNDCHIP_7E02)
@@ -618,6 +623,7 @@ double CAPU::GetFreq(int Chip, int Chan) const
 	case SNDCHIP_MMC5:		return PtrGetFreq(*m_pMMC5);
 	case SNDCHIP_N163:		return PtrGetFreq(*m_pN163);
 	case SNDCHIP_5B:		return PtrGetFreq(*m_pS5B);
+	case SNDCHIP_AY8930:	return PtrGetFreq(*m_pAY8930);
 	case SNDCHIP_5E01:		return PtrGetFreq(*m_p5E01); // Taken from E-FamiTracker by Euly
 	case SNDCHIP_7E02:		return PtrGetFreq(*m_p7E02);
 	case SNDCHIP_OPLL:		return PtrGetFreq(*m_pOPLL);
@@ -639,17 +645,18 @@ CRegisterState *CAPU::GetRegState(int Chip, int Reg) const		// // //
 	};
 
 	switch (Chip) {
-	case SNDCHIP_NONE: return PtrGetRegState(*m_p2A03);
-	case SNDCHIP_VRC6: return PtrGetRegState(*m_pVRC6);
-	case SNDCHIP_VRC7: return PtrGetRegState(*m_pVRC7);
-	case SNDCHIP_FDS:  return PtrGetRegState(*m_pFDS);
-	case SNDCHIP_MMC5: return PtrGetRegState(*m_pMMC5);
-	case SNDCHIP_N163: return PtrGetRegState(*m_pN163);
-	case SNDCHIP_5B:   return PtrGetRegState(*m_pS5B);
-	case SNDCHIP_5E01: return PtrGetRegState(*m_p5E01); // Taken from E-FamiTracker by Euly
-	case SNDCHIP_7E02: return PtrGetRegState(*m_p7E02);
-	case SNDCHIP_OPLL: return PtrGetRegState(*m_pOPLL);
-	case SNDCHIP_6581: return PtrGetRegState(*m_p6581); // Taken from E-FamiTracker by Euly
+	case SNDCHIP_NONE:	return PtrGetRegState(*m_p2A03);
+	case SNDCHIP_VRC6:	return PtrGetRegState(*m_pVRC6);
+	case SNDCHIP_VRC7:	return PtrGetRegState(*m_pVRC7);
+	case SNDCHIP_FDS:	return PtrGetRegState(*m_pFDS);
+	case SNDCHIP_MMC5:	return PtrGetRegState(*m_pMMC5);
+	case SNDCHIP_N163:	return PtrGetRegState(*m_pN163);
+	case SNDCHIP_5B:	return PtrGetRegState(*m_pS5B);
+	case SNDCHIP_AY8930:return PtrGetRegState(*m_pAY8930);	// Taken from E-FamiTracker by Euly
+	case SNDCHIP_5E01:	return PtrGetRegState(*m_p5E01);	// Taken from E-FamiTracker by Euly
+	case SNDCHIP_7E02:	return PtrGetRegState(*m_p7E02);
+	case SNDCHIP_OPLL:	return PtrGetRegState(*m_pOPLL);
+	case SNDCHIP_6581:	return PtrGetRegState(*m_p6581);	 // Taken from E-FamiTracker by Euly
 
 	default: AfxDebugBreak(); return nullptr;
 	}
@@ -712,10 +719,11 @@ void CAPUConfig::SetChipLevel(chip_level_t Chip, float LeveldB, bool SurveyMix)
 			-494,	// VRC6
 			776,	// VRC7
 
-			-1700,	// FDS
+			-1700,	// 2C33
 			869,	// MMC5
 			-1681,	// N163
-			108,	// S5B
+			108,	// 5B
+			108,	// AY8930
 
 			0,		// 5E01 APU1
 			-13,	// 5E01 APU2
@@ -723,7 +731,7 @@ void CAPUConfig::SetChipLevel(chip_level_t Chip, float LeveldB, bool SurveyMix)
 			0,		// 7E02 APU1
 			-13,	// 7E02 APU2
 
-			776,	// OPLL
+			776,	// YM2413
 
 			0,		// 6581
 		};

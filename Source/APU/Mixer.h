@@ -37,6 +37,7 @@ enum chip_level_t {
 	CHIP_LEVEL_MMC5,
 	CHIP_LEVEL_N163,
 	CHIP_LEVEL_5B,
+	CHIP_LEVEL_AY8930,
 	CHIP_LEVEL_5E01_APU1,
 	CHIP_LEVEL_5E01_APU2,
 	CHIP_LEVEL_7E02_APU1,
@@ -83,6 +84,7 @@ struct MixerConfig {
 		0,		// MMC5
 		0,		// N163
 		0,		// 5B
+		0,		// AY8930
 		0,		// 5E01_APU1
 		0,		// 5E01_APU2
 		0,		// 7E02_APU1
@@ -188,6 +190,7 @@ private:
 	void MixVRC6(int Value, int Time);
 	void MixMMC5(int Value, int Time);
 	void MixS5B(int Value, int Time);
+	void MixAY8930(int Value, int Time);
 
 	void StoreChannelLevel(int Channel, int Value);
 	void ClearChannelLevels();
@@ -205,6 +208,7 @@ private:
 	Blip_Synth<blip_good_quality> SynthVRC6;
 	Blip_Synth<blip_good_quality> SynthMMC5;
 	Blip_Synth<blip_good_quality> SynthS5B;		// // // 050B
+	Blip_Synth<blip_good_quality> SynthAY8930;
 
 	/// Only used by CMixer::ClearBuffer(), which clears the global Blip_Buffer
 	/// and all Blip_Synth owned by CMixer.
@@ -218,7 +222,8 @@ private:
 	#define FOREACH_SYNTH(X, SEP) \
 		X(SynthVRC6) SEP \
 		X(SynthMMC5) SEP \
-		X(SynthS5B)
+		X(SynthS5B)  SEP \
+		X(SynthAY8930)
 
 	// Blip buffer object
 	Blip_Buffer	BlipBuffer;
@@ -250,6 +255,7 @@ private:
 	float		m_fLevelFDS;
 	float		m_fLevelN163;
 	float		m_fLevel5B;		// // // 050B
+	float		m_fLevelAY8930;
 	float		m_fLevel5E01_APU1;
 	float		m_fLevel5E01_APU2;
 	float		m_fLevel7E02_APU1;

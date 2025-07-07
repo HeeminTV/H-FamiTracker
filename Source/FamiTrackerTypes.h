@@ -167,7 +167,10 @@ enum effect_t : unsigned char {
 	EF_SID_FILTER_MODE,		// // // SID filter mode
 	EF_SID_ENVELOPE,		// // // SID envelope parameters
 	EF_SID_RING,			// // // SID ringmod
-	EF_AY8930_PULSE_WIDTH,  // AY8930 pulse width
+	EF_AY8930_PULSE_WIDTH,  // // // AY8930 pulse width
+	EF_AY8930_AND_MASK,   	// // // AY8930 noise AND mask
+	EF_AY8930_OR_MASK,   	// // // AY8930 noise OR mask
+	EF_AY8930_VOL,			// // // AY8930 extra volume bit
 	EF_SID_GATE_MODE,		// SID gate mode
 
 	EF_COUNT
@@ -177,13 +180,12 @@ enum effect_t : unsigned char {
 // Global/2A03 effects should be listed before expansion-specific effects
 // sharing the same character.
 
-// const effect_t VRC6_EFFECTS[] = {};
-const effect_t VRC7_EFFECTS[] = {EF_VRC7_PORT, EF_VRC7_WRITE};
-const effect_t FDS_EFFECTS[] = {EF_FDS_MOD_DEPTH, EF_FDS_MOD_SPEED_HI, EF_FDS_MOD_SPEED_LO, EF_FDS_VOLUME, EF_FDS_MOD_BIAS};
-// const effect_t MMC5_EFFECTS[] = {};
-const effect_t N163_EFFECTS[] = {EF_N163_WAVE_BUFFER};
-const effect_t S5B_EFFECTS[] = {EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO, EF_SUNSOFT_NOISE};
-const effect_t SID_EFFECTS[] = { EF_AY8930_PULSE_WIDTH, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_CUTOFF_HI, EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_MODE, EF_SID_ENVELOPE, EF_SID_RING, EF_SID_GATE_MODE };
+const effect_t VRC7_EFFECTS[]	= {EF_VRC7_PORT, EF_VRC7_WRITE};
+const effect_t FDS_EFFECTS[]	= {EF_FDS_MOD_DEPTH, EF_FDS_MOD_SPEED_HI, EF_FDS_MOD_SPEED_LO, EF_FDS_VOLUME, EF_FDS_MOD_BIAS};
+const effect_t N163_EFFECTS[]	= {EF_N163_WAVE_BUFFER};
+const effect_t S5B_EFFECTS[]	= {EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO, EF_SUNSOFT_NOISE};
+const effect_t AY8930_EFFECTS[] = {EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO, EF_SUNSOFT_NOISE, EF_AY8930_PULSE_WIDTH, EF_AY8930_AND_MASK, EF_AY8930_OR_MASK, EF_AY8930_VOL};
+const effect_t SID_EFFECTS[]	= {EF_AY8930_PULSE_WIDTH, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_CUTOFF_HI, EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_MODE, EF_SID_ENVELOPE, EF_SID_RING, EF_SID_GATE_MODE};
 
 // Effect checking = bool CTrackerChannel::IsEffectCompatible
 
@@ -240,7 +242,10 @@ const char EFF_CHAR[] = {
 	'H',	// EF_SID_FILTER_MODE
 	'E',	// EF_SID_ENVELOPE
 	'Y',	// EF_SID_RING
-	'X',   	// EF_AY8930_PULSE_WIDTH
+	'X',   	// EF_AY8930_PULSE_WIDTH,
+	'Y',   	// EF_AY8930_AND_MASK,
+	'Z',   	// EF_AY8930_OR_MASK,
+	'5',    // EF_AY8930_VOL,
 	'Z',	// EF_SID_GATE_MODE
 };
 

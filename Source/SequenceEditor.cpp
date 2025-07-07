@@ -255,9 +255,6 @@ void CSequenceEditor::SelectSequence(CSequence *pSequence, int Type, int Instrum
 			else
 				m_pGraphEditor = new CBarGraphEditor(pSequence, m_iMaxDuty);
 			break;		
-		// case SEQ_EXTRA: todo
-		//	m_pGraphEditor = new CSBarGraphEditor(pSequence, 255);
-		//	break;
 	}
 
 	m_pSetting->SelectSequence(pSequence, Type, InstrumentType);

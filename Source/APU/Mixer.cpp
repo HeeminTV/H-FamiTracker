@@ -99,6 +99,7 @@ CMixer::CMixer(CAPU* Parent)
 	m_fLevelFDS = 1.0f;
 	m_fLevelN163 = 1.0f;
 	m_fLevel5B = 1.0f;		// // // 050B
+	m_fLevelAY8930 = 1.0f;
 	m_fLevel5E01_APU1 = 1.0f;
 	m_fLevel5E01_APU2 = 1.0f;
 	m_fLevel7E02_APU1 = 1.0f;
@@ -148,6 +149,9 @@ void CMixer::SetChipLevel(chip_level_t Chip, float Level)
 		case CHIP_LEVEL_5B:		// // // 050B
 			m_fLevel5B = Level;
 			break;
+		case CHIP_LEVEL_AY8930:
+			m_fLevelAY8930 = Level;
+			break;
 		case CHIP_LEVEL_5E01_APU1:
 			m_fLevel5E01_APU1 = Level;
 			break;
@@ -177,16 +181,17 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 	float ATTENUATION_2A03 = 1.0f;
 
 	if (!UseSurveyMix) {
-		const float ATTENUATION_VRC6 = 0.80f;
-		const float ATTENUATION_VRC7 = 0.64f;
-		const float ATTENUATION_MMC5 = 0.83f;
-		const float ATTENUATION_FDS = 0.90f;
-		const float ATTENUATION_N163 = 0.70f;		
-		const float ATTENUATION_5B = 0.50f;		// // // 050B
-		const float ATTENUATION_5E01 = 0.80f; // Taken from E-FamiTracker by Euly
-		const float ATTENUATION_7E02 = 0.80f;
-		const float ATTENUATION_OPLL = 0.64f;
-		const float ATTENUATION_6581 = 0.80f; // Taken from E-FamiTracker by Euly
+		const float ATTENUATION_VRC6   = 0.80f;
+		const float ATTENUATION_VRC7   = 0.64f;
+		const float ATTENUATION_MMC5   = 0.83f;
+		const float ATTENUATION_FDS    = 0.90f;
+		const float ATTENUATION_N163   = 0.70f;		
+		const float ATTENUATION_5B     = 0.50f;		// // // 050B
+		const float ATTENUATION_AY8930 = 0.50f;
+		const float ATTENUATION_5E01   = 0.80f; // Taken from E-FamiTracker by Euly
+		const float ATTENUATION_7E02   = 0.80f;
+		const float ATTENUATION_OPLL   = 0.64f;
+		const float ATTENUATION_6581   = 0.80f; // Taken from E-FamiTracker by Euly
 
 		// Increase headroom if some expansion chips are enabled
 
@@ -202,6 +207,8 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 			ATTENUATION_2A03 *= ATTENUATION_N163;
 		if (m_iExternalChip & SNDCHIP_5B)		// // // 050B
 			ATTENUATION_2A03 *= ATTENUATION_5B;
+		if (m_iExternalChip & SNDCHIP_AY8930)
+			ATTENUATION_2A03 *= ATTENUATION_AY8930;
 		if (m_iExternalChip & SNDCHIP_5E01)		// Taken from E-FamiTracker by Euly
 			ATTENUATION_2A03 *= ATTENUATION_5E01;
 		if (m_iExternalChip & SNDCHIP_7E02)
@@ -214,16 +221,17 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 	} else {
 		// attenuation scaling is exponential based on total chips used
 		uint8_t TotalChipsUsed = 1;
-		if (m_iExternalChip & SNDCHIP_VRC6) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_VRC7) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_FDS) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_MMC5) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_N163) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_5B) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_5E01) TotalChipsUsed++; 
-		if (m_iExternalChip & SNDCHIP_7E02) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_OPLL) TotalChipsUsed++;
-		if (m_iExternalChip & SNDCHIP_6581) TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_VRC6)   TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_VRC7)   TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_FDS)    TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_MMC5)   TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_N163)   TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_5B)     TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_AY8930) TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_5E01)   TotalChipsUsed++; 
+		if (m_iExternalChip & SNDCHIP_7E02)   TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_OPLL)   TotalChipsUsed++;
+		if (m_iExternalChip & SNDCHIP_6581)   TotalChipsUsed++;
 		ATTENUATION_2A03 *= static_cast<float>(1.0 / (float)TotalChipsUsed);
 	}
 
@@ -250,6 +258,7 @@ void CMixer::RecomputeEmuMixState()
 	SynthVRC6.treble_eq(eq);
 	SynthMMC5.treble_eq(eq);
 	SynthS5B.treble_eq(eq);
+	SynthAY8930.treble_eq(eq);
 
 	// Volume levels
 	auto &chip2A03 = *m_APU->m_p2A03;
@@ -281,9 +290,10 @@ void CMixer::RecomputeEmuMixState()
 
 	if (UseSurveyMixing) {
 		chipVRC7.UpdateMixLevel(Volume * m_fLevelVRC7, UseSurveyMixing);
-		SynthVRC6.volume(Volume * m_fLevelVRC6, 15 + 15 + 31);	// P1 + P2 + Saw, linear
-		SynthMMC5.volume(Volume * m_fLevelMMC5, 15 + 15 + 255);	// P1 + P2 + DAC, linear
-		SynthS5B.volume(Volume * m_fLevel5B, 255 + 255 + 255);	// 5B1 + 5B2 + 5B3, linear
+		SynthVRC6.volume(Volume * m_fLevelVRC6, 15 + 15 + 31);			// P1 + P2 + Saw, linear
+		SynthMMC5.volume(Volume * m_fLevelMMC5, 15 + 15 + 255);			// P1 + P2 + DAC, linear
+		SynthS5B.volume(Volume * m_fLevel5B, 255 + 255 + 255);			// 5B1 + 5B2 + 5B3, linear
+		SynthAY8930.volume(Volume * m_fLevelAY8930, 255 + 255 + 255);	// AY1 + AY2 + AY3, linear
 		chipOPLL.UpdateMixLevel(Volume * m_fLevelOPLL, UseSurveyMixing);
 	}
 	else {
@@ -294,6 +304,7 @@ void CMixer::RecomputeEmuMixState()
 		SynthVRC6.volume(Volume * 3.98333f * m_fLevelVRC6, 500);
 		SynthMMC5.volume(Volume * 1.18421f * m_fLevelMMC5, 130);
 		SynthS5B.volume(Volume * m_fLevel5B, 1200);  // Not checked
+		SynthAY8930.volume(Volume * m_fLevel5B, 1200);
 		chipOPLL.UpdateMixLevel(m_MixerConfig.OverallVol * m_fLevelOPLL);
 	}
 
@@ -464,6 +475,11 @@ void CMixer::MixS5B(int Value, int Time)
 	SynthS5B.offset(Time, Value, &BlipBuffer);
 }
 
+void CMixer::MixAY8930(int Value, int Time)
+{
+	SynthAY8930.offset(Time, Value, &BlipBuffer);
+}
+
 void CMixer::AddValue(int ChanID, int Chip, int Value, int AbsValue, int FrameCycles)
 {
 	// Add sound to mixer
@@ -488,6 +504,9 @@ void CMixer::AddValue(int ChanID, int Chip, int Value, int AbsValue, int FrameCy
 			break;
 		case SNDCHIP_5B:		// // // 050B
 			MixS5B(Value, FrameCycles);
+			break;
+		case SNDCHIP_AY8930:
+			MixAY8930(Value, FrameCycles);
 			break;
 	}
 }
@@ -515,6 +534,10 @@ void CMixer::StoreChannelLevel(int Channel, int Value)
 
 
 	if (Channel >= CHANID_5B_CH1 && Channel <= CHANID_5B_CH3) {
+		AbsVol = (int)(logf((float)AbsVol) * 2.8f);
+	}
+
+	if (Channel >= CHANID_AY8930_CH1 && Channel <= CHANID_AY8930_CH3) {
 		AbsVol = (int)(logf((float)AbsVol) * 2.8f);
 	}
 

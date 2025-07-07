@@ -1,3 +1,3 @@
 #pragma once
-const int GLOBAL_EXPANSION_COUNT = 10;
+const int GLOBAL_EXPANSION_COUNT = 11;
 const int GLOBAL_MIXER_COUNT = GLOBAL_EXPANSION_COUNT + 4; // Expansion + 2A03 APU2 series

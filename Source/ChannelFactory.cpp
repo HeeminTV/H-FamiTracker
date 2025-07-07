@@ -30,6 +30,7 @@
 #include "ChannelsMMC5.h"
 #include "ChannelsN163.h"
 #include "ChannelsS5B.h"
+#include "ChannelsAY8930.h"
 #include "Channels5E01.h" // Taken from E-FamiTracker by Euly
 #include "Channels7E02.h"
 #include "ChannelsOPLL.h"
@@ -85,6 +86,11 @@ CChannelFactory::CChannelFactory() : CFactory()
 	m_pMakeFunc[CHANID_5B_CH3] = Func;
 
 	// Taken from E-FamiTracker by Euly
+	Func = MakeCtor<CChannelHandlerAY8930>();
+	m_pMakeFunc[CHANID_AY8930_CH1] = Func;
+	m_pMakeFunc[CHANID_AY8930_CH2] = Func;
+	m_pMakeFunc[CHANID_AY8930_CH3] = Func;
+
 	Func = MakeCtor<C5E01Square>();
 	m_pMakeFunc[CHANID_5E01_SQUARE1] = Func;
 	m_pMakeFunc[CHANID_5E01_SQUARE2] = Func;

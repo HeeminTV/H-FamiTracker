@@ -560,6 +560,10 @@
     <ClInclude Include="Source\APU\nsfplay\xgm\devices\Sound\7E02_apu.h" />
     <ClInclude Include="Source\APU\nsfplay\xgm\devices\Sound\7E02_dmc.h" />
     <ClInclude Include="Source\Channels7E02.h" />
+	<ClInclude Include="Source\APU\AY8930.cpp" />
+	<ClInclude Include="Source\APU\AY8930.h" />
+	<ClInclude Include="Source\ChannelsAY8930.cpp" />
+	<ClInclude Include="Source\ChannelsAY8930.h" />
     <ClCompile Include="Source\APU\digital-sound-antiques\emu2413.c" />
     <ClCompile Include="Source\ConfigEmulation.cpp" />
     <ClCompile Include="Source\ConfigGUI.cpp" />

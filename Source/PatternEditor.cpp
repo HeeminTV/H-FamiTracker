@@ -1896,6 +1896,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		m_pDocument->ExpansionEnabled(SNDCHIP_FDS)  * 13 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_5B)   * 8  +		// // //
+		m_pDocument->ExpansionEnabled(SNDCHIP_AY8930) * 12 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 12 +
@@ -2401,6 +2402,76 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		}
 	}
 
+	// AY8930
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_AY8930)) {		// // //
+		DrawHeaderFunc(_T("AY8930"));		// // //
+
+		for (int i = 0; i < 4; ++i) {
+			GetRegsFunc(SNDCHIP_AY8930, [&](int x) { return i * 2 + x; }, 2);
+			text.Format(_T("$%02X:"), i * 2);
+			DrawRegFunc(text, 2);
+
+			int period = reg[0] | (reg[1] << 8);
+			int vol = pSoundGen->GetReg(SNDCHIP_AY8930, 8 + i) & 0x1F;
+			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_AY8930, i);		// // //
+
+			if (i < 3)
+				text.Format(_T("%s, vol = %02i, mode = %c%c%c, duty = %02i"), GetPitchTextFunc(4, period, freq), vol,
+					(pSoundGen->GetReg(SNDCHIP_AY8930, 7) & (1 << i)) ? _T('-') : _T('T'),
+					(pSoundGen->GetReg(SNDCHIP_AY8930, 7) & (8 << i)) ? _T('-') : _T('N'),
+					(pSoundGen->GetReg(SNDCHIP_AY8930, 8 + i) & 0x20) ? _T('E') : _T('-'),
+					(pSoundGen->GetReg(SNDCHIP_AY8930, 16 + i) & 0x0F));
+			else
+				text.Format(_T("pitch = $%02X, AND = $%02X, OR = $%02X"), reg[0],
+					pSoundGen->GetReg(SNDCHIP_AY8930, 0x19),
+					pSoundGen->GetReg(SNDCHIP_AY8930, 0x1A));
+			DrawTextFunc(180, text);
+
+			if (i < 3)
+				DrawVolFunc(freq, vol << 3);
+		}
+
+		for (int i = 0; i < 2; ++i) {
+			GetRegsFunc(SNDCHIP_AY8930, [&](int x) { return i * 3 + x + 8; }, 3);
+			text.Format(_T("$%02X:"), i * 3 + 8);
+			DrawRegFunc(text, 3);
+
+			if (i == 1) {
+				int period = (reg[0] | (reg[1] << 8));
+				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_AY8930, 3);		// // //
+				if (freq != 0. && reg[1] == 0)
+					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq), reg[2]);
+				else
+					text.Format(_T("period = $%04X, shape = $%01X"), period, reg[2]);
+
+				DrawTextFunc(180, text);
+			}
+		}
+		for (int i = 0; i < 3; ++i) {
+			GetRegsFunc(SNDCHIP_AY8930, [&](int x) { return i * 2 + x + 0x10; }, 3);
+			text.Format(_T("$%02X:"), i * 2 + 0x10);
+			DrawRegFunc(text, 2);
+
+			if (i <= 1) {
+				int period = (reg[0] | (reg[1] << 8));
+				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_AY8930, 4 + i);		// // //
+				if (freq != 0. && reg[1] == 0)
+					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq), pSoundGen->GetReg(SNDCHIP_AY8930, 0x12 + i));
+				else
+					text.Format(_T("period = $%04X, shape = $%01X"), period, pSoundGen->GetReg(SNDCHIP_AY8930, 0x12 + i));
+
+				DrawTextFunc(180, text);
+			}
+		}
+		GetRegsFunc(SNDCHIP_AY8930, [&](int x) { return x + 0x16; }, 3);
+		text.Format(_T("$%02X:"), 0x16);
+		DrawRegFunc(text, 3);
+		GetRegsFunc(SNDCHIP_AY8930, [&](int x) { return x + 0x19; }, 3);
+		text.Format(_T("$%02X:"), 0x19);
+		DrawRegFunc(text, 2);
+
+	}
+
 	// 5E01
 	if (m_pDocument->ExpansionEnabled(SNDCHIP_5E01)) {		// // //
 		DrawHeaderFunc(_T("5E01"));		// // //
@@ -2602,6 +2673,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			#include "APU/digital-sound-antiques/2413tone_patchname.h"
 			"Custom"
 		};
+
 		for (int i = 0; i < 9; ++i) {
 			GetRegsFunc(SNDCHIP_OPLL, [&](int x) { return i + (++x << 4); }, 3);
 			text.Format(_T("$x%01X:"), i);

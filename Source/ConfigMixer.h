@@ -46,6 +46,7 @@ private:
 	int m_iLevelFDS;
 	int m_iLevelN163;
 	int m_iLevelS5B;
+	int m_iLevelAY8930;
 	int m_iLevel5E01_APU1;
 	int m_iLevel5E01_APU2;
 	int m_iLevel7E02_APU1;

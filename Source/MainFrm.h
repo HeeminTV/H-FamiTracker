@@ -342,6 +342,7 @@ public:
 	afx_msg void OnAddInstrumentMMC5();
 	afx_msg void OnAddInstrumentN163();
 	afx_msg void OnAddInstrumentS5B();
+	afx_msg void OnAddInstrumentAY8930();
 	afx_msg void OnAddInstrument5E01();
 	afx_msg void OnAddInstrument7E02();
 	afx_msg void OnAddInstrumentOPLL();

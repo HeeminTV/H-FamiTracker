@@ -752,6 +752,18 @@
     </ClCompile>
     <ClCompile Include="Source\APU\5E01.cpp">
       <Filter>Source Files</Filter>
+	  </ClCompile>
+    <ClCompile Include="Source\APU\AY8930.cpp">
+      <Filter>Source Files</Filter>
+	  </ClCompile>
+    <ClCompile Include="Source\APU\AY8930.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+	<ClCompile Include="Source\ChannelsAY8930.cpp">
+      <Filter>Source Files</Filter>
+	  </ClCompile>
+    <ClCompile Include="Source\APU\ChannelsAY8930.h">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\APU\nsfplay\xgm\devices\Sound\5e01_apu.cpp">
       <Filter>Source Files</Filter>

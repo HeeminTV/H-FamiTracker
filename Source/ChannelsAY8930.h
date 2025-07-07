@@ -9,11 +9,11 @@
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
 **
-** This program is distributed in the hope that it will be useful,
+** This program is distributed in the hope that it will be useful, 
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-** Library General Public License for more details.  To obtain a
-** copy of the GNU Library General Public License, write to the Free
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+** Library General Public License for more details.  To obtain a 
+** copy of the GNU Library General Public License, write to the Free 
 ** Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 ** Any permitted reproduction of these routines, in whole or in part,
@@ -23,65 +23,62 @@
 #pragma once
 
 //
-// Derived channels, 6581
+// Derived channels, AY8930
 //
 
-class CChannelHandler6581 : public CChannelHandler, public CChannelHandlerInterfaceSID {
+class CChannelHandlerAY8930 : public CChannelHandler, public CChannelHandlerInterfaceS5B {
 public:
-	CChannelHandler6581();
+	CChannelHandlerAY8930();
 	void	ResetChannel() override;
 	void	RefreshChannel() override;
 
-	void  SetADSR(unsigned char EnvAD, unsigned char EnvSR) override final;
-	void  SetPulseWidth(unsigned int PulseWidth) override final;
-	void  SetFilterCutoff(unsigned int FilterCutoff) override final;
-	unsigned int GetPulseWidth() const override final;
+	void	SetNoiseFreq(int Pitch) override final;		// // //
+	void	SetExtra(int Value);		// // //
 
-	int GetDutyMax() const;
+	int getDutyMax() const override;
 protected:
 	static const char MAX_DUTY;		// TODO remove class constant, move to .cpp file
 
 	bool	HandleEffect(effect_t EffNum, unsigned char EffParam) override;		// // //
 	void	HandleNote(int Note, int Octave) override;		// // //
-	void	HandleNoteData(stChanNote* pNoteData, int EffColumns) override;   // // //
 	void	HandleEmptyNote() override;
 	void	HandleCut() override;
 	void	HandleRelease() override;
 	bool	CreateInstHandler(inst_type_t Type) override;		// // //
-
+	
 	int		CalculateVolume() const override;		// // //
 	int		ConvertDuty(int Duty) override;		// // //
 	void	ClearRegisters() override;
-	CString GetSlideEffectString() const override;
 	CString	GetCustomEffectString() const override;		// // //
 
 protected:
 	void WriteReg(int Reg, int Value);
 
+	// Static functions
+protected:	
+	static void SetMode(int Chan, int Square, int Noise);
+	void UpdateAutoEnvelope(int Period);		// // // 050B
+	void UpdateRegs();		// // //
+
 	// Static memebers
 protected:
-	static unsigned char s_iGlobalVolume;
-	static unsigned char s_iFilterResonance;
-	static unsigned int  s_iFilterCutoff;
-	static unsigned char s_iFilterMode;
-	static unsigned char s_iFilterEnable;
-	static uint8_t s_iForceGate;
+	static int s_iModes;
+	static int s_iNoiseFreq;
+	static int s_iNoisePrev;		// // //
+	static int s_iDefaultNoise;		// // //
+	static int s_iNoiseANDMask;
+	static int s_iNoiseORMask;
+	static int s_unused;		// // // 050B, unused
 
 	// Instance members
 protected:
-
-	unsigned int m_iPulseWidth;
-	unsigned char m_iTestBit;
-	unsigned char m_iGateBit;
-	unsigned char m_iRingBit;
-	unsigned char m_iSyncBit;
-
-	unsigned char m_iCurVol = 15;
-
-	unsigned char m_iGateCounter = 0;
-
-	unsigned char m_iEnvAD;
-	unsigned char m_iEnvSR;
-
+	bool m_bEnvelopeEnabled;		// // // 050B
+	int m_iAutoEnvelopeShift;		// // // 050B
+	unsigned char m_iEnvFreqHi;
+	unsigned char m_iEnvFreqLo;
+	unsigned char m_iPulseWidth;
+	int m_iExVolume;
+	bool m_bEnvTrigger;		// // // 050B
+	int m_iEnvType;
 	bool m_bUpdate;
 };
