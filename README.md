@@ -13,7 +13,7 @@ Organized by priority
 - [x] YM2413 **expansion**
 - [x] 5E01
 - [x] 6581
-- [ ] AY8930
+- [x] AY8930
 - [ ] SAA1099
 - [ ] 8580
 - [ ] YM2149F

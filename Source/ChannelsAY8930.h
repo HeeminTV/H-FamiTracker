@@ -33,7 +33,7 @@ public:
 	void	RefreshChannel() override;
 
 	void	SetNoiseFreq(int Pitch) override final;		// // //
-	void	SetExtra(int Value);		// // //
+	void	SetExtra(int Value) override;				// // //
 
 	int getDutyMax() const override;
 protected:
@@ -68,7 +68,7 @@ protected:
 	static int s_iDefaultNoise;		// // //
 	static int s_iNoiseANDMask;
 	static int s_iNoiseORMask;
-	static int s_unused;		// // // 050B, unused
+	static int s_unused;			// // // 050B, unused
 
 	// Instance members
 protected:
@@ -78,7 +78,7 @@ protected:
 	unsigned char m_iEnvFreqLo;
 	unsigned char m_iPulseWidth;
 	int m_iExVolume;
-	bool m_bEnvTrigger;		// // // 050B
+	bool m_bEnvTrigger;				// // // 050B
 	int m_iEnvType;
 	bool m_bUpdate;
 };

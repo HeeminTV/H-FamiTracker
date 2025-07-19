@@ -20,8 +20,6 @@
 ** must bear this legend.
 */
 
-// This emulation core was written by Euly.
-
 #include <algorithm>
 #include "APU.h"
 #include "AY8930.h"

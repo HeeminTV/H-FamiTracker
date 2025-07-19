@@ -895,6 +895,7 @@ void CModulePropertiesDlg::OnBnClickedExpansionS5B()
 	updateDeviceMixOffsetUI(7);
 }
 
+// Taken from Euly by E-FamiTracker
 void CModulePropertiesDlg::OnBnClickedExpansionAY8930()
 {
 	CButton* pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_AY8930);
@@ -907,7 +908,6 @@ void CModulePropertiesDlg::OnBnClickedExpansionAY8930()
 	updateDeviceMixOffsetUI(8);
 }
 
-// Taken from Euly by E-FamiTracker
 void CModulePropertiesDlg::OnBnClickedExpansion5E01()
 {
 	CButton* pCheckBox = (CButton*)GetDlgItem(IDC_EXPANSION_5E01);

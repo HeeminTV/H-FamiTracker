@@ -34,6 +34,8 @@ bool CSeqInstHandlerS5B::ProcessSequence(int Index, unsigned Setting, int Value)
 				pChan->SetNoiseFreq(Value & 0x1F);
 			}
 			
+			m_pInterface->SetExtra(Value);
+
 			return true;
 			
 			// In chips other than 5B: case SEQ_DUTYCYCLE:

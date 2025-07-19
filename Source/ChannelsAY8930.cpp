@@ -84,6 +84,7 @@ void CChannelHandlerAY8930::UpdateRegs()		// // //
 	// Done only once
 	if (s_iNoiseFreq != s_iNoisePrev)		// // //
 		WriteReg(0x06, (s_iNoisePrev = s_iNoiseFreq) ^ 0xFF);
+
 	WriteReg(0x07, s_iModes);
 	WriteReg(0x19, s_iNoiseANDMask);
 	WriteReg(0x1A, s_iNoiseORMask);
@@ -96,9 +97,9 @@ CChannelHandlerAY8930::CChannelHandlerAY8930() :
 	m_bEnvelopeEnabled(false),		// // // 050B
 	m_iAutoEnvelopeShift(0),		// // // 050B
 	m_iEnvFreqHi(0),		// // // 050B
-  m_iEnvFreqLo(0),		// // // 050B
-  m_bEnvTrigger(false),		// // // 050B
-  m_iEnvType(0),		// // // 050B
+	m_iEnvFreqLo(0),		// // // 050B
+	m_bEnvTrigger(false),		// // // 050B
+	m_iEnvType(0),		// // // 050B
 	m_bUpdate(false)
 {
 	m_iDefaultDuty = AY8930_MODE_SQUARE;		// // //
@@ -118,9 +119,9 @@ const char CChannelHandlerAY8930::MAX_DUTY = 0x07;		// = 1|2|4
 int CChannelHandlerAY8930::getDutyMax() const {
 	return MAX_DUTY;
 }
+// x
 
-
-bool CChannelHandlerAY8930::HandleEffect(effect_t EffNum, EffParamT EffParam)
+bool CChannelHandlerAY8930::HandleEffect(effect_t EffNum, unsigned char EffParam)
 {
 	switch (EffNum) {
 	case EF_SUNSOFT_NOISE: // W
@@ -218,7 +219,7 @@ bool CChannelHandlerAY8930::CreateInstHandler(inst_type_t Type)
 		switch (m_iInstTypeCurrent) {
 		case INST_2A03: case INST_VRC6: case INST_N163: case INST_S5B: case INST_FDS: break;
 		default:
-			m_pInstHandler.reset(new CSeqInstHandlerS5B(this, 0x1F, 0x1F, Type == INST_S5B ? 0x40 : 0x08));
+			m_pInstHandler.reset(new CSeqInstHandlerS5B(this, 0x1F, Type == INST_S5B ? 0x40 : 0));
 			return true;
 		}
 	}

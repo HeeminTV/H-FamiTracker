@@ -44,18 +44,18 @@ CChannelMap::~CChannelMap()
 void CChannelMap::SetupSoundChips()
 {
 	// Add available chips
-	AddChip(SNDCHIP_NONE, INST_2A03, _T("NES channels only"));
-	AddChip(SNDCHIP_VRC6, INST_VRC6, _T("Konami VRC6"));
-	AddChip(SNDCHIP_VRC7, INST_VRC7, _T("Konami VRC7"));
-	AddChip(SNDCHIP_FDS,  INST_FDS,  _T("Nintendo 2C33"));
-	AddChip(SNDCHIP_MMC5, INST_2A03, _T("Nintendo MMC5"));
-	AddChip(SNDCHIP_N163, INST_N163, _T("Namco 163"));
-	AddChip(SNDCHIP_5B,   INST_S5B,  _T("Sunsoft 5B"));
-	AddChip(SNDCHIP_AY8930, INST_S5B, _T("Microchip AY8930"));	// Taken from E-FamiTracker by Euly
-	AddChip(SNDCHIP_5E01, INST_2A03, _T("Eulous 5E01"));		// Taken from E-FamiTracker by Euly
-	AddChip(SNDCHIP_7E02, INST_2A03, _T("Saeyahn 7E02"));
-	AddChip(SNDCHIP_OPLL, INST_VRC7, _T("Yamaha YM2413"));
-	AddChip(SNDCHIP_6581, INST_SID,  _T("MOS Technology 6581"));
+	AddChip(SNDCHIP_NONE,  INST_2A03, _T("NES channels only"));
+	AddChip(SNDCHIP_VRC6,  INST_VRC6, _T("Konami VRC6"));
+	AddChip(SNDCHIP_VRC7,  INST_VRC7, _T("Konami VRC7"));
+	AddChip(SNDCHIP_FDS,   INST_FDS,  _T("Nintendo 2C33"));
+	AddChip(SNDCHIP_MMC5,  INST_2A03, _T("Nintendo MMC5"));
+	AddChip(SNDCHIP_N163,  INST_N163, _T("Namco 163"));
+	AddChip(SNDCHIP_5B,    INST_S5B,  _T("Sunsoft 5B"));
+	AddChip(SNDCHIP_AY8930,INST_S5B,  _T("Microchip AY8930"));	// Taken from E-FamiTracker by Euly
+	AddChip(SNDCHIP_5E01,  INST_2A03, _T("Eulous 5E01"));		// Taken from E-FamiTracker by Euly
+	AddChip(SNDCHIP_7E02,  INST_2A03, _T("Saeyahn 7E02"));
+	AddChip(SNDCHIP_OPLL,  INST_VRC7, _T("Yamaha YM2413"));
+	AddChip(SNDCHIP_6581,  INST_SID,  _T("MOS Technology 6581"));
 
 }
 

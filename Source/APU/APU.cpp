@@ -32,10 +32,10 @@
 #include "N163.h"
 #include "VRC7.h"
 #include "S5B.h"
-#include "5E01.h" // Taken from E-FamiTracker by Euly
+#include "AY8930.h"	 // Taken from E-FamiTracker by Euly
+#include "5E01.h"	 // Taken from E-FamiTracker by Euly
 #include "7E02.h"
 #include "OPLL.h"
-#include "AY8930.h"
 #include "6581.h"
 
 #include "SoundChip.h"
@@ -186,7 +186,7 @@ CAPU::CAPU(IAudioCallback *pCallback) :		// // //
 	m_pMMC5 = new CMMC5(m_pMixer);
 	m_pVRC6 = new CVRC6(m_pMixer);
 	m_pS5B  = new CS5B(m_pMixer);
-	m_pAY8930 = new CAY8930(m_pMixer);
+	m_pAY8930 = new CAY8930(m_pMixer); // <- LNK2019
 
 	m_fLevelVRC7 = 1.0f;
 	m_fLevelOPLL = 1.0f;

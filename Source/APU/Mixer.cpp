@@ -232,7 +232,7 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 		if (m_iExternalChip & SNDCHIP_7E02)   TotalChipsUsed++;
 		if (m_iExternalChip & SNDCHIP_OPLL)   TotalChipsUsed++;
 		if (m_iExternalChip & SNDCHIP_6581)   TotalChipsUsed++;
-		ATTENUATION_2A03 *= static_cast<float>(1.0 / (float)TotalChipsUsed);
+		ATTENUATION_2A03 *= static_cast<float>(1.0 / ((float)TotalChipsUsed / 4)); // now they are too quiet
 	}
 
 	return ATTENUATION_2A03;
@@ -291,12 +291,11 @@ void CMixer::RecomputeEmuMixState()
 	if (UseSurveyMixing) {
 		chipVRC7.UpdateMixLevel(Volume * m_fLevelVRC7, UseSurveyMixing);
 		SynthVRC6.volume(Volume * m_fLevelVRC6, 15 + 15 + 31);			// P1 + P2 + Saw, linear
-		SynthMMC5.volume(Volume * m_fLevelMMC5, 15 + 15 + 255);			// P1 + P2 + DAC, linear
+		SynthMMC5.volume(Volume * m_fLevelMMC5, 15 + 15 + 255);		// P1 + P2 + DAC, linear
 		SynthS5B.volume(Volume * m_fLevel5B, 255 + 255 + 255);			// 5B1 + 5B2 + 5B3, linear
 		SynthAY8930.volume(Volume * m_fLevelAY8930, 255 + 255 + 255);	// AY1 + AY2 + AY3, linear
 		chipOPLL.UpdateMixLevel(Volume * m_fLevelOPLL, UseSurveyMixing);
-	}
-	else {
+	} else {
 		// match legacy expansion audio mixing
 
 		// VRC7 level does not decrease as you enable expansion chips

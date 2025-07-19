@@ -331,14 +331,20 @@ public:		// // //
 	/*!	\brief Obtains the current duty cycle value of the channel.
 		\return The duty cycle value. */
 	int		GetDutyPeriod() const override;
+
+	 /*! \brief Sets extra sequence data.
+		 \details The value received by the channel is converted according to the current channel type.
+		 \param Value The value to write. */
+	void	SetExtra(int Value) override;
+
+	// Returns true if the chosen instrument has volume macro enabled. (even if the length is 0)
+	void	SetInstVolMacroEnabled(bool Stat);
+
 	/*!
 	 * Returns maximum valid duty cycle, inclusive (-1 if none are valid).
 	 * Used to mark invalid Vxx red in the GUI.
 	 * @return Valid duty cycles are 0 <= duty <= getDutyMax().
 	 */
-
-	void	SetInstVolMacroEnabled(bool Stat);
-
 	virtual int getDutyMax() const;
 
 	unsigned char GetArpParam() const override;		// // //

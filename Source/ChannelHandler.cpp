@@ -1062,6 +1062,8 @@ void CChannelHandler::SetVolume(int Volume)
 	m_iInstVolume = Volume;
 }
 
+void CChannelHandler::SetExtra(int Value) { }
+
 void CChannelHandler::SetInstDuty(int Duty)
 {
 	m_iInstDuty = Duty;

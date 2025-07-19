@@ -30,16 +30,16 @@ const int SNDCHIP_MMC5		= 8;			// Nintendo MMC5
 const int SNDCHIP_N163		= 16;			// Namco N163
 const int SNDCHIP_5B		= 32;			// Sunsoft 5B
 const int SNDCHIP_AY8930	= 64;			// Microchip AY8930		// eft compatible
-const int SNDCHIP_SAA1099	= 128;			// Philips SAA1099		// eft compatible
+const int SNDCHIP_SAA1099	= 128;			// Philips SAA1099		// eft compatible	// TODO 1
 const int SNDCHIP_5E01		= 256;			// Eulous 5E01			// eft compatible
 const int SNDCHIP_6581		= 512;			// MOS Technology 6581	// eft compatible
-const int SNDCHIP_8580		= 1024;			// MOS Technology 8580	// eft compatible
-const int SNDCHIP_VCS		= 2048;			// CO10444
+const int SNDCHIP_8580		= 1024;			// MOS Technology 8580	// eft compatible	// TODO 2
+const int SNDCHIP_VCS		= 2048;			// CO10444									// TODO 6
 const int SNDCHIP_OPLL		= 4096;			// Yamaha YM2413
 const int SNDCHIP_7E02		= 8192;			// Saeyahn 7E02
-const int SNDCHIP_DCSG		= 16384;		// Texas Instruments SN76489
-const int SNDCHIP_SSG		= 32768;		// Yamaha YM2149F
-const int SNDCHIP_AY		= 65536;		// General Instrument AY-3-8910
+const int SNDCHIP_DCSG		= 16384;		// Texas Instruments SN76489				// TODO 6
+const int SNDCHIP_SSG		= 32768;		// Yamaha YM2149F							// TODO 5
+const int SNDCHIP_AY		= 65536;		// General Instrument AY-3-8910				// TODO 4
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,
