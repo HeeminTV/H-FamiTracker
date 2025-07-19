@@ -254,7 +254,19 @@ void CChannelHandlerAY8930::ResetChannel()
 
 int CChannelHandlerAY8930::CalculateVolume() const		// // //
 {
-	return LimitVolume((((m_iVolume >> VOL_COLUMN_SHIFT) - GetTremolo())*2 + m_iInstVolume - 31) | m_iExVolume);
+	// return LimitVolume((((m_iVolume >> VOL_COLUMN_SHIFT) - GetTremolo())*2 + m_iInstVolume - 31) | m_iExVolume); EFT implementation
+	// return LimitVolume((m_iVolume >> VOL_COLUMN_SHIFT) + m_iInstVolume - 15 - GetTremolo());						S5B
+	/*
+		m_iVolume >> VOL_COLUMN_SHIFT 
+			^-- volume column
+		m_iInstVolume
+			^-- instrument
+
+	*/
+	// return (((m_iVolume >> VOL_COLUMN_SHIFT) + 1) * m_iInstVolume + 1) - 1 >> 3;
+	return LimitVolume(
+		(((m_iVolume >> VOL_COLUMN_SHIFT) - GetTremolo()) * 2 + m_iInstVolume - 31) | 1
+	);
 }
 
 int CChannelHandlerAY8930::ConvertDuty(int Duty)		// // //

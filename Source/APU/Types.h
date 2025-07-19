@@ -38,8 +38,8 @@ const int SNDCHIP_VCS		= 2048;			// CO10444									// TODO 6
 const int SNDCHIP_OPLL		= 4096;			// Yamaha YM2413
 const int SNDCHIP_7E02		= 8192;			// Saeyahn 7E02
 const int SNDCHIP_DCSG		= 16384;		// Texas Instruments SN76489				// TODO 6
-const int SNDCHIP_SSG		= 32768;		// Yamaha YM2149F							// TODO 5
-const int SNDCHIP_AY		= 65536;		// General Instrument AY-3-8910				// TODO 4
+const int SNDCHIP_SSG		= 32768;		// Yamaha YM2149F
+const int SNDCHIP_AY		= 65536;		// General Instrument AY-3-8910
 
 enum chan_id_t {
 	CHANID_2A03_SQUARE1,
@@ -81,6 +81,14 @@ enum chan_id_t {
 	CHANID_AY8930_CH1,
 	CHANID_AY8930_CH2,
 	CHANID_AY8930_CH3,
+
+	CHANID_AY_CH1,
+	CHANID_AY_CH2,
+	CHANID_AY_CH3,
+
+	CHANID_YM2149F_CH1,
+	CHANID_YM2149F_CH2,
+	CHANID_YM2149F_CH3,
 
 	CHANID_5E01_SQUARE1,
 	CHANID_5E01_SQUARE2,

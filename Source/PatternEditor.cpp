@@ -1897,6 +1897,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		m_pDocument->ExpansionEnabled(SNDCHIP_VRC7) * 9  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_5B)   * 8  +		// // //
 		m_pDocument->ExpansionEnabled(SNDCHIP_AY8930) * 12 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_AY) * 8 +
+		m_pDocument->ExpansionEnabled(SNDCHIP_SSG) * 8 +
 		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 12 +
@@ -2470,6 +2472,100 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		text.Format(_T("$%02X:"), 0x19);
 		DrawRegFunc(text, 2);
 
+	}
+
+	// AY-3-8910
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_AY)) {		// // //
+		DrawHeaderFunc(_T("AY-3-8910"));		// // //
+
+		for (int i = 0; i < 4; ++i) {
+			GetRegsFunc(SNDCHIP_AY, [&](int x) { return i * 2 + x; }, 2);
+			text.Format(_T("$%02X:"), i * 2);
+			DrawRegFunc(text, 2);
+
+			int period = reg[0] | ((reg[1] & 0x0F) << 8);
+			int period_noise = pSoundGen->GetReg(SNDCHIP_AY, 0x06) & 0x1F;
+			int vol = pSoundGen->GetReg(SNDCHIP_AY, 8 + i) & 0x0F;
+			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_AY, i);		// // //
+			double freq_env = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_AY, 3);		// // //
+			bool enable_tone = !(pSoundGen->GetReg(SNDCHIP_AY, 7) & (1 << i));
+			bool enable_noise = !(pSoundGen->GetReg(SNDCHIP_AY, 7) & (8 << i));
+			bool enable_env = pSoundGen->GetReg(SNDCHIP_AY, 8 + i) & 0x10;
+			if (i < 3)
+				text.Format(_T("%s, vol = %02i, mode = %c%c%c"), GetPitchTextFunc(3, period, freq), vol,
+					enable_tone ? _T('T') : _T('-'),
+					enable_noise ? _T('N') : _T('-'),
+					enable_env ? _T('E') : _T('-'));
+			else
+				text.Format(_T("period = $%02X"), period_noise);
+			DrawTextFunc(180, text);
+
+			if (i < 3)
+				DrawVolFuncS5B(freq, freq_env, period_noise, vol, enable_env, enable_noise);
+		}
+
+		for (int i = 0; i < 2; ++i) {
+			GetRegsFunc(SNDCHIP_AY, [&](int x) { return i * 3 + x + 8; }, 3);
+			text.Format(_T("$%02X:"), i * 3 + 8);
+			DrawRegFunc(text, 3);
+
+			if (i == 1) {
+				int period = (reg[0] | (reg[1] << 8));
+				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_AY, 3);		// // //
+				if (freq != 0. && reg[1] == 0)
+					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq, "pitch "), reg[2]);
+				else
+					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq, "period"), reg[2]);
+				DrawTextFunc(180, text);
+			}
+		}
+	}
+
+	// YM2149F
+	if (m_pDocument->ExpansionEnabled(SNDCHIP_SSG)) {		// // //
+		DrawHeaderFunc(_T("YM2149F"));		// // //
+
+		for (int i = 0; i < 4; ++i) {
+			GetRegsFunc(SNDCHIP_SSG, [&](int x) { return i * 2 + x; }, 2);
+			text.Format(_T("$%02X:"), i * 2);
+			DrawRegFunc(text, 2);
+
+			int period = reg[0] | ((reg[1] & 0x0F) << 8);
+			int period_noise = pSoundGen->GetReg(SNDCHIP_SSG, 0x06) & 0x1F;
+			int vol = pSoundGen->GetReg(SNDCHIP_SSG, 8 + i) & 0x0F;
+			double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SSG, i);		// // //
+			double freq_env = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SSG, 3);		// // //
+			bool enable_tone = !(pSoundGen->GetReg(SNDCHIP_SSG, 7) & (1 << i));
+			bool enable_noise = !(pSoundGen->GetReg(SNDCHIP_SSG, 7) & (8 << i));
+			bool enable_env = pSoundGen->GetReg(SNDCHIP_SSG, 8 + i) & 0x10;
+			if (i < 3)
+				text.Format(_T("%s, vol = %02i, mode = %c%c%c"), GetPitchTextFunc(3, period, freq), vol,
+					enable_tone ? _T('T') : _T('-'),
+					enable_noise ? _T('N') : _T('-'),
+					enable_env ? _T('E') : _T('-'));
+			else
+				text.Format(_T("period = $%02X"), period_noise);
+			DrawTextFunc(180, text);
+
+			if (i < 3)
+				DrawVolFuncS5B(freq, freq_env, period_noise, vol, enable_env, enable_noise);
+		}
+
+		for (int i = 0; i < 2; ++i) {
+			GetRegsFunc(SNDCHIP_SSG, [&](int x) { return i * 3 + x + 8; }, 3);
+			text.Format(_T("$%02X:"), i * 3 + 8);
+			DrawRegFunc(text, 3);
+
+			if (i == 1) {
+				int period = (reg[0] | (reg[1] << 8));
+				double freq = theApp.GetSoundGenerator()->GetChannelFrequency(SNDCHIP_SSG, 3);		// // //
+				if (freq != 0. && reg[1] == 0)
+					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq, "pitch "), reg[2]);
+				else
+					text.Format(_T("%s, shape = $%01X"), GetPitchTextFunc(4, period, freq, "period"), reg[2]);
+				DrawTextFunc(180, text);
+			}
+		}
 	}
 
 	// 5E01

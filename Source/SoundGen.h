@@ -447,8 +447,8 @@ private:
 	unsigned int		m_iNoteLookupTableFDS[96];			// For FDS
 	unsigned int		m_iNoteLookupTableN163[96];			// For N163
 	unsigned int		m_iNoteLookupTableS5B[96];			// // // For 5B, internal use only
-	unsigned int		m_iNoteLookupTablePCM[96]; // Taken from E-FamiTracker by Euly
-	unsigned int		m_iNoteLookupTableSID[96]; // Taken from E-FamiTracker by Euly
+	unsigned int		m_iNoteLookupTablePCM[96];			// Taken from E-FamiTracker by Euly
+	unsigned int		m_iNoteLookupTableSID[96];			// Taken from E-FamiTracker by Euly
 
 	int					m_iVibratoTable[VIBRATO_LENGTH];
 

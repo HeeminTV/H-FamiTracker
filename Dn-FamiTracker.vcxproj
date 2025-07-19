@@ -556,6 +556,8 @@
     <ClCompile Include="Source\APU\S5B.cpp" />
 	<ClCompile Include="Source\APU\FDS.cpp" />
 	<ClCompile Include="Source\APU\AY8930.cpp" />
+	<ClCompile Include="Source\APU\AY.cpp" />
+	<ClCompile Include="Source\APU\YM2149F.cpp" />
 	<ClCompile Include="Source\APU\6581.cpp" />
     <ClCompile Include="Source\APU\SoundChip.cpp" />
     <ClCompile Include="Source\Bookmark.cpp" />
@@ -705,6 +707,8 @@
     <ClCompile Include="Source\Channels5E01.cpp" />
 	<ClCompile Include="Source\Channels7E02.cpp" />
 	<ClCompile Include="Source\ChannelsAY8930.cpp" />
+	<ClCompile Include="Source\ChannelsAY.cpp" />
+	<ClCompile Include="Source\ChannelsYM2149F.cpp" />
     <ClCompile Include="Source\SoundInterface.cpp" />
     <ClCompile Include="Source\MIDI.cpp" />
     <ClCompile Include="Source\Clipboard.cpp" />
@@ -1052,6 +1056,8 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "Dn-help\hlp\HTML
 	<ClInclude Include="Source\APU\5E01.h" />
 	<ClInclude Include="Source\APU\7E02.h" />
 	<ClInclude Include="Source\APU\AY8930.h" />
+	<ClInclude Include="Source\APU\AY.h" />
+	<ClInclude Include="Source\APU\YM2149F.h" />
 	<ClInclude Include="Source\APU\6581.h" />
     <ClInclude Include="Source\Blip_Buffer\Blip_Buffer.h" />
     <ClInclude Include="Source\ChannelHandler.h" />
@@ -1066,6 +1072,8 @@ makehm /h /a afxhh.h IDW_,HIDW_,0x50000 "%(FullPath)" &gt;&gt; "Dn-help\hlp\HTML
 	<ClInclude Include="Source\Channels5E01.h" />
     <ClInclude Include="Source\Channels7E02.h" />
 	<ClInclude Include="Source\ChannelsAY8930.h" />
+	<ClInclude Include="Source\ChannelsAY.h" />
+	<ClInclude Include="Source\ChannelsYM2149F.h" />
 	<ClInclude Include="Source\Channels6581.h" />
     <ClInclude Include="Source\SoundInterface.h" />
     <ClInclude Include="Source\AboutDlg.h" />

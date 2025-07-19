@@ -92,6 +92,18 @@ public:
 	virtual void	SetNoiseFreq(int) = 0;
 };
 
+class CChannelHandlerInterfaceAY
+{
+public:
+	virtual void	SetNoiseFreq(int) = 0;
+};
+
+class CChannelHandlerInterfaceYM2149F
+{
+public:
+	virtual void	SetNoiseFreq(int) = 0;
+};
+
 class CChannelHandlerInterfaceOPLL
 {
 public:

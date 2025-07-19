@@ -251,6 +251,8 @@ public:
 		int		iLevelN163;
 		int		iLevelS5B;
 		int		iLevelAY8930;
+		int		iLevelAY;
+		int		iLevelYM2149F;
 		int		iLevel5E01_APU1;
 		int		iLevel5E01_APU2;
 		int		iLevel7E02_APU1;
@@ -266,6 +268,8 @@ public:
 		int		iSurveyMixN163;
 		int		iSurveyMixS5B;
 		int		iSurveyMixAY8930;
+		int		iSurveyMixAY;
+		int		iSurveyMixYM2149F;
 		int		iSurveyMix5E01_APU1;
 		int		iSurveyMix5E01_APU2;
 		int		iSurveyMix7E02_APU1;

@@ -90,6 +90,10 @@ BOOL CSwapDlg::OnInitDialog()
 		m_cChipFirst->AddString(_T("5B"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_AY8930))
 		m_cChipFirst->AddString(_T("AY8930"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_AY))
+		m_cChipFirst->AddString(_T("AY-3-8910"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_SSG))
+		m_cChipFirst->AddString(_T("YM2149F"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_5E01))
 		m_cChipFirst->AddString(_T("5E01"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
@@ -141,6 +145,10 @@ int CSwapDlg::GetChipFromString(const CString str)
 		return SNDCHIP_5B;
 	else if (str == _T("AY8930"))
 		return SNDCHIP_AY8930;
+	else if (str == _T("AY-3-8910"))
+		return SNDCHIP_AY;
+	else if (str == _T("YM2149F"))
+		return SNDCHIP_SSG;
 	else if (str == _T("5E01"))
 		return SNDCHIP_5E01;
 	else if (str == _T("7E02"))
@@ -165,6 +173,8 @@ int CSwapDlg::GetFinalChannel(unsigned int Channel, unsigned int Chip) const
 		case SNDCHIP_N163:		Channel += CHANID_N163_CH1; break;
 		case SNDCHIP_5B:		Channel += CHANID_5B_CH1; break;
 		case SNDCHIP_AY8930:    Channel += CHANID_AY8930_CH1; break;
+		case SNDCHIP_AY:		Channel += CHANID_AY_CH1; break;
+		case SNDCHIP_SSG:		Channel += CHANID_YM2149F_CH1; break;
 		case SNDCHIP_5E01:		Channel += CHANID_5E01_SQUARE1; break;
 		case SNDCHIP_7E02:		Channel += CHANID_7E02_SQUARE1; break;
 		case SNDCHIP_OPLL:		Channel += CHANID_OPLL_CH1; break;

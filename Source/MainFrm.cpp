@@ -195,6 +195,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_COMMAND(ID_INSTRUMENT_ADD_N163, OnAddInstrumentN163)
 	ON_COMMAND(ID_INSTRUMENT_ADD_S5B, OnAddInstrumentS5B)
 	ON_COMMAND(ID_INSTRUMENT_ADD_AY8930, OnAddInstrumentAY8930)
+	ON_COMMAND(ID_INSTRUMENT_ADD_AY, OnAddInstrumentAY)
+	ON_COMMAND(ID_INSTRUMENT_ADD_SSG, OnAddInstrumentSSG)
 	ON_COMMAND(ID_INSTRUMENT_ADD_5E01, OnAddInstrument5E01) // Taken from E-FamiTracker by Euly
 	ON_COMMAND(ID_INSTRUMENT_ADD_7E02, OnAddInstrument7E02)
 	ON_COMMAND(ID_INSTRUMENT_ADD_OPLL, OnAddInstrumentOPLL)
@@ -1215,6 +1217,16 @@ void CMainFrame::OnAddInstrumentAY8930()
 	NewInstrument(SNDCHIP_AY8930);
 }
 
+void CMainFrame::OnAddInstrumentAY()
+{
+	NewInstrument(SNDCHIP_AY);
+}
+
+void CMainFrame::OnAddInstrumentSSG()
+{
+	NewInstrument(SNDCHIP_SSG);
+}
+
 void CMainFrame::OnAddInstrument5E01()
 {
 	NewInstrument(SNDCHIP_5E01);
@@ -1705,6 +1717,12 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 			case SNDCHIP_AY8930:
 				String = _T(" Microchip AY8930");
 				break;
+			case SNDCHIP_AY:
+				String = _T(" General Instrument AY-3-8910");
+				break;
+			case SNDCHIP_SSG:
+				String = _T(" Yamaha YM2149F");
+				break;
 			case SNDCHIP_5E01:
 				String = _T(" Eulous 5E01");
 				break;
@@ -1743,15 +1761,21 @@ void CMainFrame::OnUpdateSBChip(CCmdUI *pCmdUI)
 				String += _T(" + AY8930");
 				break;
 			case 7:
-				String += _T(" + 5E01");
+				String += _T(" + AY-3-8910");
 				break;
 			case 8:
-				String += _T(" + 7E02");
+				String += _T(" + YM2149F");
 				break;
 			case 9:
-				String += _T(" + YM2413");
+				String += _T(" + 5E01");
 				break;
 			case 10:
+				String += _T(" + 7E02");
+				break;
+			case 11:
+				String += _T(" + YM2413");
+				break;
+			case 12:
 				String += _T(" + 6581");
 				break;
 		}
@@ -2761,6 +2785,10 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_S5B, _T("New 5B instrument"));
 	if (Chip & SNDCHIP_AY8930)
 		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_AY8930, _T("New AY8930 instrument"));
+	if (Chip & SNDCHIP_AY)
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_AY, _T("New AY-3-8910 instrument"));
+	if (Chip & SNDCHIP_SSG)
+		menu.AppendMenu(MF_STRING, ID_INSTRUMENT_ADD_SSG, _T("New YM2149F instrument"));
 
 	// Taken from E-FamiTracker by Euly
 	if (Chip & SNDCHIP_5E01)
@@ -2799,6 +2827,12 @@ void CMainFrame::OnNewInstrumentMenu(NMHDR* pNotifyStruct, LRESULT* result)
 			break;
 		case SNDCHIP_AY8930:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_AY8930);
+			break;
+		case SNDCHIP_AY:
+			menu.SetDefaultItem(ID_INSTRUMENT_ADD_AY);
+			break;
+		case SNDCHIP_SSG:
+			menu.SetDefaultItem(ID_INSTRUMENT_ADD_SSG);
 			break;
 		case SNDCHIP_5E01:
 			menu.SetDefaultItem(ID_INSTRUMENT_ADD_5E01);

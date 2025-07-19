@@ -61,6 +61,18 @@ enum ay8930_mode_t {
 	AY8930_MODE_NOISE	 = 0x80
 };
 
+enum ay8910_mode_t {
+	AY8910_MODE_ENVELOPE = 0x20,
+	AY8910_MODE_SQUARE = 0x40,
+	AY8910_MODE_NOISE = 0x80
+};
+
+enum ym2149f_mode_t {
+	YM2149F_MODE_ENVELOPE = 0x20,
+	YM2149F_MODE_SQUARE = 0x40,
+	YM2149F_MODE_NOISE = 0x80
+};
+
 // // // Arpeggio scheme modes
 enum arp_scheme_mode_t {
 	ARPSCHEME_MODE_X     = 0x40,

@@ -281,6 +281,16 @@ void CSoundGen::CreateChannels()
 	AssignChannel(new CTrackerChannel(_T("AY8930 EPSG 2"), _T("AY2"), SNDCHIP_AY8930, CHANID_AY8930_CH2));
 	AssignChannel(new CTrackerChannel(_T("AY8930 EPSG 3"), _T("AY3"), SNDCHIP_AY8930, CHANID_AY8930_CH3));
 
+	// General Instrument AY-3-8910
+	AssignChannel(new CTrackerChannel(_T("AY PSG 1"), _T("AY1"), SNDCHIP_AY, CHANID_AY_CH1));
+	AssignChannel(new CTrackerChannel(_T("AY PSG 2"), _T("AY2"), SNDCHIP_AY, CHANID_AY_CH2));
+	AssignChannel(new CTrackerChannel(_T("AY PSG 3"), _T("AY3"), SNDCHIP_AY, CHANID_AY_CH3));
+
+	// Yamaha YM2149F
+	AssignChannel(new CTrackerChannel(_T("YM2149F SSG 1"), _T("SG1"), SNDCHIP_SSG, CHANID_YM2149F_CH1));
+	AssignChannel(new CTrackerChannel(_T("YM2149F SSG 2"), _T("SG2"), SNDCHIP_SSG, CHANID_YM2149F_CH2));
+	AssignChannel(new CTrackerChannel(_T("YM2149F SSG 3"), _T("SG3"), SNDCHIP_SSG, CHANID_YM2149F_CH3));
+
 	// Eulous 5E01
 	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 1"), _T("PU1"), SNDCHIP_5E01, CHANID_5E01_SQUARE1));
 	AssignChannel(new CTrackerChannel(_T("5E01 Pulse 2"), _T("PU2"), SNDCHIP_5E01, CHANID_5E01_SQUARE2));
@@ -630,6 +640,8 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 
 		case CHANID_5B_CH1: case CHANID_5B_CH2: case CHANID_5B_CH3: // 5B
 		case CHANID_AY8930_CH1: case CHANID_AY8930_CH2: case CHANID_AY8930_CH3: // AY8930
+		case CHANID_AY_CH1: case CHANID_AY_CH2: case CHANID_AY_CH3: // AY-3-8910
+		case CHANID_YM2149F_CH1: case CHANID_YM2149F_CH2: case CHANID_YM2149F_CH3: // YM2149F
 			Table = m_iNoteLookupTableS5B; break;
 
 		case CHANID_MMC5_VOICE: // Taken from E-FamiTracker by Euly
@@ -666,6 +678,8 @@ void CSoundGen::DocumentPropertiesChanged(CFamiTrackerDoc *pDocument)
 	SurveyMixLevels.at(CHIP_LEVEL_N163) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixN163);
 	SurveyMixLevels.at(CHIP_LEVEL_5B) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixS5B);
 	SurveyMixLevels.at(CHIP_LEVEL_AY8930) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixAY8930);
+	SurveyMixLevels.at(CHIP_LEVEL_AY) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixAY);
+	SurveyMixLevels.at(CHIP_LEVEL_YM2149F) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMixYM2149F);
 	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU1);
 	SurveyMixLevels.at(CHIP_LEVEL_5E01_APU2) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix5E01_APU2);
 	SurveyMixLevels.at(CHIP_LEVEL_7E02_APU1) = static_cast<int16_t>(pSettings->ChipLevels.iSurveyMix7E02_APU1);
@@ -1052,6 +1066,8 @@ bool CSoundGen::ResetAudioDevice()
 			config.SetChipLevel(CHIP_LEVEL_N163, float(pSettings->ChipLevels.iLevelN163 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5B, float(pSettings->ChipLevels.iLevelS5B / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_AY8930, float(pSettings->ChipLevels.iLevelAY8930 / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_AY, float(pSettings->ChipLevels.iLevelAY / 10.0f));
+			config.SetChipLevel(CHIP_LEVEL_YM2149F, float(pSettings->ChipLevels.iLevelYM2149F / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU1, float(pSettings->ChipLevels.iLevel5E01_APU1 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_5E01_APU2, float(pSettings->ChipLevels.iLevel5E01_APU2 / 10.0f));
 			config.SetChipLevel(CHIP_LEVEL_7E02_APU1, float(pSettings->ChipLevels.iLevel7E02_APU1 / 10.0f));
@@ -1588,7 +1604,11 @@ static CString GetStateString(const stChannelState &State)
 			if (p == effects[x].initial) continue;
 			effStr.AppendFormat(_T(" %c%02X"), EFF_CHAR[x], p);
 		}
-	else if (State.ChannelIndex >= CHANID_5B_CH1 && State.ChannelIndex <= CHANID_5B_CH3)
+	else if (
+			(State.ChannelIndex >= CHANID_5B_CH1 && State.ChannelIndex <= CHANID_5B_CH3) ||
+			(State.ChannelIndex >= CHANID_AY_CH1 && State.ChannelIndex <= CHANID_AY_CH3) ||
+			(State.ChannelIndex >= CHANID_YM2149F_CH1 && State.ChannelIndex <= CHANID_YM2149F_CH3)
+		 )
 		for (const auto &x : S5B_EFFECTS) {
 			int p = State.Effect[x];
 			if (p < 0) continue;

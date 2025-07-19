@@ -94,11 +94,11 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("Ixy - Auto FDS modulation, X = multiplier, Y + 1 = divider"),
 	_T("Jxx - FDS modulation rate, low byte"),
 	_T("W0x - DPCM pitch, F = highest"),
-	_T("H0y - 5B envelope shape, bit 3 = Continue, bit 2 = Attack, bit 1 = Alternate, bit 0 = Hold"),
-	_T("Hxy - Auto 5B envelope, X - 8 = shift amount, Y = shape"),
-	_T("Ixx - 5B envelope rate, high byte"),
-	_T("Jxx - 5B envelope rate, low byte"),
-	_T("Wxx - 5B noise pitch, 1F = highest"),
+	_T("H0y - AY envelope shape, bit 3 = Continue, bit 2 = Attack, bit 1 = Alternate, bit 0 = Hold"),
+	_T("Hxy - Auto AY envelope, X - 8 = shift amount, Y = shape"),
+	_T("Ixx - AY envelope rate, high byte"),
+	_T("Jxx - AY envelope rate, low byte"),
+	_T("Wxx - AY noise pitch, 1F = highest"),
 	_T("Hxx - OPLL custom patch port, XX = register address"),
 	_T("Ixx - OPLL custom patch write, XX = register value"),
 	_T("Lxx - Note release, XX = frames to wait"),
@@ -2522,8 +2522,28 @@ void CFamiTrackerView::UpdateNoteQueues()		// // //
 			m_pNoteQueue->AddMap(n);
 		}
 
-		if (pDoc->ExpansionEnabled(SNDCHIP_5B))
-			m_pNoteQueue->AddMap({CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3});
+		if (pDoc->ExpansionEnabled(SNDCHIP_5B) && pDoc->ExpansionEnabled(SNDCHIP_AY) && pDoc->ExpansionEnabled(SNDCHIP_SSG)) {
+				m_pNoteQueue->AddMap({ CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3, CHANID_AY_CH1, CHANID_AY_CH2, CHANID_AY_CH3, CHANID_YM2149F_CH1, CHANID_YM2149F_CH2, CHANID_YM2149F_CH3 });
+
+		} else if (pDoc->ExpansionEnabled(SNDCHIP_5B) && pDoc->ExpansionEnabled(SNDCHIP_AY)) {
+			m_pNoteQueue->AddMap({ CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3, CHANID_AY_CH1, CHANID_AY_CH2, CHANID_AY_CH3 });
+
+		} else if (pDoc->ExpansionEnabled(SNDCHIP_5B) && pDoc->ExpansionEnabled(SNDCHIP_SSG)) {
+			m_pNoteQueue->AddMap({ CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3, CHANID_YM2149F_CH1, CHANID_YM2149F_CH2, CHANID_YM2149F_CH3 });
+
+		} else if (pDoc->ExpansionEnabled(SNDCHIP_AY) && pDoc->ExpansionEnabled(SNDCHIP_SSG)) {
+			m_pNoteQueue->AddMap({ CHANID_AY_CH1, CHANID_AY_CH2, CHANID_AY_CH3, CHANID_YM2149F_CH1, CHANID_YM2149F_CH2, CHANID_YM2149F_CH3 });
+
+		} else {
+			if (pDoc->ExpansionEnabled(SNDCHIP_5B))
+				m_pNoteQueue->AddMap({ CHANID_5B_CH1, CHANID_5B_CH2, CHANID_5B_CH3 });
+
+			if (pDoc->ExpansionEnabled(SNDCHIP_AY))
+				m_pNoteQueue->AddMap({ CHANID_AY_CH1, CHANID_AY_CH2, CHANID_AY_CH3 });
+
+			if (pDoc->ExpansionEnabled(SNDCHIP_SSG))
+				m_pNoteQueue->AddMap({ CHANID_YM2149F_CH1, CHANID_YM2149F_CH2, CHANID_YM2149F_CH3 });
+		}
 
 		if (pDoc->ExpansionEnabled(SNDCHIP_AY8930))
 			m_pNoteQueue->AddMap({ CHANID_AY8930_CH1, CHANID_AY8930_CH2, CHANID_AY8930_CH3 });
@@ -3858,7 +3878,7 @@ void CFamiTrackerView::OnTrackerRecordToInst()		// // //
 			case SNDCHIP_NONE:	case SNDCHIP_MMC5: case SNDCHIP_5E01: case SNDCHIP_7E02:Type = INST_2A03; break;
 			case SNDCHIP_VRC6:															Type = INST_VRC6; break;
 			case SNDCHIP_N163:															Type = INST_N163; break;
-			case SNDCHIP_5B:	case SNDCHIP_AY8930:									Type = INST_S5B;  break;
+			case SNDCHIP_5B: case SNDCHIP_AY8930: case SNDCHIP_AY: case SNDCHIP_SSG:	Type = INST_S5B;  break;
 			case SNDCHIP_6581:															Type = INST_SID;  break; // Taken from E-FamiTracker by Euly
 		}
 		if (Type != INST_NONE) for (int i = 0; i < SEQ_COUNT; i++)

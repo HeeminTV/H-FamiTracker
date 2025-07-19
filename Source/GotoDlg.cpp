@@ -81,6 +81,10 @@ BOOL CGotoDlg::OnInitDialog()
 		m_cChipEdit->AddString(_T("5B"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_AY8930)) // Taken from E-FamiTracker by Euly
 		m_cChipEdit->AddString(_T("AY8930"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_AY))
+		m_cChipEdit->AddString(_T("AY-3-8910"));
+	if (pDoc->ExpansionEnabled(SNDCHIP_SSG))
+		m_cChipEdit->AddString(_T("YM2149F"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_5E01)) 	// Taken from E-FamiTracker by Euly
 		m_cChipEdit->AddString(_T("5E01"));
 	if (pDoc->ExpansionEnabled(SNDCHIP_7E02))
@@ -108,6 +112,14 @@ BOOL CGotoDlg::OnInitDialog()
 		Channel -= CHANID_5E01_SQUARE1;
 		m_cChipEdit->SelectString(-1, _T("5E01"));
 	} 
+	else if (Channel >= CHANID_YM2149F_CH1) {
+		Channel -= CHANID_YM2149F_CH1;
+		m_cChipEdit->SelectString(-1, _T("YM2149F"));
+	}
+	else if (Channel >= CHANID_AY_CH1) {
+		Channel -= CHANID_AY_CH1;
+		m_cChipEdit->SelectString(-1, _T("AY-3-8910"));
+	}
 	else if (Channel >= CHANID_AY8930_CH1) {
 		Channel -= CHANID_AY8930_CH1;
 		m_cChipEdit->SelectString(-1, _T("AY8930"));
@@ -189,9 +201,13 @@ int CGotoDlg::GetChipFromString(const CString str)
 	else if (str == _T("N163"))
 		return SNDCHIP_N163;
 	else if (str == _T("5B"))
-		return SNDCHIP_AY8930;
-	else if (str == _T("AY8930"))
 		return SNDCHIP_5B;
+	else if (str == _T("AY8930"))
+		return SNDCHIP_AY8930;
+	else if (str == _T("AY-3-8910"))
+		return SNDCHIP_AY;
+	else if (str == _T("YM2149F"))
+		return SNDCHIP_SSG;
 	else if (str == _T("5E01"))
 		return SNDCHIP_5E01;
 	else if (str == _T("7E02"))
@@ -218,6 +234,8 @@ int CGotoDlg::GetFinalChannel() const
 		case SNDCHIP_N163:	Channel += CHANID_N163_CH1; break;
 		case SNDCHIP_5B:	Channel += CHANID_5B_CH1; break;
 		case SNDCHIP_AY8930:Channel += CHANID_AY8930_CH1; break;
+		case SNDCHIP_AY:	Channel += CHANID_AY_CH1; break;
+		case SNDCHIP_SSG:	Channel += CHANID_YM2149F_CH1; break;
 		case SNDCHIP_5E01:	Channel += CHANID_5E01_SQUARE1; break; // Taken from E-FamiTracker by Euly
 		case SNDCHIP_7E02:	Channel += CHANID_7E02_SQUARE1; break;
 		case SNDCHIP_OPLL:	Channel += CHANID_OPLL_CH1; break;

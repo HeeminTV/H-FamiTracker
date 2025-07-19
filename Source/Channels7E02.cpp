@@ -303,7 +303,7 @@ void C7E02WaveformChan::RefreshChannel()
 	char WaveLowBytes = m_iDefaultDuty;
 
 	// char WaveType = m_iInstrument & 1;
-	char Volume = (((m_iVolume >> 3) + 1) * m_iInstVolume + 1) - 1 >> 4; // EFT 
+	char Volume = (((m_iVolume >> VOL_COLUMN_SHIFT) + 1) * m_iInstVolume + 1) - 1 >> 4;
 
 	unsigned char HiFreq = (Freq & 0xFF);
 	unsigned char LoFreq = (Freq >> 8);

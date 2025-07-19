@@ -887,6 +887,8 @@
 #define ID_INSTRUMENT_ADD_VRC7          36870
 #define ID_INSTRUMENT_ADD_5E01          36873
 #define ID_INSTRUMENT_ADD_AY8930		53334
+#define ID_INSTRUMENT_ADD_AY     		53339
+#define ID_INSTRUMENT_ADD_SSG     		53340
 #define ID_INDICATOR_CHIP               53248
 #define ID_INDICATOR_INSTRUMENT         53249
 #define ID_INDICATOR_OCTAVE             53250
@@ -979,6 +981,20 @@
 #define IDC_AY8930_OFFSET_SLIDER        53336
 #define IDC_AY8930_OFFSET_DB            53337
 #define IDC_STATIC_AY8930				53338
+#define IDC_EXPANSION_AY				53341
+#define IDC_CHIP_AY						53342
+#define IDC_LEVEL_AY					53343
+#define IDC_AY_OFFSET_EDIT				53344
+#define IDC_AY_OFFSET_SLIDER			53345
+#define IDC_AY_OFFSET_DB				53346
+#define IDC_STATIC_AY					53347
+#define IDC_EXPANSION_SSG				53348
+#define IDC_CHIP_SSG					53349
+#define IDC_LEVEL_SSG					53350
+#define IDC_SSG_OFFSET_EDIT				53351
+#define IDC_SSG_OFFSET_SLIDER			53352
+#define IDC_SSG_OFFSET_DB				53353
+#define IDC_STATIC_SSG					53354
 
 
 // Next default values for new objects

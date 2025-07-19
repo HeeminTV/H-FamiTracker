@@ -152,6 +152,8 @@ bool CTrackerChannel::IsInstrumentCompatible(int Instrument, inst_type_t Type) c
 		case SNDCHIP_N163:		// // //
 		case SNDCHIP_5B:
 		case SNDCHIP_AY8930:
+		case SNDCHIP_AY:
+		case SNDCHIP_SSG:
 		case SNDCHIP_VRC6:
 		case SNDCHIP_FDS:
 		case SNDCHIP_5E01: // Taken from E-FamiTracker by Euly
@@ -264,7 +266,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 		case EF_FDS_MOD_SPEED_HI: case EF_FDS_MOD_SPEED_LO: case EF_FDS_MOD_BIAS:
 			return m_iChip == SNDCHIP_FDS;
 		case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE: case EF_SUNSOFT_NOISE:
-			return m_iChip == SNDCHIP_5B || m_iChip == SNDCHIP_AY8930;
+			return m_iChip == SNDCHIP_5B || m_iChip == SNDCHIP_AY8930 || m_iChip == SNDCHIP_AY || m_iChip == SNDCHIP_SSG;
 		case EF_AY8930_AND_MASK: case EF_AY8930_OR_MASK:
 			return m_iChip == SNDCHIP_AY8930;
 		case EF_AY8930_PULSE_WIDTH:
@@ -293,7 +295,7 @@ bool CTrackerChannel::IsEffectCompatible(effect_t EffNumber, int EffParam) const
 			if (m_iChannelID == CHANID_MMC5_VOICE) return false; // neither this PCM channel
 			// VRC7 and S5B is not supported yet.
 			if (m_iChip == SNDCHIP_VRC7 || m_iChip == SNDCHIP_OPLL) return false;
-			if (m_iChip == SNDCHIP_5B || m_iChip == SNDCHIP_6581) return false;
+			if (m_iChip == SNDCHIP_5B || m_iChip == SNDCHIP_AY || m_iChip == SNDCHIP_SSG || m_iChip == SNDCHIP_6581) return false;
 			return EffParam == 0x00;
 		case EF_HARMONIC:
 			// VRC7 is not supported yet.

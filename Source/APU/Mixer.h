@@ -38,6 +38,8 @@ enum chip_level_t {
 	CHIP_LEVEL_N163,
 	CHIP_LEVEL_5B,
 	CHIP_LEVEL_AY8930,
+	CHIP_LEVEL_AY,
+	CHIP_LEVEL_YM2149F,
 	CHIP_LEVEL_5E01_APU1,
 	CHIP_LEVEL_5E01_APU2,
 	CHIP_LEVEL_7E02_APU1,
@@ -85,6 +87,8 @@ struct MixerConfig {
 		0,		// N163
 		0,		// 5B
 		0,		// AY8930
+		0,		// AY-3-8910
+		0,		// YM2149F
 		0,		// 5E01_APU1
 		0,		// 5E01_APU2
 		0,		// 7E02_APU1
@@ -191,6 +195,8 @@ private:
 	void MixMMC5(int Value, int Time);
 	void MixS5B(int Value, int Time);
 	void MixAY8930(int Value, int Time);
+	void MixAY(int Value, int Time);
+	void MixYM2149F(int Value, int Time);
 
 	void StoreChannelLevel(int Channel, int Value);
 	void ClearChannelLevels();
@@ -209,6 +215,8 @@ private:
 	Blip_Synth<blip_good_quality> SynthMMC5;
 	Blip_Synth<blip_good_quality> SynthS5B;		// // // 050B
 	Blip_Synth<blip_good_quality> SynthAY8930;
+	Blip_Synth<blip_good_quality> SynthAY;
+	Blip_Synth<blip_good_quality> SynthYM2149F;
 
 	/// Only used by CMixer::ClearBuffer(), which clears the global Blip_Buffer
 	/// and all Blip_Synth owned by CMixer.
@@ -220,10 +228,12 @@ private:
 	/// This works because CMixer::ClearBuffer() is only called by CAPU::Reset(),
 	/// which also calls CSoundChip2::Reset() on each sound chip.
 	#define FOREACH_SYNTH(X, SEP) \
-		X(SynthVRC6) SEP \
-		X(SynthMMC5) SEP \
-		X(SynthS5B)  SEP \
-		X(SynthAY8930)
+		X(SynthVRC6)   SEP \
+		X(SynthMMC5)   SEP \
+		X(SynthS5B)    SEP \
+		X(SynthAY8930) SEP \
+		X(SynthAY)     SEP \
+		X(SynthYM2149F)
 
 	// Blip buffer object
 	Blip_Buffer	BlipBuffer;
@@ -256,6 +266,8 @@ private:
 	float		m_fLevelN163;
 	float		m_fLevel5B;		// // // 050B
 	float		m_fLevelAY8930;
+	float		m_fLevelAY;
+	float		m_fLevelYM2149F;
 	float		m_fLevel5E01_APU1;
 	float		m_fLevel5E01_APU2;
 	float		m_fLevel7E02_APU1;

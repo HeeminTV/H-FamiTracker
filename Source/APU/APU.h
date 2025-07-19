@@ -44,6 +44,8 @@ class CMMC5;
 class CN163;
 class CS5B;
 class CAY8930;	// Taken from E-FamiTracker by Euly
+class CAY;
+class CYM2149F;
 class C5E01;	 // Taken from E-FamiTracker by Euly
 class C7E02;
 class COPLL;
@@ -167,6 +169,8 @@ private:
 	std::unique_ptr<COPLL> m_pOPLL;
 	CS5B		*m_pS5B;
 	CAY8930		*m_pAY8930; // Taken from E-FamiTracker by Euly
+	CAY			*m_pAY;
+	CYM2149F	*m_pYM2149F;
 
 	/// Bitfield of external sound chips enabled.
 	/// Never read, except for code hidden behind #ifdef LOGGING.

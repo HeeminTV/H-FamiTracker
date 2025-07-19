@@ -16,8 +16,8 @@ Organized by priority
 - [x] AY8930
 - [ ] SAA1099
 - [ ] 8580
-- [ ] YM2149F
-- [ ] AY-3-8910
+- [x] YM2149F
+- [x] AY-3-8910
 - [ ] SN76489
 - [ ] Konami VRC7 / Yamaha YM2413 instrument macro
 - [ ] PCM importer via DPCM instrument
