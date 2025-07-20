@@ -248,7 +248,7 @@ float CMixer::GetAttenuation(bool UseSurveyMix) const
 		if (m_iExternalChip & SNDCHIP_7E02)   TotalChipsUsed++;
 		if (m_iExternalChip & SNDCHIP_OPLL)   TotalChipsUsed++;
 		if (m_iExternalChip & SNDCHIP_6581)   TotalChipsUsed++;
-		ATTENUATION_2A03 *= static_cast<float>(1.0 / ((float)TotalChipsUsed / 4)); // now they are too quiet
+		ATTENUATION_2A03 *= static_cast<float>(1.0 / (float)TotalChipsUsed); // now they are too quiet
 	}
 
 	return ATTENUATION_2A03;

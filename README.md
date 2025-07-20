@@ -14,6 +14,7 @@ Organized by priority
 - [x] 5E01
 - [x] 6581
 - [x] AY8930
+- [x] Kylxbn's "N163 Linear interpolation and no aliasing" mod
 - [ ] SAA1099
 - [ ] 8580
 - [x] YM2149F

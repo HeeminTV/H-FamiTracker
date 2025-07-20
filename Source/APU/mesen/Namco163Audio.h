@@ -1,6 +1,10 @@
+// -----------------------------------------------------------------------
+// Mesen N163 audio emulation + Kylxbn's "Linear interpolation and no aliasing" mod for NSFPlay
+// -----------------------------------------------------------------------
 #pragma once
 #include "stdafx.h"
 #include "../APU.h"
+#include <cmath>
 
 class Namco163Audio
 {
@@ -17,6 +21,8 @@ private:
 	int16_t _lastOutput;
 	bool _disableSound;
 	bool _mixLinear;
+
+	double _currentPhaseDouble[8]; // kylxbn
 
 	enum SoundReg
 	{
@@ -99,6 +105,22 @@ public:
 		_mixLinear = mixLinear;
 	}
 
+	double linear_approximate(double now_a, double min_a, double max_a, double min_b, double max_b) {
+		if (now_a < min_a) {
+			now_a = min_a;
+		}
+		else if (now_a > max_a) {
+			now_a = max_a;
+		}
+
+		return ((now_a - min_a) * (max_b - min_b)) / (max_a - min_a) + min_b;
+	}
+
+	int8_t get_sample(uint32_t index) const
+	{
+		return (index & 0x01) ? ((_internalRam[index >> 1] >> 4) & 0x0F) : (_internalRam[index >> 1] & 0x0F);
+	}
+
 	void UpdateChannel(int channel)
 	{
 		uint32_t phase = GetPhase(channel);
@@ -113,15 +135,18 @@ public:
 			phase = (phase + freq) % (length << 16);
 		}
 		
-		uint8_t samplePosition = ((phase >> 16) + offset) & 0xFF;
-		int8_t sample;
-		if((samplePosition & 0x01)) {
-			sample = _internalRam[samplePosition / 2] >> 4;
-		} else {
-			sample = _internalRam[samplePosition / 2] & 0x0F;
+		if (!_mixLinear) {
+			uint8_t samplePosition = ((phase >> 16) + offset) & 0xFF;
+			int8_t sample;
+			if((samplePosition & 0x01)) {
+			 	sample = _internalRam[samplePosition / 2] >> 4;
+			} else {
+			 	sample = _internalRam[samplePosition / 2] & 0x0F;
+			}
+
+			 _channelOutput[channel] = (sample - 8) * volume;
 		}
 
-		_channelOutput[channel] = (sample - 8) * volume;
 		SetPhase(channel, phase);
 	}
 
@@ -132,23 +157,64 @@ public:
 			summedOutput += _channelOutput[i];
 		}
 		summedOutput /= (GetNumberOfChannels() + 1);
-		return (_mixLinear ? summedOutput : _channelOutput[_currentChannel]);
+
+		return _mixLinear ? summedOutput : _channelOutput[_currentChannel]; // if multiplexing is disabled, output mix, else, output only one channle
 	}
 
 	int16_t ClockAudio()
 	{
-		if(!_disableSound) {
+		if (!_disableSound) {
 			_updateCounter++;
-			if(_updateCounter == 15) {
-				UpdateChannel(_currentChannel);
+			if (_updateCounter == 15) {
+				UpdateChannel(_currentChannel);//v
 
 				_updateCounter = 0;
 				_currentChannel--;
-				if(_currentChannel < 7 - GetNumberOfChannels()) {
+				if (_currentChannel < 7 - GetNumberOfChannels()) {
 					_currentChannel = 7;
 				}
 			}
 		}
+
+		if (_mixLinear) {
+			int channels = GetNumberOfChannels() + 1;
+			for (int channel = 7; channel >= (8 - channels); channel--) {
+				double phase = _currentPhaseDouble[channel];
+				double freq = (double)GetFrequency(channel);
+				double len = (double)GetWaveLength(channel) * 65536.0;
+				double off = GetWaveAddress(channel);
+				double vol = GetVolume(channel);
+
+				phase += (((1.0) / (double)channels) * freq);
+				if (phase >= len) {
+					phase -= len;
+				}
+
+				_currentPhaseDouble[channel] = phase;
+
+				double index = ((phase / 65536.0) + off);
+				if (index > 255.0) {
+					index = 255.0;
+				}
+
+				if (false) {
+					_channelOutput[channel] = linear_approximate(
+						index, (INT32)index,
+						((INT32)index) + 1,
+
+						8.0 - (double)get_sample((INT32)index),
+						8.0 - (double)get_sample(((INT32)index) + 1)
+					) * (double)vol;
+				}
+				else {
+					_channelOutput[channel] = (8.0 - (double)get_sample((INT32)index)) * (double)vol;
+				}
+
+				//double sample = 8.0 - get_sample((INT32)index);
+				//fout[channel] = sample * (double)vol;
+			}
+		}
+
 		auto out = UpdateOutputLevel();
 		return out;
 	}
@@ -169,6 +235,7 @@ public:
 	Namco163Audio()
 		: _channelOutput{}
 		, _internalRam{}
+		, _currentPhaseDouble{}
 	{
 		_ramPosition = 0;
 		_autoIncrement = false;

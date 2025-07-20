@@ -1047,6 +1047,8 @@ void CModulePropertiesDlg::updateDeviceMixOffsetUI(int device, bool renderText)
 		SNDCHIP_N163,
 		SNDCHIP_5B,
 		SNDCHIP_AY8930,
+		SNDCHIP_AY,
+		SNDCHIP_SSG,
 		SNDCHIP_5E01,
 		SNDCHIP_5E01,
 		SNDCHIP_7E02,
