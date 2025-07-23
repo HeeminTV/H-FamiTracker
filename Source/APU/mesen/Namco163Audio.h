@@ -207,7 +207,7 @@ public:
 					) * (double)vol;
 				}
 				else {
-					_channelOutput[channel] = (8.0 - (double)get_sample((INT32)index)) * (double)vol;
+					_channelOutput[channel] = 0 - ((8.0 - (double)get_sample((INT32)index)) * (double)vol);
 				}
 
 				//double sample = 8.0 - get_sample((INT32)index);

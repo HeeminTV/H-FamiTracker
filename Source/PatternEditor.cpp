@@ -2217,7 +2217,9 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		const int wave_x = x + DPI::SX(300);
 
 		// // // N163 wave
-		const int N163_CHANS = m_pDocument->GetNamcoChannels();
+
+		auto pChCount = pSoundGen->GetRegState(SNDCHIP_N163, 0x7F);
+		const int N163_CHANS = 1 + (pChCount->GetValue() >> 4);
 		const int Length = 0x80 - 8 * N163_CHANS;
 
 		y += 18;
@@ -2812,10 +2814,36 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			int period = reg[0] | reg[1] << 8;
 			int freq = period / 9.373935130320996; // period / (256^3 / 1789773)
 
-			text.Format(_T("%s, adsr = $%04X"), GetPitchTextFunc(4, period, freq), reg[6] | reg[5] << 8);
-			DrawTextFunc(300, text);
+			text.Format(_T("%s, adsr = $%04X, waveform = %s%s%s%s"), GetPitchTextFunc(4, period, freq), reg[6] | reg[5] << 8,
+				reg[4] >> 7 & 0x01 ? "N" : "-",
+				reg[4] >> 6 & 0x01 ? "P" : "-",
+				reg[4] >> 5 & 0x01 ? "S" : "-",
+				reg[4] >> 4 & 0x01 ? "T" : "-"
+			);
+
+			DrawTextFunc(262, text);
 			DrawVolFunc(freq, 0x7F);
 		}
+
+		GetRegsFunc(SNDCHIP_6581, [&](int x) { return 0xD415 + x; }, 4);
+		text.Format(_T("$D415:"));
+		DrawRegFunc(text, 4);
+
+		text.Format(_T("cutoff = $%03X, resonance = %u, mode = %s%s%s, routing = %s%s%s, vol = %02i"), 
+			reg[1] << 4 | reg[0],
+			reg[2] >> 4,
+
+			reg[3] >> 6 & 0x01 ? "H" : "-",
+			reg[3] >> 5 & 0x01 ? "B" : "-",
+			reg[3] >> 4 & 0x01 ? "L" : "-",
+
+			reg[2] >> 0 & 0x01 ? "1" : "-",
+			reg[2] >> 1 & 0x01 ? "2" : "-",
+			reg[2] >> 2 & 0x01 ? "3" : "-",
+
+			reg[3] & 0x0F
+		);
+		DrawTextFunc(262, text);
 
 	}
 

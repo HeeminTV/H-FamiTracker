@@ -106,6 +106,7 @@ enum command_t {
 	CMD_EFF_FDS_MOD_BIAS,		// // //
 
 	CMD_EFF_N163_WAVE_BUFFER,	// // //
+	// CMD_EFF_N163_CHANNELS,
 
 	CMD_EFF_S5B_ENV_TYPE,		// // //
 	CMD_EFF_S5B_ENV_RATE_HI,	// // //
@@ -785,6 +786,14 @@ void CPatternCompiler::CompileData(int Track, int Pattern, int Channel)
 						WriteData(EffParam == 0x7F ? 0x80 : EffParam);
 					}
 					break;
+				/*case EF_N163_CHANNELS:
+					if (ChipID == SNDCHIP_N163 && EffParam <= 0x08) {
+						WriteData(Command(CMD_EFF_N163_CHANNELS));
+						WriteData(EffParam);
+					}
+
+					break;
+					*/
 				// SID series, most likely taken from E-FamiTracker by Euly
 				case EF_SID_FILTER_RESONANCE:		// // // 050B
 					if (ChipID == SNDCHIP_6581) {

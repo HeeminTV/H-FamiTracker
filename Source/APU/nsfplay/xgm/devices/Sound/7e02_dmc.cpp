@@ -355,7 +355,7 @@ namespace xgm
             break;
         case 1: ret = dmwtbl[tphase] * 3;
             break;
-        case 2: ret = tritbl[tphase];
+        default: ret = tritbl[tphase];
             break;
         case 3: ret = pwmtbl[tphase];
             break;

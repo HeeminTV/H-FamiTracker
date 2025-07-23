@@ -70,14 +70,14 @@ BOOL CConfigEmulation::OnInitDialog()
 	str.Format("%i", pSettings->Emulation.iFDSLowpass);
 	SetDlgItemText(IDC_EDIT_LOWPASS_FDS, str);
 	CSliderCtrl* pFDSLowpass = static_cast<CSliderCtrl*>(GetDlgItem(IDC_SLIDER_LOWPASS_FDS));
-	pFDSLowpass->SetRange(0, 8000);
+	pFDSLowpass->SetRange(0, 20000);
 	pFDSLowpass->SetPos(_ttoi(str));
 
 	// N163
 	str.Format("%i", pSettings->Emulation.iN163Lowpass);
 	SetDlgItemText(IDC_EDIT_LOWPASS_N163, str);
 	CSliderCtrl* pN163Lowpass = static_cast<CSliderCtrl*>(GetDlgItem(IDC_SLIDER_LOWPASS_N163));
-	pN163Lowpass->SetRange(0, 12000);
+	pN163Lowpass->SetRange(0, 20000);
 	pN163Lowpass->SetPos(_ttoi(str));
 	m_bDisableNamcoMultiplex = pSettings->Emulation.bNamcoMixing;
 	CheckDlgButton(IDC_N163_MULTIPLEXER, pSettings->Emulation.bNamcoMixing);
@@ -169,7 +169,7 @@ void CConfigEmulation::OnEnChangeEditLowpassFDS()
 	int pos = _ttoi(str);
 
 	if (pos < 0) pos = 0;
-	if (pos > 8000) pos = 8000;
+	if (pos > 20000) pos = 20000;
 
 	CSliderCtrl* pIdleRefSlider = static_cast<CSliderCtrl*>(GetDlgItem(IDC_SLIDER_LOWPASS_FDS));
 	pIdleRefSlider->SetPos(pos);
@@ -184,7 +184,7 @@ void CConfigEmulation::OnEnChangeEditLowpassN163()
 	int pos = _ttoi(str);
 
 	if (pos < 0) pos = 0;
-	if (pos > 12000) pos = 12000;
+	if (pos > 20000) pos = 20000;
 
 	CSliderCtrl* pIdleRefSlider = static_cast<CSliderCtrl*>(GetDlgItem(IDC_SLIDER_LOWPASS_N163));
 	pIdleRefSlider->SetPos(pos);

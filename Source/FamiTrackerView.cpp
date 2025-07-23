@@ -122,7 +122,8 @@ const CString EFFECT_TEXTS[] = {		// // //
 	_T("Yxx - AY8930 noise AND mask"),
 	_T("Zxx - AY8930 noise OR mask"),
 	_T("5xx - AY8930 least significant volume bit"),
-	_T("Z0x - SID gate bit mode")
+	_T("Z0x - SID gate bit mode"),
+	_T("-0x - Set the number of N163 channels")
 };
 
 // OLE copy and mix
@@ -1661,7 +1662,8 @@ bool CFamiTrackerView::PlayerGetNote(int Track, int Frame, int Channel, int Row,
 			EF_HALT, EF_JUMP, EF_SPEED, EF_SKIP, EF_GROOVE,
 			EF_SID_FILTER_CUTOFF_HI,  EF_SID_FILTER_CUTOFF_LO, EF_SID_FILTER_RESONANCE, EF_SID_FILTER_MODE, EF_SID_GATE_MODE,
 			EF_SUNSOFT_ENV_TYPE, EF_SUNSOFT_NOISE, EF_SUNSOFT_ENV_HI, EF_SUNSOFT_ENV_LO,
-			EF_N163_WAVE_BUFFER
+			EF_N163_WAVE_BUFFER, // EF_N163_CHANNELS,
+			EF_VRC7_PORT, EF_VRC7_WRITE,
 		};
 		int Columns = pDoc->GetEffColumns(Track, Channel) + 1;
 

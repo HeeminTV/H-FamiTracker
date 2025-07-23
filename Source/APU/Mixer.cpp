@@ -281,7 +281,7 @@ void CMixer::RecomputeEmuMixState()
 	// Volume levels
 	auto &chip2A03 = *m_APU->m_p2A03;
 	auto &chipVRC7 = *m_APU->m_pVRC7;
-	auto &chipFDS = *m_APU->m_pFDS;
+	auto &chipFDS  = *m_APU->m_pFDS;
 	auto &chipN163 = *m_APU->m_pN163;
 	auto& chip5E01 = *m_APU->m_p5E01; // Taken from E-FamiTracker by Euly
 	auto& chip7E02 = *m_APU->m_p7E02;

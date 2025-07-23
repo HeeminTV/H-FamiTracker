@@ -2584,6 +2584,8 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 					for (int n = 0; n < MAX_EFFECT_COLUMNS; ++n) {
 						if (Note->EffNumber[n] == EF_SAMPLE_OFFSET)
 							Note->EffNumber[n] = EF_N163_WAVE_BUFFER;
+						//if (Note->EffNumber[n] == EF_RETRIGGER)
+						//	Note->EffNumber[n] = EF_N163_CHANNELS;
 					}
 				}
 
@@ -5581,7 +5583,7 @@ stFullState *CFamiTrackerDoc::RetrieveSoundState(unsigned int Track, unsigned in
 				case EF_FDS_VOLUME: case EF_FDS_MOD_BIAS:
 				case EF_SUNSOFT_ENV_LO: case EF_SUNSOFT_ENV_HI: case EF_SUNSOFT_ENV_TYPE:
 				case EF_AY8930_PULSE_WIDTH: case EF_AY8930_AND_MASK: case EF_AY8930_OR_MASK: case EF_AY8930_VOL:
-				case EF_N163_WAVE_BUFFER:
+				case EF_N163_WAVE_BUFFER: //case EF_N163_CHANNELS:
 				case EF_VRC7_PORT:
 				case EF_SID_FILTER_RESONANCE: case EF_SID_FILTER_CUTOFF_HI: case EF_SID_FILTER_CUTOFF_LO: case EF_SID_FILTER_MODE: case EF_SID_ENVELOPE: case EF_SID_RING: case EF_SID_GATE_MODE:
 					if (!ch->IsEffectCompatible(fx, xy)) continue;

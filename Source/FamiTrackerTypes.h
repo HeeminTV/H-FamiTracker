@@ -169,6 +169,7 @@ enum effect_t : unsigned char {
 	EF_PHASE_RESET,			// Reset waveform phase without retriggering note (VRC6-only so far)
 	EF_HARMONIC,			// Multiply the note pitch by an integer
 	EF_TARGET_VOLUME_SLIDE,	// // !! Target volume slide
+
 	EF_SID_FILTER_RESONANCE,// // // SID filter resonance (Taken from E-FamiTracker by Euly)
 	EF_SID_FILTER_CUTOFF_HI,// // // SID filter cutoff hi
 	EF_SID_FILTER_CUTOFF_LO,// // // SID filter cutoff lo
@@ -180,6 +181,8 @@ enum effect_t : unsigned char {
 	EF_AY8930_OR_MASK,   	// // // AY8930 noise OR mask
 	EF_AY8930_VOL,			// // // AY8930 extra volume bit
 	EF_SID_GATE_MODE,		// SID gate mode
+
+	// EF_N163_CHANNELS,		// N163 Channels 
 
 	EF_COUNT
 };
@@ -244,6 +247,7 @@ const char EFF_CHAR[] = {
 	'=',	// EF_PHASE_RESET
 	'K',	// EF_HARMONIC
 	'N',	// // !! EF_TARGET_VOLUME_SLIDE
+
 	'W',	// EF_SID_FILTER_RESONANCE
 	'I',	// EF_SID_FILTER_CUTOFF_HI
 	'J',	// EF_SID_FILTER_CUTOFF_LO
@@ -255,6 +259,8 @@ const char EFF_CHAR[] = {
 	'Z',   	// EF_AY8930_OR_MASK,
 	'5',    // EF_AY8930_VOL,
 	'Z',	// EF_SID_GATE_MODE
+
+	// 'X',	// EF_N163_CHANNELS
 };
 
 struct Effect {
