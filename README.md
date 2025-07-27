@@ -4,9 +4,20 @@
 
 H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**ipnotico".
 
-## To do list
+## To do list (this list displays the current development status and not the current status of the release build)
 
-Organized by priority
+
+- [ ] Perfect E-FamiTracker module import compatibility (for all "stable build", "known build" and "latest build")
+- [ ] Fix SID instrument block
+- [ ] Fix bugs in SID instrument handler
+- [ ] Fix mixer problems in AY-3-8910, YM2149F
+- [ ] Make `Z0x` effect in YM2143 maintained
+- [ ] Fix a bug where 7E02 overwrites 2A03's sample buffer
+- [ ] Make Dn-FamiTracker module importer ignore the MMC5's PCM channel
+- [ ] Reduce font size in register viewer
+- [ ] Remove crash in detune dialog
+
+Organized by priority at this point
 
 - [x] 7E02
 - [x] 2A03
@@ -22,6 +33,7 @@ Organized by priority
 - [ ] SN76489
 - [ ] Konami VRC7 / Yamaha YM2413 instrument macro
 - [ ] PCM importer via DPCM instrument
+- [ ] Yamaha YM3812
 - [ ] Atari TIA
 - [x] MMC5 PCM
 
