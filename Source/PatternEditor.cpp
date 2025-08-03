@@ -1902,7 +1902,7 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		m_pDocument->ExpansionEnabled(SNDCHIP_5E01) * 7  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_7E02) * 8  +
 		m_pDocument->ExpansionEnabled(SNDCHIP_OPLL) * 12 +
-		m_pDocument->ExpansionEnabled(SNDCHIP_6581) * 5  +
+		m_pDocument->ExpansionEnabled(SNDCHIP_6581) * 6  +
 		0
 	);
 	int vis_line = 0;
@@ -2222,9 +2222,11 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 		const int N163_CHANS = 1 + (pChCount->GetValue() >> 4);
 		const int Length = 0x80 - 8 * N163_CHANS;
 
+		const int Scale = 3;
+
 		y += 18;
-		pDC->FillSolidRect(wave_x - 1, y - 1, 2 * Length + 2, 17, 0x808080);
-		pDC->FillSolidRect(wave_x, y, 2 * Length, 15, 0);
+		pDC->FillSolidRect(wave_x - Scale, y - Scale, (2 * Length + 2) * Scale, (17) * Scale, 0x808080);
+		pDC->FillSolidRect(wave_x, y, (2 * Length) * Scale, (15) * Scale, 0);
 		for (int i = 0; i < Length; i++) {
 			auto pState = pSoundGen->GetRegState(SNDCHIP_N163, i);
 			const int Hi = (pState->GetValue() >> 4) & 0x0F;
@@ -2232,8 +2234,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			COLORREF Col = BLEND(
 				0xC0C0C0, DECAY_COLOR[pState->GetNewValueTime()], 100 * pState->GetLastUpdatedTime() / CRegisterState::DECAY_RATE
 			);
-			pDC->FillSolidRect(wave_x + i * 2    , y + 15 - Lo, 1, Lo, Col);
-			pDC->FillSolidRect(wave_x + i * 2 + 1, y + 15 - Hi, 1, Hi, Col);
+			pDC->FillSolidRect(wave_x + (i * 2) * Scale        , y + (15 - Lo) * Scale, Scale, (Lo) * Scale, Col);
+			pDC->FillSolidRect(wave_x + (i * 2) * Scale + Scale, y + (15 - Hi) * Scale, Scale, (Hi)* Scale, Col);
 		}
 		for (int i = 0; i < N163_CHANS; ++i) {
 			auto pPosState = pSoundGen->GetRegState(SNDCHIP_N163, 0x78 - i * 8 + 6);
@@ -2242,8 +2244,8 @@ void CPatternEditor::DrawRegisters(CDC *pDC)
 			const int WaveLen = 0x100 - (pLenState->GetValue() & 0xFC);
 			const int NewTime = std::min(pPosState->GetNewValueTime(), pLenState->GetNewValueTime());
 			const int UpdateTime = std::min(pPosState->GetLastUpdatedTime(), pLenState->GetLastUpdatedTime());
-			pDC->FillSolidRect(wave_x, y + 20 + i * 5, Length * 2, 3, 0);
-			pDC->FillSolidRect(wave_x + WavePos, y + 20 + i * 5, WaveLen, 3,
+			pDC->FillSolidRect(wave_x, y + (20 * Scale) + i * 5, Length * 2, 3, 0);
+			pDC->FillSolidRect(wave_x + WavePos * Scale, y + (20 * Scale) + i * 5, WaveLen * Scale, 3,
 							   BLEND(0xC0C0C0, DECAY_COLOR[NewTime], 100 * UpdateTime / CRegisterState::DECAY_RATE));
 		}
 		y -= 18;
