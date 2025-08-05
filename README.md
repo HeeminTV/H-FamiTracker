@@ -7,7 +7,7 @@ H-FamiTracker is a fork based on Dn-FamiTracker. "H" stands for "**H**ipnotico".
 ## To do list (this list displays the current development status and not the current status of the release build)
 
 
-- [ ] Perfect E-FamiTracker module import compatibility (for all "stable build", "known build" and "latest build")
+- [ ] Perfect E-FamiTracker module import compatibility (for all "stable build", "known build" and ~~"latest build"~~)
 - [ ] Fix SID instrument block
 - [ ] Fix bugs in SID instrument handler
 - [ ] Fix mixer problems in AY-3-8910, YM2149F

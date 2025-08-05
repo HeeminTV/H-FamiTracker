@@ -103,6 +103,9 @@ static const char *FILE_BLOCK_SEQUENCES_N106 = "SEQUENCES_N106";
 // Sunsoft
 static const char *FILE_BLOCK_SEQUENCES_S5B = "SEQUENCES_S5B";
 
+// SID
+static const char* FILE_BLOCK_SEQUENCES_SID = "SEQUENCES_SID"; // Taken from E-FamiTracker by Euly
+
 // // // 0CC-FamiTracker specific
 const char *FILE_BLOCK_DETUNETABLES			= "DETUNETABLES";
 const char *FILE_BLOCK_GROOVES				= "GROOVES";
@@ -112,9 +115,6 @@ const char *FILE_BLOCK_PARAMS_EXTRA			= "PARAMS_EXTRA";
 // !! !! Dn-FamiTracker specific
 const char *FILE_BLOCK_JSON = "JSON";
 const char *FILE_BLOCK_PARAMS_EMU = "PARAMS_EMU";
-
-// H-FamiTracker modification
-static const char* FILE_BLOCK_SEQUENCES_SID = "SEQUENCES_SID"; // Taken from E-FamiTracker by Euly
 
 // FTI instruments files
 static const char INST_HEADER[] = "FTI";
@@ -952,7 +952,7 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 		if (Version >= 7 && !(Version >= 10))
 			pDocFile->WriteBlockInt(1);		// Hardware sweep pitch reset
 
-		if (Version > 3 && Version <= 6) {
+		if ((Version > 3 && Version <= 7) || Version == 10) {
 			pDocFile->WriteBlockInt(m_vHighlight.First);
 			pDocFile->WriteBlockInt(m_vHighlight.Second);
 		}
@@ -1906,7 +1906,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 		// Others including 0.5.0 BETA (8-9) 
 		//      (NOT 0.4.x BETA (7))
 		// 
-		// yes EFT does conflict with BETA modules which is not pretty good
+		// yes EFT does conflict with BETA 0.4.x modules which is not pretty good
 		m_iExpansionChip = pDocFile->GetBlockChar();
 	}
 
@@ -1949,7 +1949,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 
 	m_vHighlight = CPatternData::DEFAULT_HIGHLIGHT;		// // //
 
-	if (Version > 3 && Version <= 6) {		// // // 050B
+	if ((Version > 3 && Version <= 7) || Version == 10) {		// // // 050B
 		m_vHighlight.First = pDocFile->GetBlockInt();
 		m_vHighlight.Second = pDocFile->GetBlockInt();
 	}
@@ -2507,6 +2507,7 @@ void CFamiTrackerDoc::ReadBlock_Patterns(CDocumentFile *pDocFile, const int Vers
 		   ) 
 		{
 			// TODO
+			Channel++;
 		}
 
 		CPatternData *pTrack = GetTrack(Track);

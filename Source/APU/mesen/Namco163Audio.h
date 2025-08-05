@@ -129,6 +129,9 @@ public:
 		uint8_t offset = GetWaveAddress(channel);
 		uint8_t volume = GetVolume(channel);
 
+		if (phase == 0x00000000 || length == 0)
+			_currentPhaseDouble[channel] = 0;
+
 		if(length == 0) {
 			phase = 0;
 		} else {
