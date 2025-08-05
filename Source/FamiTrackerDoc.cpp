@@ -926,8 +926,12 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	// Module parameters
 	pDocFile->CreateBlock(FILE_BLOCK_PARAMS, Version);
 	
-	if (Version == 7 || Version == 10) {
-		// EFT or HFT
+	if (Version == 10) {
+		// 01010101 11111111 00000000 10101010
+		pDocFile->WriteBlockChar((m_iExpansionChip >> 16) & 0xFF);
+		pDocFile->WriteBlockChar((m_iExpansionChip >> 8) & 0xFF);
+		pDocFile->WriteBlockChar((m_iExpansionChip >> 0) & 0xFF);
+	} else if (Version == 7) {
 		pDocFile->WriteBlockInt(m_iExpansionChip);
 	} else if (Version >= 2) {
 		pDocFile->WriteBlockChar(m_iExpansionChip);
@@ -1899,8 +1903,9 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 
 	if (Version == 1) {
 		pTrack->SetSongSpeed(pDocFile->GetBlockInt());
-	} else if (Version == 7 || Version == 10) {
-		// EFT (7) or HFT (10)
+	} else if (Version == 10){
+		m_iExpansionChip = pDocFile->GetBlockRGB();
+	} else if (Version == 7) {
 		m_iExpansionChip = pDocFile->GetBlockInt();
 	} else {
 		// Others including 0.5.0 BETA (8-9) 

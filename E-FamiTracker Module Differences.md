@@ -3,7 +3,7 @@
 ### Latest commit
 	unsigned int `FILE_VER` = 0x0470
 	char `FILE_HEADER_ID` = "H-FamiTracker Module"
-	type of m_iExpansionChip = unsigned int
+	type of m_iExpansionChip = unsigned 24-bit
 	block version of Parameters = 10
 	block version of SequencesSID = 5
 	
