@@ -57,7 +57,6 @@ public:
 	char		*GetBlockHeaderID() const;
 	int			GetBlockInt();
 	char		GetBlockChar();
-	int			GetBlockRGB();
 
 	int			GetBlockPos() const;
 	int			GetBlockSize() const;

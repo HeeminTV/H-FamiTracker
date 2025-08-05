@@ -927,7 +927,6 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	pDocFile->CreateBlock(FILE_BLOCK_PARAMS, Version);
 	
 	if (Version == 10) {
-		// 01010101 11111111 00000000 10101010
 		pDocFile->WriteBlockChar((m_iExpansionChip >> 16) & 0xFF);
 		pDocFile->WriteBlockChar((m_iExpansionChip >> 8) & 0xFF);
 		pDocFile->WriteBlockChar((m_iExpansionChip >> 0) & 0xFF);
@@ -942,8 +941,7 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	pDocFile->WriteBlockInt(m_iChannelsAvailable);
 	pDocFile->WriteBlockInt(static_cast<int>(m_iMachine));
 
-
-	if (Version >= 7 && !(Version >= 10)) {		// // // 050B
+	if (Version == 8 || Version == 9) {		// // // 050B
 		pDocFile->WriteBlockInt(m_iPlaybackRateType);
 		pDocFile->WriteBlockInt(m_iPlaybackRate);
 	}
@@ -953,10 +951,10 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 	if (Version >= 3) {
 		pDocFile->WriteBlockInt(m_iVibratoStyle);
 		// m_bLinearPitch is written in WriteBlock_ParamsExtra
-		if (Version >= 7 && !(Version >= 10))
+		if (Version == 8 || Version == 9)
 			pDocFile->WriteBlockInt(1);		// Hardware sweep pitch reset
 
-		if ((Version > 3 && Version <= 7) || Version == 10) {
+		if ((Version > 3 && Version <= 7) || Version >= 10) {
 			pDocFile->WriteBlockInt(m_vHighlight.First);
 			pDocFile->WriteBlockInt(m_vHighlight.Second);
 		}
@@ -970,7 +968,7 @@ bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int V
 			pDocFile->WriteBlockInt(m_iSpeedSplitPoint);
 		}
 
-		if (Version == 8 || Version == 9) {		// // // 050B 2015
+		if (Version == 8) {		// // // 050B 2015
 			pDocFile->WriteBlockChar(m_iDetuneSemitone);
 			pDocFile->WriteBlockChar(m_iDetuneCent);
 		}
@@ -1904,28 +1902,21 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 	if (Version == 1) {
 		pTrack->SetSongSpeed(pDocFile->GetBlockInt());
 	} else if (Version == 10){
-		m_iExpansionChip = pDocFile->GetBlockRGB();
+		m_iExpansionChip  = (pDocFile->GetBlockChar()) << 16;
+		m_iExpansionChip |= (pDocFile->GetBlockChar()) << 8;
+		m_iExpansionChip |= (pDocFile->GetBlockChar()) << 0;
 	} else if (Version == 7) {
 		m_iExpansionChip = pDocFile->GetBlockInt();
 	} else {
-		// Others including 0.5.0 BETA (8-9) 
-		//      (NOT 0.4.x BETA (7))
-		// 
-		// yes EFT does conflict with BETA 0.4.x modules which is not pretty good
 		m_iExpansionChip = pDocFile->GetBlockChar();
 	}
-
-	// For compatibility with E-FamiTracker, 
-	//      FamiTracker BETA 0.4.x (7) is now NOT supported.
-	// 
-	// 0.5.0 still works fine.
 
 	m_iChannelsAvailable = AssertRange(pDocFile->GetBlockInt(), 1, MAX_CHANNELS, "Channel count");		// // //
 
 	m_iMachine = static_cast<machine_t>(pDocFile->GetBlockInt());
 	AssertFileData(m_iMachine == NTSC || m_iMachine == PAL, "Unknown machine");
 
-	if (Version == 8 || Version == 9) {		// // // 050B
+	if (Version >= 8) {		// // // 050B
 		m_iPlaybackRateType = AssertRange(pDocFile->GetBlockInt(), 0, 2, "Playback rate type");
 		// TODO: implement NSF rate
 		m_iPlaybackRate = AssertRange(pDocFile->GetBlockInt(), 0, 0xFFFF, "Playback rate");
@@ -1993,7 +1984,7 @@ void CFamiTrackerDoc::ReadBlock_Parameters(CDocumentFile *pDocFile, const int Ve
 
 	AssertRange<MODULE_ERROR_STRICT>(m_iExpansionChip, 0, 0x3F, "Expansion chip flag");
 
-	if (Version == 8 || Version == 9) {		// // // 050B 2015
+	if (Version == 8) {		// // // 050B 2015
 		m_iDetuneSemitone = pDocFile->GetBlockChar();
 		m_iDetuneCent = pDocFile->GetBlockChar();
 	}

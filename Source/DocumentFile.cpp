@@ -351,17 +351,6 @@ char CDocumentFile::GetBlockChar()
 	return Value;
 }
 
-int CDocumentFile::GetBlockRGB()
-{
-	int Value;
-	memcpy(&Value, m_pBlockData + m_iBlockPointer, 3);
-	m_iPreviousPointer = m_iBlockPointer;
-	m_iBlockPointer += 3;
-	m_iPreviousPosition = m_iFilePosition;		// // //
-	m_iFilePosition += 3;
-	return Value;
-}
-
 CString CDocumentFile::ReadString()
 {
 	/*
