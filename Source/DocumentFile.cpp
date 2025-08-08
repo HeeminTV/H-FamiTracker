@@ -30,6 +30,7 @@
 // No unicode allowed here
 
 // Class constants
+const unsigned int CDocumentFile::FILE_VER_LEGACY = 0x450;			// Legacy file version (4.50)
 const unsigned int CDocumentFile::FILE_VER		 = 0x470;			// Current file version (4.70)
 const unsigned int CDocumentFile::COMPATIBLE_FORWARD_VER = 0x470;	// Forwards compatible file version (4.70), 4.60 is for EFT
 const unsigned int CDocumentFile::COMPATIBLE_VER = 0x0100;			// Backwards compatible file version (1.0)
@@ -61,17 +62,17 @@ bool CDocumentFile::Finished() const
 	return m_bFileDone;
 }
 
-bool CDocumentFile::BeginDocument(bool isDnModule)
+bool CDocumentFile::BeginDocument(char isDnModule)
 {
 	try {
-		// TODO: Dn-FamiTracker compatibility modes
-		if (isDnModule)
+		if (isDnModule == 2)
 			Write(FILE_HEADER_ID_HFT, int(strlen(FILE_HEADER_ID_HFT)));
+		else if (isDnModule == 1)
+			Write(FILE_HEADER_ID_DNFT, int(strlen(FILE_HEADER_ID_DNFT)));
 		else
 			Write(FILE_HEADER_ID, int(strlen(FILE_HEADER_ID)));
-		Write(&FILE_VER, sizeof(unsigned int));
-	}
-	catch (CFileException *e) {
+		Write(isDnModule == 2 ? &FILE_VER : &FILE_VER_LEGACY, sizeof(unsigned int));
+	} catch (CFileException *e) {
 		e->Delete();
 		return false;
 	}

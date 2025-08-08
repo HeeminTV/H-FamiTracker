@@ -108,6 +108,9 @@ Copyright (C) 2020-2024 D.P.C.M.
 - VRC7/OPLL sound emulator from emu2413 v1.5.9
 	- Copyright (C) 2001-2019 Mitsutaka Okazaki
 	- Licensed under the [MIT license](https://mit-license.org/).
+- M3812/OPL2 sound emulator from emu8950 v1.1.4
+	- Copyright (C) 2014 Mitsutaka Okazaki
+	- Licensed under the MIT license
 - FDS and N163 sound emulator from Mesen
 	- Copyright (C) 2014-2024 Sour
 	- Licensed under [GPLv3](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html).

@@ -760,7 +760,7 @@ BOOL CFamiTrackerDoc::SaveDocument(LPCTSTR lpszPathName) const
 		return FALSE;
 	}
 
-	DocumentFile.BeginDocument(m_cFileHFTModule >= 1);
+	DocumentFile.BeginDocument((m_iExpansionChip & 0b111111) == 0 ? 1 : 2);
 
 	if (!WriteBlocks(&DocumentFile)) {
 		// The save process failed, delete temp file
@@ -924,16 +924,20 @@ bool CFamiTrackerDoc::WriteBlocks(CDocumentFile *pDocFile) const
 bool CFamiTrackerDoc::WriteBlock_Parameters(CDocumentFile *pDocFile, const int Version) const
 {
 	// Module parameters
-	pDocFile->CreateBlock(FILE_BLOCK_PARAMS, Version);
+
+	if ((m_iExpansionChip & 0b111111) == 0)
+		pDocFile->CreateBlock(FILE_BLOCK_PARAMS, Version);
+	else
+		pDocFile->CreateBlock(FILE_BLOCK_PARAMS, 6);
 	
-	if (Version == 10) {
+	if (Version >= 2 || ((m_iExpansionChip & 0b111111) == 0)) {
+		pDocFile->WriteBlockChar(m_iExpansionChip);
+	} else if (Version == 10) {
 		pDocFile->WriteBlockChar((m_iExpansionChip >> 16) & 0xFF);
 		pDocFile->WriteBlockChar((m_iExpansionChip >> 8) & 0xFF);
 		pDocFile->WriteBlockChar((m_iExpansionChip >> 0) & 0xFF);
 	} else if (Version == 7) {
 		pDocFile->WriteBlockInt(m_iExpansionChip);
-	} else if (Version >= 2) {
-		pDocFile->WriteBlockChar(m_iExpansionChip);
 	} else {
 		pDocFile->WriteBlockInt(GetTrack(0)->GetSongSpeed());
 	}
@@ -2373,6 +2377,9 @@ void CFamiTrackerDoc::ReadBlock_SequencesS5B(CDocumentFile *pDocFile, const int 
 // Taken from E-FamiTracker by Euly
 void CFamiTrackerDoc::ReadBlock_SequencesSID(CDocumentFile* pDocFile, const int Version)
 {
+	//if (m_iFileVersion == 0x0460)
+	//	return;
+
 	unsigned int Count = AssertRange(pDocFile->GetBlockInt(), 0, MAX_SEQUENCES * SEQ_COUNT, "SID sequence count");
 	// AssertRange<MODULE_ERROR_OFFICIAL>(Count, 0U, static_cast<unsigned>(MAX_SEQUENCES * SEQ_COUNT - 1), "SID sequence count"); // we don't use this anymore
 

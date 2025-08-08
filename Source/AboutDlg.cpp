@@ -171,12 +171,16 @@ BOOL CAboutDlg::OnInitDialog()
 		_T("- Dn-FT icon design by Pale Moon\r\n")		// // !!
 		_T("- DPCM import resampler by Jarhmander\r\n")
 		_T("- DPCM sample bit order reverser mod by Persune\r\n")		// // !!
-		_T("- Module text import/export by rainwarrior"));		// // //
+		_T("- Module text import/export by rainwarrior\r\n")		// // //
+		_T("- N163 No aliasing (FP phase counter) mod by Kylxbn"));
 	SetDlgItemText(IDC_ABOUT_LIB, // // !!
 		_T("- 2A03 sound emulator from NSFPlay\r\n")
 		_T("    Copyright (C) 2006 Brezza, 2012-2025 Brad Smith\r\n")
 		_T("- VRC7/OPLL sound emulator from emu2413 v1.5.9\r\n")
 		_T("    Copyright (C) 2001-2019 Mitsutaka Okazaki\r\n")
+		_T("    Licensed under the MIT license\r\n")
+		_T("- YM3812/OPL2 sound emulator from emu8950 v1.1.4\r\n")
+		_T("    Copyright (C) 2014 Mitsutaka Okazaki\r\n")
 		_T("    Licensed under the MIT license\r\n")
 		_T("- FDS and N163 sound emulator from Mesen\r\n")
 		_T("    Copyright (C) 2014-2024 Sour\r\n")

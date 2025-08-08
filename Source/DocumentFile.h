@@ -34,7 +34,7 @@ public:
 	bool		Finished() const;
 
 	// Write functions
-	bool		BeginDocument(bool isDnModule = false);
+	bool		BeginDocument(char isDnModule = 0);
 	bool		EndDocument();
 
 	void		CreateBlock(const char *ID, int Version);
@@ -79,6 +79,7 @@ public:
 
 public:
 	// Constants
+	static const unsigned int FILE_VER_LEGACY;
 	static const unsigned int FILE_VER;
 	static const unsigned int COMPATIBLE_FORWARD_VER;
 	static const unsigned int COMPATIBLE_VER;

@@ -111,7 +111,6 @@ void CInstrumentSID::Store(CDocumentFile *pDocFile) {
 
 bool CInstrumentSID::Load(CDocumentFile *pDocFile) {	
 	unsigned int instversion = pDocFile->GetBlockInt();
-
 	if (instversion <= 255) {
 		m_pEnvelopeAD = pDocFile->GetBlockChar();
 		m_pEnvelopeSR = pDocFile->GetBlockChar();
